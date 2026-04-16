@@ -27,3 +27,8 @@ resources:
     sql_warehouse:
       id: "0d3bda4f46281ab5"
       permission: CAN_USE
+  - name: genie_space
+    genie_space:
+      name: "Jackson and Jackson HR Digital — Hiring Analytics Genie"
+      space_id: "01f1388a821b1e42a9d579bb45510abf"
+      permission: CAN_RUN

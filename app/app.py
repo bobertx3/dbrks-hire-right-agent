@@ -1,11 +1,12 @@
 """
-Hire Right Agent — Databricks App Backend (v2)
-J&J HRD Data Science Applicant Tracking Insights
-FastAPI server: proxies chat to the agent endpoint, polls Genie Space directly.
+Hire Right Agent — Databricks App Backend (v3)
+Jackson and Jackson HR Digital
+FastAPI: proxies chat to agent endpoint, Genie Conversation API with multi-turn support.
 """
 import os
 import time
 import logging
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
@@ -16,7 +17,7 @@ from databricks.sdk.core import Config
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="J&J HRD Data Science Applicant Tracking Insights", version="2.0.0")
+app = FastAPI(title="Hire Right Agent", version="3.0.0")
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 AGENT_ENDPOINT = os.getenv("DATABRICKS_AGENT_ENDPOINT", "hire-right-agent-endpoint")
@@ -40,6 +41,61 @@ class ChatResponse(BaseModel):
 
 class GenieRequest(BaseModel):
     question: str
+    conversation_id: Optional[str] = None   # pass to continue a multi-turn session
+
+class GenieResponse(BaseModel):
+    answer: str
+    sql: Optional[str] = None
+    suggested_questions: list = []
+    conversation_id: Optional[str] = None
+
+
+# ── Response parsing ───────────────────────────────────────────────────────────
+def _extract_agent_reply(pred) -> str:
+    """
+    Extract the last text reply from a ResponsesAgent endpoint prediction.
+    Handles multiple serialisation formats emitted by MLflow / Databricks serving.
+    """
+    if not isinstance(pred, dict):
+        return str(pred) if pred is not None else ""
+
+    # Format 1 — ResponsesAgent: {"output": [{type, content, role, ...}]}
+    output = pred.get("output", [])
+    for item in reversed(output):
+        if not isinstance(item, dict):
+            continue
+        content = item.get("content", "")
+        if isinstance(content, str) and content:
+            return content
+        if isinstance(content, list):
+            texts = [
+                p.get("text", "")
+                for p in content
+                if isinstance(p, dict) and p.get("type") == "output_text"
+            ]
+            joined = " ".join(t for t in texts if t)
+            if joined:
+                return joined
+
+    # Format 2 — OpenAI chat completions: {"choices": [{message: {content}}]}
+    choices = pred.get("choices", [])
+    if choices:
+        c = choices[0].get("message", {}).get("content", "")
+        if c:
+            return c
+
+    # Format 3 — messages list
+    msgs = pred.get("messages", [])
+    if msgs:
+        c = msgs[-1].get("content", "")
+        if c:
+            return c
+
+    # Format 4 — direct content field
+    if "content" in pred:
+        return str(pred["content"])
+
+    return str(pred)
 
 
 # ── Candidate Data ─────────────────────────────────────────────────────────────
@@ -72,7 +128,7 @@ CANDIDATES = [
 ]
 
 
-# ── Endpoints ──────────────────────────────────────────────────────────────────
+# ── API Endpoints ──────────────────────────────────────────────────────────────
 @app.get("/api/health")
 async def health():
     return {"status": "healthy", "agent_endpoint": AGENT_ENDPOINT}
@@ -90,21 +146,16 @@ async def chat(request: ChatRequest):
         w = get_client()
         history = list(request.conversation_history)
         history.append({"role": "user", "content": request.message})
-        response = w.serving_endpoints.query(name=AGENT_ENDPOINT, request={"messages": history})
 
-        if response.predictions:
-            pred = response.predictions[0]
-            if isinstance(pred, dict):
-                msgs = pred.get("messages", [])
-                if msgs:
-                    reply = msgs[-1].get("content") or str(pred)
-                else:
-                    reply = pred.get("content") or str(pred)
-            else:
-                reply = str(pred) if pred is not None else "No response from the agent."
-        else:
-            reply = "No response from the agent."
-        reply = reply or "The agent returned an empty response."
+        result = w.api_client.do(
+            "POST",
+            f"/serving-endpoints/{AGENT_ENDPOINT}/invocations",
+            body={"input": history},
+        )
+
+        reply = "No response from the agent."
+        if isinstance(result, dict):
+            reply = _extract_agent_reply(result) or reply
 
         history.append({"role": "assistant", "content": reply})
         return ChatResponse(reply=reply, conversation_history=history)
@@ -114,20 +165,35 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/genie")
+@app.post("/api/genie", response_model=GenieResponse)
 def ask_genie(request: GenieRequest):
-    """Ask the Genie Space directly (sync, blocking poll — runs in threadpool)."""
+    """
+    Ask the Genie Space directly via the Conversation API.
+    Pass conversation_id to continue an existing multi-turn conversation.
+    """
     try:
         w = get_client()
+        conv_id = request.conversation_id
 
-        start = w.api_client.do(
-            "POST",
-            f"/api/2.0/genie/spaces/{GENIE_SPACE_ID}/start-conversation",
-            body={"content": request.question},
-        )
-        conv_id = start["conversation_id"]
-        msg_id  = start["message_id"]
+        if conv_id:
+            # Continue existing conversation
+            resp = w.api_client.do(
+                "POST",
+                f"/api/2.0/genie/spaces/{GENIE_SPACE_ID}/conversations/{conv_id}/messages",
+                body={"content": request.question},
+            )
+            msg_id = resp["message_id"]
+        else:
+            # Start new conversation
+            resp = w.api_client.do(
+                "POST",
+                f"/api/2.0/genie/spaces/{GENIE_SPACE_ID}/start-conversation",
+                body={"content": request.question},
+            )
+            conv_id = resp["conversation_id"]
+            msg_id  = resp["message_id"]
 
+        # Poll for completion
         for _ in range(30):
             time.sleep(3)
             msg    = w.api_client.do(
@@ -138,6 +204,8 @@ def ask_genie(request: GenieRequest):
 
             if status == "COMPLETED":
                 parts = []
+                sql_query = None
+                suggested_questions = []
                 for att in msg.get("attachments", []):
                     if att.get("text"):
                         parts.append(att["text"]["content"])
@@ -146,13 +214,31 @@ def ask_genie(request: GenieRequest):
                         if q.get("description"):
                             parts.append(q["description"])
                         if q.get("query"):
-                            parts.append(f"```sql\n{q['query']}\n```")
-                return {"answer": "\n\n".join(parts) or "Query completed with no text response."}
+                            sql_query = q["query"]
+                    elif att.get("suggested_questions"):
+                        suggested_questions = att["suggested_questions"].get("questions", [])
+                answer = "\n\n".join(parts) or "Query completed with no text response."
+                return GenieResponse(
+                    answer=answer,
+                    sql=sql_query,
+                    suggested_questions=suggested_questions,
+                    conversation_id=conv_id,
+                )
 
             if status in ("FAILED", "CANCELLED", "QUERY_RESULT_EXPIRED"):
-                return {"answer": f"Genie query {status.lower()}."}
+                error_detail = msg.get("error", {})
+                error_msg = ""
+                if isinstance(error_detail, dict):
+                    error_msg = error_detail.get("message", "") or error_detail.get("detail", "")
+                elif isinstance(error_detail, str):
+                    error_msg = error_detail
+                logger.error("Genie query %s: %s | full msg: %s", status, error_msg, msg)
+                answer = f"Genie query {status.lower()}."
+                if error_msg:
+                    answer += f" Error: {error_msg}"
+                return GenieResponse(answer=answer, conversation_id=conv_id)
 
-        return {"answer": "Genie query timed out after 90 seconds."}
+        return GenieResponse(answer="Genie query timed out after 90 seconds.", conversation_id=conv_id)
 
     except Exception as e:
         logger.error("Genie error: %s", str(e), exc_info=True)

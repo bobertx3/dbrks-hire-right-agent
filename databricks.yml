@@ -55,6 +55,11 @@ resources:
           sql_warehouse:
             id: ${var.warehouse_id}
             permission: CAN_USE
+        - name: genie_space
+          genie_space:
+            name: "Jackson and Jackson HR Digital — Hiring Analytics Genie"
+            space_id: ${var.genie_space_id}
+            permission: CAN_RUN
 
   dashboards:
     hiring_analytics:

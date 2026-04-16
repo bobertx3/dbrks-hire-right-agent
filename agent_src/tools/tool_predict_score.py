@@ -6,8 +6,6 @@ values supplied at runtime (for new candidates who haven't been fully scored),
 then calls the ML serving endpoint for a hire/no-hire prediction + probability.
 """
 import os
-import json
-import requests
 import mlflow
 from langchain_core.tools import tool
 from config_helper import cfg_get
@@ -27,48 +25,80 @@ FEATURE_COLS = [
 
 def _get_config():
     return {
-        "endpoint": cfg_get("model_endpoint_name", "MODEL_ENDPOINT_NAME", "hr-predictive-hiring-endpoint"),
-        "catalog":  cfg_get("target_catalog",       "TARGET_CATALOG",      "bx4"),
-        "schema":   cfg_get("target_schema",        "TARGET_SCHEMA",       "hrd_2030"),
-        "host":     os.getenv("DATABRICKS_HOST", "").rstrip("/"),
-        "token":    os.getenv("DATABRICKS_TOKEN", ""),
+        "endpoint":     cfg_get("model_endpoint_name", "MODEL_ENDPOINT_NAME", "hr-predictive-hiring-endpoint"),
+        "catalog":      cfg_get("target_catalog",       "TARGET_CATALOG",      "bx4"),
+        "schema":       cfg_get("target_schema",        "TARGET_SCHEMA",       "hrd_2030"),
+        "warehouse_id": cfg_get("warehouse_id",         "DATABRICKS_WAREHOUSE_ID", "0d3bda4f46281ab5"),
     }
 
 
-def _fetch_candidate(catalog: str, schema: str, candidate_id: str) -> dict | None:
-    """Fetch an active candidate (hired IS NULL) from the Delta table via Spark SQL.
-    Only returns candidates still in the hiring pipeline — not historical training data.
-    Returns a dict of column→value, or None if not found / already decided."""
+def _get_ws():
+    """Return a WorkspaceClient — handles credential passthrough in serving endpoints."""
+    from databricks.sdk import WorkspaceClient
+    return WorkspaceClient()
+
+
+def _fetch_via_sql_api(w, warehouse_id: str, catalog: str, schema: str, candidate_id: str) -> dict | None:
+    """Fetch candidate via Statement Execution API using SDK (no token env var needed)."""
+    sql = (
+        f"SELECT * FROM `{catalog}`.`{schema}`.candidates "
+        f"WHERE candidate_id = '{candidate_id}' AND hired IS NULL LIMIT 1"
+    )
     try:
-        # Import spark lazily — only available inside a Databricks notebook/job
-        from pyspark.sql import SparkSession
-        spark = SparkSession.getActiveSession()
-        if spark is None:
+        body = w.api_client.do(
+            "POST",
+            "/api/2.0/sql/statements",
+            body={"statement": sql, "warehouse_id": warehouse_id, "wait_timeout": "30s", "on_wait_timeout": "CANCEL"},
+        )
+        if body.get("status", {}).get("state") != "SUCCEEDED":
             return None
-        rows = spark.sql(
-            f"SELECT * FROM `{catalog}`.`{schema}`.candidates "
-            f"WHERE candidate_id = '{candidate_id.upper()}' AND hired IS NULL LIMIT 1"
-        ).collect()
-        return rows[0].asDict() if rows else None
+        cols = [c["name"] for c in body["manifest"]["schema"]["columns"]]
+        rows = body.get("result", {}).get("data_array", [])
+        if not rows:
+            return None
+        row = dict(zip(cols, rows[0]))
+        # Cast numeric score columns from string to int/float
+        for col in FEATURE_COLS:
+            if col in row and row[col] is not None:
+                try:
+                    row[col] = int(float(row[col]))
+                except (ValueError, TypeError):
+                    row[col] = None
+        return row
     except Exception:
         return None
 
 
-def _call_endpoint(host: str, token: str, endpoint: str, feature_values: dict) -> tuple[int, float | None]:
-    """POST to the model serving endpoint. Returns (prediction, probability)."""
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type":  "application/json",
-    }
-    payload = {"dataframe_records": [feature_values]}
-    resp = requests.post(
-        f"{host}/serving-endpoints/{endpoint}/invocations",
-        headers=headers,
-        json=payload,
-        timeout=30,
+def _fetch_candidate(catalog: str, schema: str, candidate_id: str, cfg: dict) -> dict | None:
+    """Fetch an active candidate (hired IS NULL). Tries Spark first, falls back to SDK Statement API."""
+    # Try Spark (notebook/job context)
+    try:
+        from pyspark.sql import SparkSession
+        spark = SparkSession.getActiveSession()
+        if spark is not None:
+            rows = spark.sql(
+                f"SELECT * FROM `{catalog}`.`{schema}`.candidates "
+                f"WHERE candidate_id = '{candidate_id.upper()}' AND hired IS NULL LIMIT 1"
+            ).collect()
+            return rows[0].asDict() if rows else None
+    except Exception:
+        pass
+
+    # Fallback: SDK Statement Execution API (serving endpoint context)
+    try:
+        w = _get_ws()
+        return _fetch_via_sql_api(w, cfg["warehouse_id"], catalog, schema, candidate_id)
+    except Exception:
+        return None
+
+
+def _call_endpoint(w, endpoint: str, feature_values: dict) -> tuple[int, float | None]:
+    """POST to the ML model serving endpoint via SDK. Returns (prediction, probability)."""
+    body = w.api_client.do(
+        "POST",
+        f"/serving-endpoints/{endpoint}/invocations",
+        body={"dataframe_records": [feature_values]},
     )
-    resp.raise_for_status()
-    body = resp.json()
     raw = body.get("predictions", [None])[0]
     if isinstance(raw, dict):
         return int(raw.get("prediction", raw.get("0", 0))), raw.get("probability")
@@ -104,7 +134,7 @@ def predict_hiring_score(
     cid = candidate_id.upper().strip()
 
     # ── Fetch from Delta table ──────────────────────────────────────────────────
-    row = _fetch_candidate(cfg["catalog"], cfg["schema"], cid)
+    row = _fetch_candidate(cfg["catalog"], cfg["schema"], cid, cfg)
 
     if row is None:
         return (
@@ -134,9 +164,8 @@ def predict_hiring_score(
 
     # ── Call ML endpoint ───────────────────────────────────────────────────────
     try:
-        prediction, probability = _call_endpoint(
-            cfg["host"], cfg["token"], cfg["endpoint"], feature_values
-        )
+        w = _get_ws()
+        prediction, probability = _call_endpoint(w, cfg["endpoint"], feature_values)
         source = "ML endpoint"
     except Exception as e:
         # Graceful fallback: simple weighted sum threshold

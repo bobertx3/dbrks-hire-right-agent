@@ -264,7 +264,9 @@ class HireRightAgent(ResponsesAgent):
     ) -> Generator[ResponsesAgentStreamEvent, None, None]:
         result = self.predict(request)
         for item in result.output:
-            yield ResponsesAgentStreamEvent(type="response.output_item.done", item=item)
+            # MLflow serving calls .get() on item expecting a dict — convert from pydantic
+            item_dict = item.model_dump() if hasattr(item, "model_dump") else item
+            yield ResponsesAgentStreamEvent(type="response.output_item.done", item=item_dict)
 
 
 # ── Singleton instance ─────────────────────────────────────────────────────────

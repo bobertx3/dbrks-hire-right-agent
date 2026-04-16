@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hire Right — J&J HR Digital × Databricks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --db-lava:       #FF3621;
+      --db-lava-light: #FF5F46;
+      --db-navy:       #1B3139;
+      --db-ink:        #0B2026;
+      --db-teal:       #1B5162;
+      --db-green:      #00A972;
+      --db-oat:        #F9F7F4;
+      --db-oat-medium: #EEEDE9;
+      --db-oat-dark:   #DBD7CE;
+      --db-white:      #FFFFFF;
+      --db-amber:      #FEAB03;
+      --db-burgundy:   #970F29;
+      --db-indigo:     #4259FE;
+      --db-muted-teal: #618693;
+      --font-display:  'DM Sans', sans-serif;
+      --font-body:     'DM Sans', sans-serif;
+      --font-mono:     'DM Mono', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: auto; overflow-y: scroll; scroll-snap-type: y mandatory; }
+    body { font-family: var(--font-body); background: var(--db-ink); overflow-x: hidden; }
+
+    .slide {
+      height: 100vh; height: 100dvh;
+      scroll-snap-align: start;
+      padding: clamp(1.5rem, 3.5vw, 3rem) clamp(2rem, 5vw, 5rem);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      position: relative; overflow-y: auto;
+    }
+    .slide-ink   { background: var(--db-ink); }
+    .slide-navy  { background: var(--db-navy); }
+    .slide-oat   { background: var(--db-oat); }
+    .slide-white { background: var(--db-white); }
+    .slide-teal  { background: var(--db-teal); }
+
+    .slide-content { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+    /* Progress + nav dots */
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--db-lava); z-index: 100; transition: width 0.3s ease; }
+    .nav-dots { position: fixed; right: 1.2rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 7px; z-index: 100; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; cursor: pointer; transition: all 0.3s ease; padding: 0; }
+    .nav-dot.active { background: var(--db-lava); transform: scale(1.4); }
+    @media (max-width: 768px) { .nav-dots { display: none; } .slide { padding: 1.5rem; } }
+
+    /* Logo bar */
+    .logo-bar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .db-logo { height: 26px; width: auto; }
+    .logo-sep { font-family: var(--font-display); font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.3); user-select: none; }
+    .logo-sep.on-light { color: var(--db-oat-dark); }
+    .jnj-logo { height: 26px; width: auto; }
+
+    /* Typography — dark slides */
+    .slide-ink h1, .slide-navy h1, .slide-teal h1 { font-weight: 700; font-size: clamp(2rem, 4vw, 3.5rem); color: #fff; letter-spacing: -0.02em; line-height: 1.15; }
+    .slide-ink h2, .slide-navy h2, .slide-teal h2 { font-weight: 700; font-size: clamp(1.4rem, 2.5vw, 2.2rem); color: #fff; letter-spacing: -0.01em; line-height: 1.2; }
+    .slide-ink h3, .slide-navy h3, .slide-teal h3 { font-weight: 600; font-size: clamp(0.9rem, 1.4vw, 1.15rem); color: #fff; line-height: 1.3; }
+    .slide-ink p,  .slide-navy p,  .slide-teal p  { color: rgba(255,255,255,0.7); font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.65; }
+
+    /* Typography — light slides */
+    .slide-oat h1, .slide-white h1 { font-weight: 700; font-size: clamp(1.8rem, 3.5vw, 3rem); color: var(--db-ink); letter-spacing: -0.02em; line-height: 1.15; }
+    .slide-oat h2, .slide-white h2 { font-weight: 700; font-size: clamp(1.3rem, 2.2vw, 1.9rem); color: var(--db-ink); letter-spacing: -0.01em; line-height: 1.2; }
+    .slide-oat h3, .slide-white h3 { font-weight: 600; font-size: clamp(0.9rem, 1.3vw, 1.05rem); color: var(--db-ink); line-height: 1.3; }
+    .slide-oat p,  .slide-white p  { color: #4A5E68; font-size: clamp(0.9rem, 1.3vw, 1.05rem); line-height: 1.65; }
+
+    .accent-bar { display: block; width: 2.5rem; height: 3px; background: var(--db-lava); border-radius: 2px; margin: 0.65rem 0 1.2rem; }
+    .accent-bar.centered { margin: 0.65rem auto 1.2rem; }
+    .mono-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .mono-label.on-light { color: var(--db-muted-teal); }
+
+    /* ---- SLIDE 1: TITLE ---- */
+    .title-eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.85rem; }
+    .title-main { font-weight: 700; font-size: clamp(3rem, 7vw, 6rem); color: #fff; letter-spacing: -0.03em; line-height: 1; }
+    .title-accent { color: var(--db-lava); }
+    .title-subtitle { color: rgba(255,255,255,0.65); font-size: clamp(1rem, 1.8vw, 1.4rem); margin-top: 1rem; line-height: 1.5; }
+    .title-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; padding: 0.25rem 0.6rem; color: rgba(255,255,255,0.5); margin-right: 0.4rem; margin-top: 1.2rem; }
+
+    /* ---- CHARTER SLIDES ---- */
+    .charter-img-wrap { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 32px rgba(0,0,0,0.1); border: 1px solid var(--db-oat-dark); max-width: 820px; margin: 0 auto; }
+    .charter-img-wrap img { width: 100%; height: auto; display: block; }
+    .charter-header { margin-bottom: 1.2rem; }
+    .status-pill { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 3px; margin-bottom: 0.8rem; }
+    .status-pill.draft { background: rgba(254,171,3,0.12); border: 1px solid rgba(254,171,3,0.4); color: var(--db-amber); }
+    .status-pill.review { background: rgba(66,89,254,0.1); border: 1px solid rgba(66,89,254,0.35); color: var(--db-indigo); }
+    .status-pill.active { background: rgba(0,169,114,0.1); border: 1px solid rgba(0,169,114,0.35); color: var(--db-green); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+    .two-col-img { display: grid; grid-template-columns: 1.15fr 1fr; gap: 2.5rem; align-items: center; }
+    .charter-bullets { list-style: none; margin-top: 1rem; }
+    .charter-bullets li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.92rem; color: #4A5E68; line-height: 1.55; margin-bottom: 0.6rem; }
+    .charter-bullets li::before { content: ''; display: block; flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--db-lava); margin-top: 0.45rem; }
+
+    /* ---- PLATFORM CAKE ---- */
+    .cake-stack { display: flex; flex-direction: column; gap: 0.5rem; max-width: 900px; margin: 0 auto; }
+    .cake-layer { border-radius: 10px; padding: 0.8rem 1.4rem; display: flex; align-items: center; gap: 1.2rem; }
+    .cake-layer-label { font-weight: 700; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; min-width: 120px; flex-shrink: 0; }
+    .cake-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; }
+    .c-chip { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em; border-radius: 4px; padding: 0.22rem 0.55rem; white-space: nowrap; }
+    .cake-app    { background: rgba(255,54,33,0.14); border: 1.5px solid rgba(255,54,33,0.35); }
+    .cake-app    .cake-layer-label { color: #ff8878; }
+    .cake-app    .c-chip { background: rgba(255,54,33,0.18); border: 1px solid rgba(255,54,33,0.4); color: #ff9d8e; }
+    .cake-agent  { background: rgba(254,171,3,0.1); border: 1.5px solid rgba(254,171,3,0.3); }
+    .cake-agent  .cake-layer-label { color: var(--db-amber); }
+    .cake-agent  .c-chip { background: rgba(254,171,3,0.14); border: 1px solid rgba(254,171,3,0.35); color: #ffc940; }
+    .cake-ml     { background: rgba(66,89,254,0.1); border: 1.5px solid rgba(66,89,254,0.3); }
+    .cake-ml     .cake-layer-label { color: #8fa3ff; }
+    .cake-ml     .c-chip { background: rgba(66,89,254,0.14); border: 1px solid rgba(66,89,254,0.35); color: #a0b0ff; }
+    .cake-data   { background: rgba(0,169,114,0.1); border: 1.5px solid rgba(0,169,114,0.3); }
+    .cake-data   .cake-layer-label { color: #5cd6a8; }
+    .cake-data   .c-chip { background: rgba(0,169,114,0.14); border: 1px solid rgba(0,169,114,0.35); color: #5cd6a8; }
+    .cake-gov    { background: rgba(97,134,147,0.12); border: 1.5px solid rgba(97,134,147,0.3); }
+    .cake-gov    .cake-layer-label { color: #adc4cd; }
+    .cake-gov    .c-chip { background: rgba(97,134,147,0.14); border: 1px solid rgba(97,134,147,0.35); color: #adc4cd; }
+
+    /* ---- DEMO SLIDE ---- */
+    .demo-bg { background: var(--db-lava); }
+    .demo-bg h1 { font-size: clamp(4rem, 12vw, 9rem); font-weight: 700; letter-spacing: -0.04em; color: #fff; line-height: 0.9; }
+    .demo-bg p { color: rgba(255,255,255,0.8); font-size: clamp(1rem, 2vw, 1.5rem); margin-top: 1.5rem; }
+    .demo-tag { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(255,255,255,0.15); border-radius: 4px; padding: 0.3rem 0.7rem; display: inline-block; margin-top: 1rem; color: rgba(255,255,255,0.85); }
+
+    /* ---- ARCHITECTURE SLIDE ---- */
+    .arch-wrap { display: flex; flex-direction: column; gap: 1rem; max-width: 1000px; margin: 0 auto; width: 100%; }
+    .arch-row { display: flex; align-items: center; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
+    .arch-node {
+      padding: 0.55rem 0.85rem; border-radius: 8px;
+      text-align: center; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; min-width: 110px;
+    }
+    .an-label { font-weight: 600; font-size: clamp(0.62rem, 0.95vw, 0.78rem); color: #fff; line-height: 1.25; }
+    .an-sub   { font-family: var(--font-mono); font-size: clamp(0.48rem, 0.7vw, 0.6rem); color: rgba(255,255,255,0.48); margin-top: 0.15rem; line-height: 1.4; }
+    .an-user   { background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.18); }
+    .an-app    { background: var(--db-teal); }
+    .an-agent  { background: var(--db-lava); box-shadow: 0 0 22px rgba(255,54,33,0.3); }
+    .an-tool   { background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12); }
+    .an-ext    { background: transparent; border: 1.5px dashed rgba(254,171,3,0.6); }
+    .an-ext .an-label { color: var(--db-amber); }
+    .an-ext .an-sub   { color: rgba(254,171,3,0.5); }
+    .an-data   { background: rgba(0,169,114,0.12); border: 1.5px solid rgba(0,169,114,0.35); }
+    .an-data .an-label { color: #5cd6a8; }
+    .an-data .an-sub   { color: rgba(92,214,168,0.55); }
+    .an-mlf    { background: rgba(66,89,254,0.12); border: 1.5px solid rgba(66,89,254,0.35); }
+    .an-mlf .an-label  { color: #8fa3ff; }
+    .an-mlf .an-sub    { color: rgba(143,163,255,0.55); }
+    .an-uc     { background: rgba(255,54,33,0.08); border: 1.5px solid rgba(255,54,33,0.28); }
+    .an-uc .an-label   { color: #ff8878; }
+    .an-uc .an-sub     { color: rgba(255,136,120,0.55); }
+    .arch-arrow { color: rgba(255,255,255,0.3); font-size: 1rem; line-height: 1; flex-shrink: 0; }
+    .arch-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); margin: 0.25rem 0; }
+    .arch-section-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.22); text-align: center; margin-bottom: -0.25rem; }
+
+    /* Fan lines for agent→tools */
+    .arch-tools-row { display: flex; align-items: center; gap: 0.6rem; justify-content: center; }
+    .tool-chip { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 0.5rem 0.9rem; text-align: center; }
+    .tool-chip .an-label { font-size: 0.7rem; }
+    .tool-chip .an-sub { font-size: 0.55rem; }
+
+    /* ---- MLOPS OVERVIEW ---- */
+    .mlops-pipeline { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; max-width: 1000px; margin: 0 auto 1.2rem; overflow-x: auto; }
+    .mlops-step { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+    .mlops-step-num { font-family: var(--font-mono); font-size: 0.6rem; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; }
+    .mlops-step-box { padding: 0.55rem 0.85rem; border-radius: 7px; font-weight: 600; font-size: 0.72rem; color: #fff; text-align: center; white-space: nowrap; }
+    .mlops-step-nb { font-family: var(--font-mono); font-size: 0.5rem; color: rgba(255,255,255,0.28); margin-top: 0.1rem; }
+    .mlops-arrow { color: rgba(255,255,255,0.2); font-size: 1rem; flex-shrink: 0; margin: 0 0.2rem; padding-top: 0.8rem; }
+    .ms-ingest   { background: rgba(184,115,51,0.2); border: 1px solid rgba(184,115,51,0.5); }
+    .ms-silver   { background: rgba(97,134,147,0.2); border: 1px solid rgba(97,134,147,0.5); }
+    .ms-gold     { background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.45); }
+    .ms-train    { background: rgba(66,89,254,0.2); border: 1px solid rgba(66,89,254,0.5); }
+    .ms-register { background: rgba(66,89,254,0.15); border: 1px solid rgba(66,89,254,0.4); }
+    .ms-agent    { background: rgba(255,54,33,0.2); border: 1px solid rgba(255,54,33,0.5); }
+    .ms-deploy   { background: var(--db-teal); border: 1px solid #245f76; opacity: 0.9; }
+    .ms-monitor  { background: rgba(0,169,114,0.2); border: 1px solid rgba(0,169,114,0.5); }
+    .mlops-cards { display: flex; gap: 0.7rem; flex-wrap: wrap; justify-content: center; }
+    .mlops-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; padding: 0.7rem 0.9rem; min-width: 130px; flex: 1; }
+    .mlops-card h4 { font-weight: 600; font-size: 0.78rem; color: #fff; margin-bottom: 0.2rem; }
+    .mlops-card p { font-size: 0.68rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    /* ---- DETAIL STEP SLIDES ---- */
+    .step-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.5rem; }
+    .step-num { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--db-lava); text-transform: uppercase; flex-shrink: 0; }
+    .two-col-step { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+    .two-col-step-wide { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: start; }
+
+    /* Code block */
+    .code-block {
+      background: #0d1b20; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 1rem 1.2rem; overflow-x: auto;
+      font-family: var(--font-mono); font-size: clamp(0.58rem, 0.85vw, 0.72rem);
+      line-height: 1.7; color: rgba(255,255,255,0.85);
+    }
+    .slide-oat .code-block, .slide-white .code-block { background: #0d1b20; }
+    .code-comment { color: rgba(255,255,255,0.28); }
+    .code-keyword { color: #ff8878; }
+    .code-string  { color: #a8d4a8; }
+    .code-func    { color: #8fa3ff; }
+    .code-var     { color: var(--db-amber); }
+    .code-num     { color: #5cd6a8; }
+
+    /* Screenshot frame */
+    .screenshot-frame {
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 4px 28px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .screenshot-frame img { width: 100%; height: auto; display: block; }
+    .slide-oat .screenshot-frame, .slide-white .screenshot-frame {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      border-color: var(--db-oat-dark);
+    }
+    .screenshot-caption { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 0.5rem; text-align: center; }
+    .slide-oat .screenshot-caption { color: var(--db-muted-teal); }
+
+    /* Bullet list for detail slides */
+    .detail-bullets { list-style: none; margin-top: 0.8rem; }
+    .detail-bullets li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: clamp(0.78rem, 1.1vw, 0.9rem); line-height: 1.55; margin-bottom: 0.55rem; color: rgba(255,255,255,0.7); }
+    .detail-bullets li::before { content: ''; display: block; flex-shrink: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--db-lava); margin-top: 0.5rem; }
+    .slide-oat .detail-bullets li, .slide-white .detail-bullets li { color: #4A5E68; }
+    .slide-oat .detail-bullets li::before, .slide-white .detail-bullets li::before { background: var(--db-lava); }
+
+    /* Capability tags used on platform slide */
+    .cap-tag { font-family: var(--font-mono); font-size: 0.62rem; border-radius: 3px; padding: 0.18rem 0.5rem; letter-spacing: 0.03em; }
+
+    /* Section break slides */
+    .section-break { background: var(--db-navy); }
+    .section-break h2 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 700; color: #fff; letter-spacing: -0.03em; }
+    .section-break p { color: rgba(255,255,255,0.55); font-size: 1rem; margin-top: 0.75rem; }
+
+    /* Gov callout chips */
+    .gov-chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+    .gov-chip { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em; border-radius: 4px; padding: 0.22rem 0.55rem; }
+    .gov-chip.pii    { background: rgba(151,15,41,0.12); border: 1px solid rgba(151,15,41,0.35); color: #ff7a8a; }
+    .gov-chip.mask   { background: rgba(255,54,33,0.1); border: 1px solid rgba(255,54,33,0.3); color: #ff9d8e; }
+    .gov-chip.tag    { background: rgba(66,89,254,0.12); border: 1px solid rgba(66,89,254,0.35); color: #a0b0ff; }
+    .gov-chip.qual   { background: rgba(0,169,114,0.1); border: 1px solid rgba(0,169,114,0.3); color: #5cd6a8; }
+    .gov-chip.pk     { background: rgba(254,171,3,0.1); border: 1px solid rgba(254,171,3,0.3); color: #ffc940; }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+  <nav class="nav-dots" aria-label="Slide navigation"></nav>
+
+  <!-- ========================================================
+       SLIDE 1 — TITLE
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Slide 1: Title">
+    <div class="slide-content" style="text-align:center;">
+      <div class="logo-bar" style="justify-content:center; margin-bottom:2rem;">
+        <!-- J&J SVG wordmark -->
+        <svg class="jnj-logo" viewBox="0 0 80 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Johnson and Johnson">
+          <text x="2" y="24" font-family="Georgia,serif" font-weight="700" font-style="italic" font-size="22" fill="#CC0000">J&amp;J</text>
+          <text x="35" y="28" font-family="Georgia,serif" font-weight="400" font-style="italic" font-size="11" fill="rgba(255,255,255,0.5)">HR Digital</text>
+        </svg>
+        <span class="logo-sep">×</span>
+        <!-- Databricks logo dark variant -->
+        <svg class="db-logo" viewBox="0 0 713 113" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Databricks">
+          <g clip-path="url(#c1)"><path d="M98.9 46.6L52.3 72.9L2.4 44.8L0 46.1V66.5L52.3 95.9L98.9 69.7V80.5L52.3 106.8L2.4 78.7L0 80V83.5L52.3 112.9L104.5 83.5V63.1L102.1 61.8L52.3 89.8L5.6 63.6V52.8L52.3 79L104.5 49.6V29.5L101.9 28L52.3 55.9L8 31.1L52.3 6.2L88.7 26.7L91.9 24.9V22.4L52.3 .1L0 29.5V32.7L52.3 62.1L98.9 35.8V46.6Z" fill="#FF3621"/><path d="M202.2 96.2V6.4H188.4V40C188.4 40.5 188.1 40.9 187.6 41.1 187.1 41.3 186.6 41.1 186.3 40.8 181.6 35.3 174.3 32.2 166.3 32.2 149.2 32.2 135.8 46.6 135.8 65 135.8 74 138.9 82.3 144.6 88.4 150.3 94.5 158 97.8 166.3 97.8 174.2 97.8 181.5 94.5 186.3 88.8 186.6 88.4 187.2 88.3 187.6 88.4 188.1 88.6 188.4 89 188.4 89.5V96.2H202.2ZM169.3 85.3C158.3 85.3 149.7 76.4 149.7 65 149.7 53.6 158.3 44.7 169.3 44.7 180.3 44.7 188.9 53.6 188.9 65 188.9 76.4 180.3 85.3 169.3 85.3Z" fill="white"/><path d="M276 96.1V33.7H262.3V40C262.3 40.5 262 40.9 261.5 41.1 261 41.3 260.5 41.1 260.2 40.7 255.6 35.2 248.4 32.1 240.2 32.1 223.1 32.1 209.7 46.5 209.7 64.9 209.7 83.3 223.1 97.7 240.2 97.7 248.1 97.7 255.4 94.4 260.2 88.6 260.5 88.2 261.1 88.1 261.5 88.2 262 88.4 262.3 88.8 262.3 89.3V96.1H276ZM243.3 85.3C232.3 85.3 223.7 76.4 223.7 65 223.7 53.6 232.3 44.7 243.3 44.7 254.3 44.7 262.9 53.6 262.9 65 262.9 76.4 254.3 85.3 243.3 85.3Z" fill="white"/><path d="M314.4 97.2C318.8 97.2 322.7 96.8 324.9 96.5V84.5C323.1 84.7 319.9 84.9 318 84.9 312.4 84.9 308.1 83.9 308.1 71.8V46.1C308.1 45.4 308.6 44.9 309.3 44.9H322.8V33.6H309.3C308.6 33.6 308.1 33.1 308.1 32.4V14.4H294.3V32.5C294.3 33.2 293.8 33.7 293.1 33.7H283.5V45H293.1C293.8 45 294.3 45.5 294.3 46.2V75.3C294.3 97.2 308.9 97.2 314.4 97.2Z" fill="white"/><path d="M393.3 96.2V33.7H379.6V40C379.6 40.5 379.3 40.9 378.8 41.1 378.3 41.3 377.8 41.1 377.5 40.7 372.9 35.2 365.7 32.1 357.5 32.1 340.3 32.1 327 46.5 327 65 327 83.5 340.4 97.8 357.5 97.8 365.4 97.8 372.7 94.5 377.5 88.7 377.8 88.3 378.4 88.2 378.8 88.3 379.3 88.5 379.6 88.9 379.6 89.4V96.2H393.3ZM360.6 85.3C349.6 85.3 341 76.4 341 65 341 53.6 349.6 44.7 360.6 44.7 371.6 44.7 380.2 53.6 380.2 65 380.2 76.4 371.6 85.3 360.6 85.3Z" fill="white"/><path d="M418.4 88.8C418.5 88.8 418.7 88.7 418.8 88.7 419.1 88.7 419.5 88.9 419.7 89.1 424.4 94.6 431.7 97.7 439.7 97.7 456.8 97.7 470.2 83.3 470.2 64.9 470.2 55.9 467.1 47.6 461.4 41.5 455.7 35.4 448 32.1 439.7 32.1 431.8 32.1 424.5 35.4 419.7 41.1 419.4 41.5 418.9 41.6 418.4 41.5 417.9 41.3 417.6 40.9 417.6 40.4V6.4H403.8V96.2H417.6V89.9C417.6 89.4 417.9 89 418.4 88.8ZM417 65C417 53.6 425.6 44.7 436.6 44.7 447.6 44.7 456.2 53.6 456.2 65 456.2 76.4 447.6 85.3 436.6 85.3 425.6 85.3 417 76.3 417 65Z" fill="white"/><path d="M510.1 46.5C511.4 46.5 512.6 46.6 513.4 46.8V32.6C512.9 32.5 512 32.4 511.1 32.4 503.9 32.4 497.3 36.1 493.8 42 493.5 42.5 493 42.7 492.5 42.5 492 42.4 491.6 41.9 491.6 41.4V33.7H477.9V96.3H491.7V68.7C491.7 55 498.7 46.5 510.1 46.5Z" fill="white"/><path d="M536.1 33.7H522.1V96.3H536.1V33.7Z" fill="white"/><path d="M528.9 6.5C524.2 6.5 520.4 10.3 520.4 15 520.4 19.7 524.2 23.5 528.9 23.5 533.6 23.5 537.4 19.7 537.4 15 537.4 10.3 533.6 6.5 528.9 6.5Z" fill="white"/><path d="M577.1 32.1C557.9 32.1 544 45.9 544 65 544 74.3 547.3 82.6 553.2 88.6 559.2 94.6 567.6 97.9 577 97.9 584.8 97.9 590.8 96.4 602.2 88L594.3 79.7C588.7 83.4 583.5 85.2 578.4 85.2 566.8 85.2 558.1 76.5 558.1 65 558.1 53.5 566.8 44.8 578.4 44.8 583.9 44.8 589 46.6 594.1 50.3L602.9 42C592.6 33.2 583.3 32.1 577.1 32.1Z" fill="white"/><path d="M626.5 68.7C626.7 68.5 627 68.4 627.3 68.4H627.4C627.7 68.4 628 68.6 628.3 68.8L650.4 96.2H667.4L638.8 61.6C638.4 61.1 638.4 60.4 638.9 60L665.2 33.7H648.3L625.6 56.5C625.3 56.8 624.8 56.9 624.3 56.8 623.9 56.6 623.6 56.2 623.6 55.7V6.5H609.7V96.3H623.5V71.9C623.5 71.6 623.6 71.2 623.9 71L626.5 68.7Z" fill="white"/><path d="M689.9 97.8C701.2 97.8 712.7 90.9 712.7 77.8 712.7 69.2 707.3 63.3 696.3 59.7L688.8 57.2C683.7 55.5 681.3 53.1 681.3 49.8 681.3 46 684.7 43.4 689.5 43.4 694.1 43.4 698.2 46.4 700.8 51.6L711.9 45.6C707.8 37.2 699.3 32 689.5 32 677.1 32 668.1 40 668.1 50.9 668.1 59.6 673.3 65.4 684 68.8L691.7 71.3C697.1 73 699.4 75.2 699.4 78.7 699.4 84 694.5 85.9 690.3 85.9 684.7 85.9 679.7 82.3 677.3 76.4L666 82.4C669.7 91.9 678.8 97.8 689.9 97.8Z" fill="white"/></g>
+          <defs><clipPath id="c1"><rect width="712.8" height="113" fill="white"/></clipPath></defs>
+        </svg>
+      </div>
+      <p class="title-eyebrow">Jackson &amp; Jackson · HR Digital Initiative</p>
+      <h1 class="title-main"><span class="title-accent">Hire</span> Right</h1>
+      <p class="title-subtitle">Predictive Hiring Intelligence on the Databricks Data Intelligence Platform</p>
+      <div style="margin-top:1.5rem;">
+        <span class="title-tag">MLflow 3.0</span>
+        <span class="title-tag">Delta Lakehouse</span>
+        <span class="title-tag">AI Agent</span>
+        <span class="title-tag">Unity Catalog</span>
+        <span class="title-tag">Databricks Apps</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 2 — CHARTER → DATABRICKS CAPABILITY MAPPING
+       ======================================================== -->
+  <section class="slide slide-oat" aria-label="Slide 2: Charter to Databricks Capability Mapping">
+    <div class="slide-content">
+      <p class="mono-label on-light">J&amp;J HR Digital Workstream Charters</p>
+      <h2 style="margin-top:0.4rem;">Mapping Charter Goals to Databricks</h2>
+      <span class="accent-bar"></span>
+      <table style="width:100%; border-collapse:collapse; font-size:clamp(0.78rem,1.1vw,0.92rem);">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:0.6rem 1rem 0.6rem 0; font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.07em; text-transform:uppercase; color:var(--db-muted-teal); font-weight:500; border-bottom:2px solid var(--db-oat-dark); width:50%;">Charter Capability</th>
+            <th style="text-align:left; padding:0.6rem 0 0.6rem 1rem; font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.07em; text-transform:uppercase; color:var(--db-lava); font-weight:500; border-bottom:2px solid var(--db-oat-dark); width:50%;">Databricks Capability</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Multi-layer HR data platform (Bronze → Silver → Gold)</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(0,169,114,0.1); border:1px solid rgba(0,169,114,0.3); color:#007a52; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">Delta Lakehouse · Medallion Architecture</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Raw ingestion from HRIS systems (ADP, Workday, resumes)</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(0,169,114,0.1); border:1px solid rgba(0,169,114,0.3); color:#007a52; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">Delta Lake · read_files() · Autoloader · UC Volumes</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">PII governance, data cleansing &amp; classification</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(255,54,33,0.08); border:1px solid rgba(255,54,33,0.25); color:#cc2b1a; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">Unity Catalog · Data Classification · Column Masking</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Analytics-ready HR data model &amp; semantic layer</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(0,169,114,0.1); border:1px solid rgba(0,169,114,0.3); color:#007a52; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">AI/BI · Genie Space · Dashboards · UC Comments</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Data quality monitoring &amp; observability</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(0,169,114,0.1); border:1px solid rgba(0,169,114,0.3); color:#007a52; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">Lakehouse Monitors · Profile &amp; Drift Metrics</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Foundational MLOps environment — experiment tracking &amp; registry</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(66,89,254,0.08); border:1px solid rgba(66,89,254,0.25); color:#2d42cc; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">MLflow 3.0 · Experiments · UC Model Registry</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Model deployment automation &amp; CI/CD pipelines</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(66,89,254,0.08); border:1px solid rgba(66,89,254,0.25); color:#2d42cc; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">Model Serving · agents.deploy() · Databricks Workflows</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Decision services for priority HR use cases</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(254,171,3,0.1); border:1px solid rgba(254,171,3,0.35); color:#9a6600; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">ResponsesAgent · Agent Bricks · Databricks Apps</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--db-oat-medium);">
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Model governance, bias auditing &amp; fairness review</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(255,54,33,0.08); border:1px solid rgba(255,54,33,0.25); color:#cc2b1a; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">mlflow.genai.evaluate() · Unity Catalog · RBAC</span></td>
+          </tr>
+          <tr>
+            <td style="padding:0.7rem 1rem 0.7rem 0; color:var(--db-ink); font-weight:500;">Production monitoring, drift detection &amp; retraining</td>
+            <td style="padding:0.7rem 0 0.7rem 1rem;"><span style="background:rgba(66,89,254,0.08); border:1px solid rgba(66,89,254,0.25); color:#2d42cc; border-radius:4px; padding:0.15rem 0.5rem; font-family:var(--font-mono); font-size:0.68rem;">Lakehouse Monitors · MLflow Tracing · Workflows</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 4 — DATABRICKS PLATFORM STACK (CAKE)
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Slide 4: Databricks Platform Stack">
+    <div class="slide-content">
+      <div style="text-align:center; margin-bottom:1.4rem;">
+        <p class="mono-label">The Databricks Data Intelligence Platform</p>
+        <h2 style="margin-top:0.4rem;">Everything J&amp;J HR Digital Needs — One Platform</h2>
+        <span class="accent-bar centered"></span>
+      </div>
+      <div class="cake-stack">
+        <div class="cake-layer cake-app">
+          <span class="cake-layer-label">Application</span>
+          <div class="cake-chips">
+            <span class="c-chip">Databricks Apps</span>
+            <span class="c-chip">FastAPI + HTML</span>
+            <span class="c-chip">OAuth · SSO</span>
+            <span class="c-chip">Serverless Compute</span>
+          </div>
+        </div>
+        <div class="cake-layer cake-agent">
+          <span class="cake-layer-label">AI Agent Layer</span>
+          <div class="cake-chips">
+            <span class="c-chip">ResponsesAgent · ChatAgent SDK</span>
+            <span class="c-chip">Genie Space · NL-to-SQL</span>
+            <span class="c-chip">Vector Search · Semantic RAG</span>
+            <span class="c-chip">Agent Bricks · AI Gateway</span>
+            <span class="c-chip">MCP Registry</span>
+            <span class="c-chip">Foundational LLMs</span>
+          </div>
+        </div>
+        <div class="cake-layer cake-ml">
+          <span class="cake-layer-label">ML &amp; MLOps</span>
+          <div class="cake-chips">
+            <span class="c-chip">MLflow 3.0 · Experiments</span>
+            <span class="c-chip">Model Registry · UC-native</span>
+            <span class="c-chip">Model Serving · REST Endpoints</span>
+            <span class="c-chip">mlflow.genai.evaluate()</span>
+            <span class="c-chip">AutoML · sklearn · XGBoost</span>
+          </div>
+        </div>
+        <div class="cake-layer cake-data">
+          <span class="cake-layer-label">Data Platform</span>
+          <div class="cake-chips">
+            <span class="c-chip">Delta Lakehouse · Bronze/Silver/Gold</span>
+            <span class="c-chip">Delta Live Tables</span>
+            <span class="c-chip">Databricks Workflows</span>
+            <span class="c-chip">AI/BI · Genie &amp; Dashboards</span>
+            <span class="c-chip">UC Volumes</span>
+          </div>
+        </div>
+        <div class="cake-layer cake-gov">
+          <span class="cake-layer-label">Governance</span>
+          <div class="cake-chips">
+            <span class="c-chip">Unity Catalog · Single Metastore</span>
+            <span class="c-chip">Data Classification · Tags</span>
+            <span class="c-chip">Column Masking</span>
+            <span class="c-chip">Lakehouse Monitors</span>
+            <span class="c-chip">Row &amp; Column Level Security</span>
+            <span class="c-chip">End-to-End Lineage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 5 — DEMO
+       ======================================================== -->
+  <section class="slide demo-bg" aria-label="Slide 5: Demo">
+    <div class="slide-content" style="text-align:center;">
+      <p style="font-family:var(--font-mono); font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:1rem;">Live</p>
+      <h1 style="font-size:clamp(4rem,12vw,9rem); font-weight:700; letter-spacing:-0.04em; color:#fff; line-height:0.9;">DEMO</h1>
+      <p style="color:rgba(255,255,255,0.75); font-size:clamp(1rem,1.8vw,1.4rem); margin-top:1.5rem; max-width:500px; margin-left:auto; margin-right:auto;">
+        Hire Right — Predictive Hiring Agent for J&amp;J HR Digital
+      </p>
+      <div style="margin-top:1.5rem; display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+        <span class="demo-tag">query_genie</span>
+        <span class="demo-tag">search_resumes</span>
+        <span class="demo-tag">predict_hiring_score</span>
+        <span class="demo-tag">send_email</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 6 — SOLUTION ARCHITECTURE
+       ======================================================== -->
+  <section class="slide slide-navy" aria-label="Slide 6: Solution Architecture">
+    <div class="slide-content">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <p class="mono-label">End-to-End Solution</p>
+        <h2 style="margin-top:0.3rem;">Hire Right Architecture</h2>
+        <span class="accent-bar centered"></span>
+      </div>
+      <div class="arch-wrap">
+        <!-- Top row: User → App → Agent -->
+        <div class="arch-row">
+          <div class="arch-node an-user">
+            <span class="an-label">HR Manager</span>
+            <span class="an-sub">J&amp;J HR Digital</span>
+          </div>
+          <span class="arch-arrow">① chat →</span>
+          <div class="arch-node an-app">
+            <span class="an-label">Hire Right App</span>
+            <span class="an-sub">Databricks App · FastAPI + HTML</span>
+          </div>
+          <span class="arch-arrow">② invoke →</span>
+          <div class="arch-node an-agent" style="min-width:150px;">
+            <span class="an-label">Hire Right Agent</span>
+            <span class="an-sub">ResponsesAgent · MLflow 3.0</span>
+            <span class="an-sub">OpenAI-compatible</span>
+          </div>
+        </div>
+
+        <!-- Tools row -->
+        <div class="arch-row" style="margin-top:0.3rem;">
+          <span style="font-family:var(--font-mono); font-size:0.58rem; color:rgba(255,255,255,0.2); letter-spacing:0.06em;">TOOLS</span>
+        </div>
+        <div class="arch-row">
+          <div class="arch-node an-tool">
+            <span class="an-label">query_genie</span>
+            <span class="an-sub">Genie Space · NL-to-SQL</span>
+          </div>
+          <div class="arch-node an-tool">
+            <span class="an-label">search_resumes</span>
+            <span class="an-sub">Vector Search · RAG</span>
+          </div>
+          <div class="arch-node an-tool">
+            <span class="an-label">predict_hiring_score</span>
+            <span class="an-sub">ML Endpoint · sklearn</span>
+          </div>
+          <div class="arch-node an-ext">
+            <span class="an-label">send_email</span>
+            <span class="an-sub">Mailgun API · external</span>
+          </div>
+        </div>
+
+        <div class="arch-divider"></div>
+
+        <!-- Foundation row -->
+        <div class="arch-row">
+          <div class="arch-node an-data" style="min-width:160px;">
+            <span class="an-label">Delta Lakehouse</span>
+            <span class="an-sub">Bronze → Silver → Gold</span>
+            <span class="an-sub">Candidate Data · Resume PDFs</span>
+          </div>
+          <div class="arch-node an-uc" style="min-width:150px;">
+            <span class="an-label">Unity Catalog</span>
+            <span class="an-sub">Data Classification · Masking</span>
+            <span class="an-sub">Data Quality Monitor</span>
+          </div>
+          <div class="arch-node an-mlf" style="min-width:150px;">
+            <span class="an-label">MLflow 3.0</span>
+            <span class="an-sub">Experiments · Model Registry</span>
+            <span class="an-sub">Agent Tracing · Evaluation</span>
+          </div>
+          <div class="arch-node" style="background:rgba(254,171,3,0.1); border:1.5px solid rgba(254,171,3,0.3); min-width:130px;">
+            <span class="an-label" style="color:#ffc940;">Agent Bricks</span>
+            <span class="an-sub" style="color:rgba(255,201,64,0.5);">AI Gateway · MCP Registry</span>
+            <span class="an-sub" style="color:rgba(255,201,64,0.5);">Foundational LLMs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 7 — MLOPS LIFECYCLE OVERVIEW
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Slide 7: MLOps Lifecycle">
+    <div class="slide-content">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <p class="mono-label">End-to-End MLOps</p>
+        <h2 style="margin-top:0.3rem;">From Raw Data to Deployed AI Agent</h2>
+        <span class="accent-bar centered"></span>
+      </div>
+      <!-- Pipeline -->
+      <div class="mlops-pipeline" style="justify-content:center; margin-bottom:1.4rem;">
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 00</span>
+          <div class="mlops-step-box ms-ingest">① Ingest</div>
+          <span class="mlops-step-nb">Bronze</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 01–02</span>
+          <div class="mlops-step-box ms-silver">② Govern</div>
+          <span class="mlops-step-nb">Silver + UC</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 03–04</span>
+          <div class="mlops-step-box ms-gold">③ Build for AI</div>
+          <span class="mlops-step-nb">Gold + Genie</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 05</span>
+          <div class="mlops-step-box ms-train">④ Train ML</div>
+          <span class="mlops-step-nb">MLflow + XGBoost</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 05</span>
+          <div class="mlops-step-box ms-register">⑤ Register</div>
+          <span class="mlops-step-nb">UC Registry + Serve</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 06</span>
+          <div class="mlops-step-box ms-agent">⑥ Agent</div>
+          <span class="mlops-step-nb">ResponsesAgent</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 07</span>
+          <div class="mlops-step-box ms-deploy">⑦ Deploy App</div>
+          <span class="mlops-step-nb">Databricks Apps</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 02+</span>
+          <div class="mlops-step-box ms-monitor">⑧ Monitor</div>
+          <span class="mlops-step-nb">UC Monitors</span>
+        </div>
+      </div>
+      <!-- MLflow banner -->
+      <div style="text-align:center; margin-bottom:1rem;">
+        <span style="font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.06em; color:rgba(143,163,255,0.55); background:rgba(66,89,254,0.08); border:1px solid rgba(66,89,254,0.2); border-radius:4px; padding:0.25rem 0.75rem;">MLflow 3.0 — unified tracking across every step</span>
+      </div>
+      <!-- Supporting cards -->
+      <div class="mlops-cards">
+        <div class="mlops-card">
+          <h4>Vector Search</h4>
+          <p>Resume semantic index<br>bx4_hrd_vs_endpoint</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Genie Space</h4>
+          <p>NL-to-SQL analytics<br>HR Analytics space</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Agent Deployment</h4>
+          <p>agents.deploy() · scale to zero<br>OpenAI-compatible endpoint</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Data Quality</h4>
+          <p>UC Monitors · drift metrics<br>Profile + drift metric tables</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Governance</h4>
+          <p>Unity Catalog throughout<br>PII tags, masking, RBAC</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 8 — STEP 1: BRONZE INGESTION
+       ======================================================== -->
+  <section class="slide slide-navy" aria-label="Slide 8: Step 1 - Bronze Ingestion">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num">Step 1 · Notebook 00</span>
+        <h2>Ingest — Bronze Layer</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step">
+        <div>
+          <p style="margin-bottom:0.9rem;">Raw candidate data lands in Delta Lake as a Bronze table — schema inferred from CSV, resumes uploaded as PDFs to a Unity Catalog Volume.</p>
+          <ul class="detail-bullets">
+            <li>20 HR candidates across 4 open roles (Director HR, VP TA, Dir Comp&amp;Ben, CPO)</li>
+            <li><code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">read_files()</code> for schema-on-read from CSV — no ETL boilerplate</li>
+            <li>Resume PDFs ingested to <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">/Volumes/bx4/hrd_2030/hr_resumes/</code></li>
+            <li>Audit column <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">ingested_at</code> stamped on every row</li>
+          </ul>
+          <div style="margin-top:1rem;" class="screenshot-frame">
+            <img src="images/db-home.png" alt="Databricks workspace">
+            <p class="screenshot-caption">Databricks workspace · bx4.hrd_2030</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block">
+<span class="code-comment"># nb 00 — Bronze ingestion</span>
+<span class="code-keyword">spark</span>.sql(<span class="code-string">f"""
+CREATE OR REPLACE TABLE
+  `{catalog}`.`{schema}`.bronze_candidates
+AS SELECT *
+FROM read_files(
+  '{candidates_csv}',
+  format     =&gt; 'csv',
+  header     =&gt; 'true',
+  inferSchema=&gt; 'false'
+)
+"""</span>)
+
+<span class="code-comment"># Resumes to UC Volume</span>
+<span class="code-func">dbutils</span>.fs.cp(
+  <span class="code-string">f"{source}/resumes/"</span>,
+  <span class="code-string">f"/Volumes/{catalog}/{schema}/hr_resumes/"</span>,
+  recurse=<span class="code-keyword">True</span>
+)
+
+<span class="code-comment"># Build Vector Search index from resume text</span>
+<span class="code-func">client</span>.create_delta_sync_index(
+  endpoint_name=<span class="code-string">"bx4_hrd_vs_endpoint"</span>,
+  index_name=<span class="code-string">f"{catalog}.{schema}.hr_resumes_vs_index"</span>,
+  source_table_name=<span class="code-string">f"{catalog}.{schema}.resume_chunks"</span>,
+  primary_key=<span class="code-string">"chunk_id"</span>,
+  embedding_source_column=<span class="code-string">"chunk_text"</span>
+)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 9 — STEP 2: SILVER + GOVERNANCE
+       ======================================================== -->
+  <section class="slide slide-oat" aria-label="Slide 9: Step 2 - Silver and Governance">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num" style="color:var(--db-lava);">Step 2 · Notebooks 01–02</span>
+        <h2>Govern &amp; Enrich — Silver Layer</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step-wide">
+        <div>
+          <p style="margin-bottom:0.75rem;">Silver applies business transformations and Unity Catalog governance — PII tagging, column masking, data quality monitoring, and rich AI-ready comments.</p>
+          <div class="gov-chip-row">
+            <span class="gov-chip pii">PII Tags · email · phone</span>
+            <span class="gov-chip mask">Column Mask · mask_phone()</span>
+            <span class="gov-chip tag">sensitivity = internal</span>
+            <span class="gov-chip qual">Data Quality Monitor</span>
+            <span class="gov-chip pk">PRIMARY KEY constraint</span>
+          </div>
+          <div style="margin-top:1rem;" class="screenshot-frame">
+            <img src="images/unity-catalog.png" alt="Unity Catalog">
+            <p class="screenshot-caption">Unity Catalog · bx4.hrd_2030</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block" style="font-size:0.63rem;">
+<span class="code-comment"># UC sensitivity tags</span>
+<span class="code-keyword">spark</span>.sql(<span class="code-string">f"""
+ALTER TABLE {catalog}.{schema}.candidates
+  ALTER COLUMN phone SET TAGS (
+    'sensitivity' = 'internal',
+    'pii_type'    = 'phone'
+  )
+"""</span>)
+
+<span class="code-comment"># Column masking function</span>
+<span class="code-keyword">spark</span>.sql(<span class="code-string">f"""
+CREATE OR REPLACE FUNCTION
+  {catalog}.{schema}.mask_phone(phone STRING)
+RETURN CASE
+  WHEN is_account_group_member(
+    'jj_hr_digital_admin') THEN phone
+  ELSE CONCAT('***-***-', RIGHT(phone, 4))
+END
+"""</span>)
+
+<span class="code-comment"># Data Quality Monitor (snapshot)</span>
+<span class="code-func">monitor</span> = w.quality_monitors.create(
+  table_name=<span class="code-string">f"{catalog}.{schema}.candidates"</span>,
+  assets_dir=<span class="code-string">"/Workspace/Shared/hrd_2030_monitoring"</span>,
+  output_schema_name=<span class="code-string">f"{catalog}.{schema}"</span>,
+  snapshot=<span class="code-func">MonitorSnapshot</span>(),
+)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 10 — STEP 3: GOLD + GENIE + VECTOR SEARCH
+       ======================================================== -->
+  <section class="slide slide-navy" aria-label="Slide 10: Step 3 - Gold and AI Readiness">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num">Step 3 · Notebooks 03–04</span>
+        <h2>Build for AI — Gold Layer + Genie Space</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step">
+        <div>
+          <p style="margin-bottom:0.9rem;">Gold tables aggregate candidate scores for analytics and ML training. Genie Space gives the agent natural language access to HR data. Vector Search enables semantic resume retrieval.</p>
+          <ul class="detail-bullets">
+            <li>Gold table joins candidates + job requirements with computed hiring metrics</li>
+            <li>Business Semantics layer: COMMENT ON TABLE + column descriptions make Genie accurate</li>
+            <li>Genie Space configured with trusted assets and sample questions</li>
+            <li>Vector Search index synced from resume chunk Delta table — 1536-dim embeddings</li>
+          </ul>
+          <div style="margin-top:1rem;" class="screenshot-frame">
+            <img src="images/uc-candidates-table.png" alt="UC Candidates Table">
+            <p class="screenshot-caption">bx4.hrd_2030.candidates · UC Table</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block" style="font-size:0.63rem;">
+<span class="code-comment"># nb 03 — Gold aggregation</span>
+<span class="code-keyword">spark</span>.sql(<span class="code-string">f"""
+CREATE OR REPLACE TABLE
+  {catalog}.{schema}.gold_candidates AS
+SELECT
+  c.*,
+  j.title       AS job_title,
+  j.salary_max  AS salary_max,
+  (c.education_score * 0.15
+  + c.experience_score * 0.25
+  + c.leadership_score * 0.20
+  + c.interview_score  * 0.25
+  + c.culture_fit      * 0.15)
+    AS composite_score
+FROM {catalog}.{schema}.silver_candidates c
+JOIN {catalog}.{schema}.job_requirements j
+  ON c.job_id = j.job_id
+"""</span>)
+
+<span class="code-comment"># nb 03b — AI-ready semantics</span>
+<span class="code-keyword">spark</span>.sql(<span class="code-string">f"""
+COMMENT ON TABLE {catalog}.{schema}.candidates
+IS 'Silver-layer HR candidate profile table
+for Jackson and Johnson HR Digital.
+Contains 20 candidates (C001-C020) across
+4 open HR roles (JR001-JR004)...'
+"""</span>)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 11 — STEP 4: TRAIN ML MODEL
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Slide 11: Step 4 - Train ML Model">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num">Step 4 · Notebook 05</span>
+        <h2>Train ML Model — Hire / No-Hire Prediction</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step">
+        <div>
+          <p style="margin-bottom:0.9rem;">MLflow autolog captures every experiment run. Best model (GradientBoostingClassifier) selected by AUC-ROC and registered to Unity Catalog with the <code style="font-family:var(--font-mono); font-size:0.85em; color:#5cd6a8;">@champion</code> alias.</p>
+          <ul class="detail-bullets">
+            <li>8 features: education, experience, leadership, certification, skills_match, industry_relevance, interview, culture_fit</li>
+            <li>GradientBoostingClassifier — 100 estimators, lr=0.1, max_depth=3</li>
+            <li>MLflow autolog: input examples, model signatures, metrics</li>
+            <li>UC registration: <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">bx4.hrd_2030.hr_predictive_hiring</code></li>
+          </ul>
+          <div style="margin-top:1rem;" class="screenshot-frame">
+            <img src="images/mlflow-experiments.png" alt="MLflow Experiments">
+            <p class="screenshot-caption">MLflow Experiments · hr-predictive-hiring runs</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block" style="font-size:0.63rem;">
+<span class="code-comment"># nb 05 — Train with MLflow autolog</span>
+<span class="code-var">feature_cols</span> = [
+  <span class="code-string">"education_score"</span>, <span class="code-string">"experience_score"</span>,
+  <span class="code-string">"leadership_score"</span>, <span class="code-string">"certification_score"</span>,
+  <span class="code-string">"skills_match_score"</span>, <span class="code-string">"industry_relevance_score"</span>,
+  <span class="code-string">"interview_score"</span>, <span class="code-string">"culture_fit"</span>
+]
+
+<span class="code-func">mlflow</span>.set_experiment(experiment_path)
+<span class="code-func">mlflow</span>.sklearn.autolog(
+  log_input_examples=<span class="code-keyword">True</span>,
+  log_model_signatures=<span class="code-keyword">True</span>,
+  silent=<span class="code-keyword">True</span>
+)
+
+<span class="code-keyword">with</span> <span class="code-func">mlflow</span>.start_run(
+    run_name=<span class="code-string">"GradientBoostingClassifier"</span>) <span class="code-keyword">as</span> run:
+  pipeline_gb = <span class="code-func">Pipeline</span>([
+    (<span class="code-string">"scaler"</span>, <span class="code-func">StandardScaler</span>()),
+    (<span class="code-string">"model"</span>, <span class="code-func">GradientBoostingClassifier</span>(
+      n_estimators=<span class="code-num">100</span>,
+      learning_rate=<span class="code-num">0.1</span>,
+      max_depth=<span class="code-num">3</span>
+    ))
+  ])
+  pipeline_gb.fit(X_train, y_train)
+  <span class="code-func">mlflow</span>.log_metrics({
+    <span class="code-string">"accuracy"</span>: acc_gb,
+    <span class="code-string">"auc_roc"</span>: auc_gb,
+    <span class="code-string">"f1"</span>: f1_gb
+  })</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 12 — STEP 5: REGISTER & SERVE MODEL
+       ======================================================== -->
+  <section class="slide slide-navy" aria-label="Slide 12: Step 5 - Register and Serve">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num">Step 5 · Notebook 05</span>
+        <h2>Register &amp; Serve — @champion Model Endpoint</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step">
+        <div>
+          <p style="margin-bottom:0.9rem;">Best run registered to Unity Catalog Model Registry and aliased as <code style="font-family:var(--font-mono); font-size:0.85em; color:#5cd6a8;">@champion</code>. A serverless Model Serving endpoint exposes it as a REST API — the agent calls it via <code style="font-family:var(--font-mono); font-size:0.85em; color:#5cd6a8;">predict_hiring_score</code>.</p>
+          <ul class="detail-bullets">
+            <li>UC model name: <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">bx4.hrd_2030.hr_predictive_hiring</code></li>
+            <li>Endpoint: <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">hr-predictive-hiring-endpoint</code></li>
+            <li>Scale-to-zero serverless compute — no idle costs</li>
+            <li>Agent tool calls endpoint via Databricks SDK token-auth</li>
+          </ul>
+          <div style="margin-top:0.8rem;" class="screenshot-frame">
+            <img src="images/model-serving.png" alt="Model Serving Endpoint">
+            <p class="screenshot-caption">hr-predictive-hiring-endpoint · Model Serving</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block" style="font-size:0.63rem;">
+<span class="code-comment"># Register to Unity Catalog</span>
+<span class="code-func">mlflow</span>.set_registry_uri(<span class="code-string">"databricks-uc"</span>)
+<span class="code-var">registered</span> = <span class="code-func">mlflow</span>.register_model(
+  model_uri=<span class="code-string">f"runs:/{best_run_id}/model"</span>,
+  name=<span class="code-string">f"{catalog}.{schema}.hr_predictive_hiring"</span>
+)
+
+<span class="code-comment"># Set @champion alias</span>
+<span class="code-func">client</span>.set_registered_model_alias(
+  name=<span class="code-string">f"{catalog}.{schema}.hr_predictive_hiring"</span>,
+  alias=<span class="code-string">"champion"</span>,
+  version=registered.version
+)
+
+<span class="code-comment"># Create serverless serving endpoint</span>
+<span class="code-var">endpoint_config</span> = <span class="code-func">EndpointCoreConfigInput</span>(
+  served_models=[<span class="code-func">ServedModelInput</span>(
+    model_name=<span class="code-string">f"{catalog}.{schema}.hr_predictive_hiring"</span>,
+    model_version=registered.version,
+    scale_to_zero_enabled=<span class="code-keyword">True</span>,
+    workload_size=<span class="code-string">"Small"</span>
+  )]
+)
+<span class="code-func">w</span>.serving_endpoints.create_and_wait(
+  name=<span class="code-string">"hr-predictive-hiring-endpoint"</span>,
+  config=endpoint_config
+)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 13 — STEP 6: BUILD AGENT
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Slide 13: Step 6 - Build Agent">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num">Step 6 · Notebook 06</span>
+        <h2>Build &amp; Deploy Agent — ResponsesAgent + MLflow 3.0</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step">
+        <div>
+          <p style="margin-bottom:0.9rem;">The Hire Right Agent is a <code style="font-family:var(--font-mono); font-size:0.85em; color:#5cd6a8;">ResponsesAgent</code> (OpenAI-compatible ChatAgent) packaged with MLflow 3.0, evaluated with <code style="font-family:var(--font-mono); font-size:0.85em; color:#5cd6a8;">mlflow.genai.evaluate()</code>, and deployed as a serverless endpoint.</p>
+          <ul class="detail-bullets">
+            <li>4 tools declared as resources: Genie, Vector Search, ML Endpoint, Mailgun</li>
+            <li>Evaluation: Safety, RelevanceToQuery, custom jnj_tone scorer</li>
+            <li><code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">agents.deploy()</code> — scale-to-zero, env vars injected at serve time</li>
+            <li>Registered as <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">bx4.hrd_2030.hire_right_agent</code> in UC</li>
+          </ul>
+          <div style="margin-top:0.8rem;" class="screenshot-frame">
+            <img src="images/agent-endpoint.png" alt="Agent Endpoint">
+            <p class="screenshot-caption">hire-right-agent-endpoint · Model Serving</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block" style="font-size:0.6rem;">
+<span class="code-comment"># nb 06 — Log agent with MLflow 3.0</span>
+<span class="code-func">mlflow</span>.pyfunc.log_model(
+  artifact_path=agent_name,
+  python_model=<span class="code-string">f"{project_root}/agent_src/hire_right_agent.py"</span>,
+  code_paths=[
+    <span class="code-string">f"{project_root}/agent_src/tools"</span>,
+    <span class="code-string">f"{project_root}/agent_src/config_helper.py"</span>
+  ],
+  resources=[
+    <span class="code-func">DatabricksServingEndpoint</span>(endpoint_name=llm_endpoint),
+    <span class="code-func">DatabricksServingEndpoint</span>(endpoint_name=model_endpoint),
+    <span class="code-func">DatabricksVectorSearchIndex</span>(
+      index_name=<span class="code-string">f"{catalog}.{schema}.hr_resumes_vs_index"</span>)
+  ]
+)
+
+<span class="code-comment"># Evaluate before deploying</span>
+<span class="code-var">eval_results</span> = <span class="code-func">mlflow</span>.genai.evaluate(
+  data=eval_data,
+  scorers=[<span class="code-func">Safety</span>(), <span class="code-func">RelevanceToQuery</span>(), jnj_tone]
+)
+
+<span class="code-comment"># Deploy to serving endpoint</span>
+<span class="code-var">deployment</span> = <span class="code-func">agents</span>.deploy(
+  model_name=uc_model_name,
+  model_version=registered.version,
+  endpoint_name=<span class="code-string">"hire-right-agent-endpoint"</span>,
+  scale_to_zero=<span class="code-keyword">True</span>,
+  environment_vars=_endpoint_env_vars
+)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 14 — STEP 7: DEPLOY APP
+       ======================================================== -->
+  <section class="slide slide-navy" aria-label="Slide 14: Step 7 - Deploy App">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num">Step 7 · Notebook 07</span>
+        <h2>Deploy — Hire Right App on Databricks Apps</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step">
+        <div>
+          <p style="margin-bottom:0.9rem;">The Hire Right App is a Databricks App (FastAPI backend + vanilla HTML/JS frontend) that proxies chat messages to the agent endpoint — with Databricks OAuth handling auth seamlessly.</p>
+          <ul class="detail-bullets">
+            <li>FastAPI server routes <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">POST /chat</code> to agent serving endpoint</li>
+            <li>Databricks OAuth — no separate auth layer needed</li>
+            <li>Single HTML chat interface with streaming support</li>
+            <li>Deployed via <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">databricks apps deploy hire-right-app</code></li>
+          </ul>
+          <div style="margin-top:0.8rem;" class="screenshot-frame">
+            <img src="images/app-screenshot.png" alt="Hire Right App">
+            <p class="screenshot-caption">Hire Right App · Live on Databricks Apps</p>
+          </div>
+        </div>
+        <div>
+          <div class="code-block" style="font-size:0.63rem;">
+<span class="code-comment"># app/app.yaml</span>
+<span class="code-var">command</span>: [<span class="code-string">"uvicorn"</span>, <span class="code-string">"app:app"</span>,
+          <span class="code-string">"--host"</span>, <span class="code-string">"0.0.0.0"</span>,
+          <span class="code-string">"--port"</span>, <span class="code-string">"8000"</span>]
+
+<span class="code-comment"># app/app.py — FastAPI endpoint</span>
+<span class="code-var">app</span> = <span class="code-func">FastAPI</span>()
+
+<span class="code-keyword">@app</span>.post(<span class="code-string">"/chat"</span>)
+<span class="code-keyword">async def</span> <span class="code-func">chat</span>(req: <span class="code-func">ChatRequest</span>):
+  <span class="code-var">client</span> = <span class="code-func">OpenAI</span>(
+    base_url=<span class="code-string">f"{ENDPOINT_URL}/invocations"</span>,
+    api_key=token
+  )
+  <span class="code-var">resp</span> = client.chat.completions.create(
+    model=<span class="code-string">"hire-right-agent"</span>,
+    messages=req.messages
+  )
+  <span class="code-keyword">return</span> {<span class="code-string">"response"</span>: resp.choices[<span class="code-num">0</span>].message.content}
+
+<span class="code-comment"># Deploy from CLI</span>
+<span class="code-comment"># databricks apps deploy hire-right-app \</span>
+<span class="code-comment">#   --source-code-path ./app</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 15 — STEP 8: MONITOR & GOVERN
+       ======================================================== -->
+  <section class="slide slide-oat" aria-label="Slide 15: Step 8 - Monitor and Govern">
+    <div class="slide-content">
+      <div class="step-header">
+        <span class="step-num" style="color:var(--db-lava);">Step 8 · Continuous</span>
+        <h2>Monitor &amp; Govern — Unity Catalog Throughout</h2>
+      </div>
+      <span class="accent-bar"></span>
+      <div class="two-col-step">
+        <div>
+          <p style="margin-bottom:0.8rem;">Data quality monitors and model drift detection run continuously. Unity Catalog enforces governance at every layer — from raw Bronze to deployed agent.</p>
+          <ul class="charter-bullets">
+            <li><strong>Lakehouse Monitor:</strong> snapshot monitor on candidates table — null rates, value distributions, drift metrics written to profile + drift metric tables</li>
+            <li><strong>Model Drift:</strong> nb 05b creates a model inference monitor comparing live predictions to training baseline</li>
+            <li><strong>UC Lineage:</strong> end-to-end column lineage from CSV → Bronze → Silver → Gold → ML feature</li>
+            <li><strong>Audit Log:</strong> all data access tracked — who queried what, when</li>
+          </ul>
+          <div class="gov-chip-row" style="margin-top:1rem;">
+            <span class="gov-chip qual">Profile Metrics Table</span>
+            <span class="gov-chip qual">Drift Metrics Table</span>
+            <span class="gov-chip tag">Column Lineage</span>
+            <span class="gov-chip pii">PII Audit Log</span>
+            <span class="gov-chip pk">UC Access Controls</span>
+          </div>
+        </div>
+        <div>
+          <div style="margin-bottom:0.9rem;" class="screenshot-frame">
+            <img src="images/model-registry.png" alt="Model Registry">
+            <p class="screenshot-caption">UC Model Registry · hr_predictive_hiring @champion</p>
+          </div>
+          <div class="screenshot-frame">
+            <img src="images/agent-registry.png" alt="Agent Registry">
+            <p class="screenshot-caption">UC Model Registry · hire_right_agent</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 16 — CLOSING
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Slide 16: Closing">
+    <div class="slide-content" style="text-align:center;">
+      <div class="logo-bar" style="justify-content:center; margin-bottom:2rem;">
+        <svg class="jnj-logo" viewBox="0 0 80 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="J&J HR Digital">
+          <text x="2" y="24" font-family="Georgia,serif" font-weight="700" font-style="italic" font-size="22" fill="#CC0000">J&amp;J</text>
+          <text x="35" y="28" font-family="Georgia,serif" font-weight="400" font-style="italic" font-size="11" fill="rgba(255,255,255,0.5)">HR Digital</text>
+        </svg>
+        <span class="logo-sep">×</span>
+        <svg class="db-logo" viewBox="0 0 713 113" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Databricks">
+          <g clip-path="url(#c2)"><path d="M98.9 46.6L52.3 72.9L2.4 44.8L0 46.1V66.5L52.3 95.9L98.9 69.7V80.5L52.3 106.8L2.4 78.7L0 80V83.5L52.3 112.9L104.5 83.5V63.1L102.1 61.8L52.3 89.8L5.6 63.6V52.8L52.3 79L104.5 49.6V29.5L101.9 28L52.3 55.9L8 31.1L52.3 6.2L88.7 26.7L91.9 24.9V22.4L52.3 .1L0 29.5V32.7L52.3 62.1L98.9 35.8V46.6Z" fill="#FF3621"/><path d="M202.2 96.2V6.4H188.4V40C188.4 40.5 188.1 40.9 187.6 41.1 187.1 41.3 186.6 41.1 186.3 40.8 181.6 35.3 174.3 32.2 166.3 32.2 149.2 32.2 135.8 46.6 135.8 65 135.8 74 138.9 82.3 144.6 88.4 150.3 94.5 158 97.8 166.3 97.8 174.2 97.8 181.5 94.5 186.3 88.8 186.6 88.4 187.2 88.3 187.6 88.4 188.1 88.6 188.4 89 188.4 89.5V96.2H202.2ZM169.3 85.3C158.3 85.3 149.7 76.4 149.7 65 149.7 53.6 158.3 44.7 169.3 44.7 180.3 44.7 188.9 53.6 188.9 65 188.9 76.4 180.3 85.3 169.3 85.3Z" fill="white"/><path d="M276 96.1V33.7H262.3V40C262.3 40.5 262 40.9 261.5 41.1 261 41.3 260.5 41.1 260.2 40.7 255.6 35.2 248.4 32.1 240.2 32.1 223.1 32.1 209.7 46.5 209.7 64.9 209.7 83.3 223.1 97.7 240.2 97.7 248.1 97.7 255.4 94.4 260.2 88.6 260.5 88.2 261.1 88.1 261.5 88.2 262 88.4 262.3 88.8 262.3 89.3V96.1H276ZM243.3 85.3C232.3 85.3 223.7 76.4 223.7 65 223.7 53.6 232.3 44.7 243.3 44.7 254.3 44.7 262.9 53.6 262.9 65 262.9 76.4 254.3 85.3 243.3 85.3Z" fill="white"/><path d="M314.4 97.2C318.8 97.2 322.7 96.8 324.9 96.5V84.5C323.1 84.7 319.9 84.9 318 84.9 312.4 84.9 308.1 83.9 308.1 71.8V46.1C308.1 45.4 308.6 44.9 309.3 44.9H322.8V33.6H309.3C308.6 33.6 308.1 33.1 308.1 32.4V14.4H294.3V32.5C294.3 33.2 293.8 33.7 293.1 33.7H283.5V45H293.1C293.8 45 294.3 45.5 294.3 46.2V75.3C294.3 97.2 308.9 97.2 314.4 97.2Z" fill="white"/><path d="M393.3 96.2V33.7H379.6V40C379.6 40.5 379.3 40.9 378.8 41.1 378.3 41.3 377.8 41.1 377.5 40.7 372.9 35.2 365.7 32.1 357.5 32.1 340.3 32.1 327 46.5 327 65 327 83.5 340.4 97.8 357.5 97.8 365.4 97.8 372.7 94.5 377.5 88.7 377.8 88.3 378.4 88.2 378.8 88.3 379.3 88.5 379.6 88.9 379.6 89.4V96.2H393.3ZM360.6 85.3C349.6 85.3 341 76.4 341 65 341 53.6 349.6 44.7 360.6 44.7 371.6 44.7 380.2 53.6 380.2 65 380.2 76.4 371.6 85.3 360.6 85.3Z" fill="white"/><path d="M418.4 88.8C418.5 88.8 418.7 88.7 418.8 88.7 419.1 88.7 419.5 88.9 419.7 89.1 424.4 94.6 431.7 97.7 439.7 97.7 456.8 97.7 470.2 83.3 470.2 64.9 470.2 55.9 467.1 47.6 461.4 41.5 455.7 35.4 448 32.1 439.7 32.1 431.8 32.1 424.5 35.4 419.7 41.1 419.4 41.5 418.9 41.6 418.4 41.5 417.9 41.3 417.6 40.9 417.6 40.4V6.4H403.8V96.2H417.6V89.9C417.6 89.4 417.9 89 418.4 88.8ZM417 65C417 53.6 425.6 44.7 436.6 44.7 447.6 44.7 456.2 53.6 456.2 65 456.2 76.4 447.6 85.3 436.6 85.3 425.6 85.3 417 76.3 417 65Z" fill="white"/><path d="M510.1 46.5C511.4 46.5 512.6 46.6 513.4 46.8V32.6C512.9 32.5 512 32.4 511.1 32.4 503.9 32.4 497.3 36.1 493.8 42 493.5 42.5 493 42.7 492.5 42.5 492 42.4 491.6 41.9 491.6 41.4V33.7H477.9V96.3H491.7V68.7C491.7 55 498.7 46.5 510.1 46.5Z" fill="white"/><path d="M536.1 33.7H522.1V96.3H536.1V33.7Z" fill="white"/><path d="M528.9 6.5C524.2 6.5 520.4 10.3 520.4 15 520.4 19.7 524.2 23.5 528.9 23.5 533.6 23.5 537.4 19.7 537.4 15 537.4 10.3 533.6 6.5 528.9 6.5Z" fill="white"/><path d="M577.1 32.1C557.9 32.1 544 45.9 544 65 544 74.3 547.3 82.6 553.2 88.6 559.2 94.6 567.6 97.9 577 97.9 584.8 97.9 590.8 96.4 602.2 88L594.3 79.7C588.7 83.4 583.5 85.2 578.4 85.2 566.8 85.2 558.1 76.5 558.1 65 558.1 53.5 566.8 44.8 578.4 44.8 583.9 44.8 589 46.6 594.1 50.3L602.9 42C592.6 33.2 583.3 32.1 577.1 32.1Z" fill="white"/><path d="M626.5 68.7C626.7 68.5 627 68.4 627.3 68.4H627.4C627.7 68.4 628 68.6 628.3 68.8L650.4 96.2H667.4L638.8 61.6C638.4 61.1 638.4 60.4 638.9 60L665.2 33.7H648.3L625.6 56.5C625.3 56.8 624.8 56.9 624.3 56.8 623.9 56.6 623.6 56.2 623.6 55.7V6.5H609.7V96.3H623.5V71.9C623.5 71.6 623.6 71.2 623.9 71L626.5 68.7Z" fill="white"/><path d="M689.9 97.8C701.2 97.8 712.7 90.9 712.7 77.8 712.7 69.2 707.3 63.3 696.3 59.7L688.8 57.2C683.7 55.5 681.3 53.1 681.3 49.8 681.3 46 684.7 43.4 689.5 43.4 694.1 43.4 698.2 46.4 700.8 51.6L711.9 45.6C707.8 37.2 699.3 32 689.5 32 677.1 32 668.1 40 668.1 50.9 668.1 59.6 673.3 65.4 684 68.8L691.7 71.3C697.1 73 699.4 75.2 699.4 78.7 699.4 84 694.5 85.9 690.3 85.9 684.7 85.9 679.7 82.3 677.3 76.4L666 82.4C669.7 91.9 678.8 97.8 689.9 97.8Z" fill="white"/></g>
+          <defs><clipPath id="c2"><rect width="712.8" height="113" fill="white"/></clipPath></defs>
+        </svg>
+      </div>
+      <h1 style="font-size:clamp(1.8rem,4vw,3rem);">Building the Future of<br><span style="color:var(--db-lava);">HR Intelligence</span> Together</h1>
+      <span class="accent-bar centered"></span>
+      <p style="max-width:600px; margin:0 auto 2rem; font-size:clamp(0.9rem,1.4vw,1.1rem);">From Bronze ingestion to AI-powered hiring decisions — Databricks delivers the complete Data Intelligence Platform for J&amp;J HR Digital's predictive hiring vision.</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:0.9rem 1.4rem; min-width:120px;">
+          <div style="font-size:1.8rem; font-weight:700; color:var(--db-lava);">8</div>
+          <div style="font-size:0.72rem; color:rgba(255,255,255,0.5); font-family:var(--font-mono);">MLOps Steps</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:0.9rem 1.4rem; min-width:120px;">
+          <div style="font-size:1.8rem; font-weight:700; color:var(--db-green);">4</div>
+          <div style="font-size:0.72rem; color:rgba(255,255,255,0.5); font-family:var(--font-mono);">Agent Tools</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:0.9rem 1.4rem; min-width:120px;">
+          <div style="font-size:1.8rem; font-weight:700; color:#8fa3ff;">1</div>
+          <div style="font-size:0.72rem; color:rgba(255,255,255,0.5); font-family:var(--font-mono);">Platform</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:0.9rem 1.4rem; min-width:120px;">
+          <div style="font-size:1.8rem; font-weight:700; color:var(--db-amber);">∞</div>
+          <div style="font-size:0.72rem; color:rgba(255,255,255,0.5); font-family:var(--font-mono);">Possibilities</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    class SlidePresentation {
+      constructor() {
+        this.slides = document.querySelectorAll('.slide');
+        this.progressBar = document.querySelector('.progress-bar');
+        this.navDots = document.querySelector('.nav-dots');
+        this.currentSlide = 0;
+        this.init();
+      }
+      init() {
+        this.createNavDots();
+        this.setupIntersectionObserver();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupWheelNav();
+        this.updateProgress();
+      }
+      createNavDots() {
+        this.slides.forEach((_, i) => {
+          const dot = document.createElement('button');
+          dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+          dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+          dot.addEventListener('click', () => this.goToSlide(i));
+          this.navDots.appendChild(dot);
+        });
+      }
+      setupIntersectionObserver() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const index = [...this.slides].indexOf(entry.target);
+              this.currentSlide = index;
+              this.updateDots();
+              this.updateProgress();
+            }
+          });
+        }, { threshold: 0.5 });
+        this.slides.forEach(slide => observer.observe(slide));
+      }
+      setupKeyboardNav() {
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault(); this.goToSlide(this.currentSlide + 1);
+          } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            e.preventDefault(); this.goToSlide(this.currentSlide - 1);
+          }
+        });
+      }
+      setupTouchNav() {
+        let startY = 0;
+        document.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+          const diff = startY - e.changedTouches[0].clientY;
+          if (Math.abs(diff) > 50) this.goToSlide(this.currentSlide + (diff > 0 ? 1 : -1));
+        }, { passive: true });
+      }
+      setupWheelNav() {
+        let lastScroll = 0;
+        document.addEventListener('wheel', (e) => {
+          const now = Date.now();
+          if (now - lastScroll < 800) return;
+          lastScroll = now;
+          this.goToSlide(this.currentSlide + (e.deltaY > 0 ? 1 : -1));
+        }, { passive: true });
+      }
+      goToSlide(index) {
+        const target = Math.max(0, Math.min(index, this.slides.length - 1));
+        this.slides[target].scrollIntoView({ behavior: 'instant' });
+      }
+      updateDots() {
+        this.navDots.querySelectorAll('.nav-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === this.currentSlide);
+        });
+      }
+      updateProgress() {
+        const pct = ((this.currentSlide + 1) / this.slides.length) * 100;
+        this.progressBar.style.width = pct + '%';
+        this.progressBar.setAttribute('aria-valuenow', Math.round(pct));
+      }
+    }
+    new SlidePresentation();
+  </script>
+</body>
+</html>

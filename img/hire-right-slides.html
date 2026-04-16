@@ -242,6 +242,157 @@
     /* Watermark logo */
     .wm { position: absolute; bottom: 1rem; right: 1.4rem; opacity: 0.2; }
     .db-logo { height: 20px; width: auto; }
+
+    /* ─── CAPABILITY STACK SLIDE ─── */
+    .cap-stack {
+      display: flex; flex-direction: column; gap: 5px;
+      width: 100%; flex: 1;
+      max-height: calc(100dvh - 8.5rem);
+    }
+    .cap-layer {
+      flex: 1; border-radius: 10px; padding: 0.55rem 1.1rem;
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 3px; position: relative; min-height: 0; overflow: hidden;
+    }
+    .cap-num {
+      position: absolute; right: 1rem; bottom: 0.3rem;
+      font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;
+      color: rgba(255,255,255,0.1); line-height: 1; pointer-events: none;
+    }
+    .cap-title {
+      font-weight: 700; font-size: clamp(0.62rem, 0.9vw, 0.78rem);
+      color: #fff; letter-spacing: 0.07em; text-transform: uppercase;
+    }
+    .cap-sub {
+      font-size: clamp(0.52rem, 0.75vw, 0.62rem);
+      color: rgba(255,255,255,0.6); margin-bottom: 2px;
+    }
+    .cap-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .cap-chip {
+      background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 6px; padding: 2px 9px;
+      font-size: clamp(0.52rem, 0.75vw, 0.65rem); font-weight: 600;
+      color: #fff; white-space: nowrap;
+    }
+    .cap-chip.hi { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.5); }
+    .cl-5 { background: linear-gradient(135deg, #FF3621, #FF5733); }
+    .cl-4 { background: linear-gradient(135deg, #FF6A33, #FF9133); }
+    .cl-3 { background: linear-gradient(135deg, #1B96FF, #4DB8FF); }
+    .cl-2 { background: linear-gradient(135deg, #00A972, #2DC98B); }
+    .cl-1 { background: linear-gradient(135deg, #1B3139, #2A4A55); }
+
+    /* ─── CHIPS INSIDE ARCH NODES ─── */
+    .n-chips { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 4px; justify-content: center; }
+    .nc {
+      font-family: var(--font-mono); font-size: clamp(0.4rem, 0.58vw, 0.5rem);
+      padding: 1px 5px; border-radius: 4px; font-weight: 600;
+      white-space: nowrap; letter-spacing: 0.02em; line-height: 1.6;
+    }
+    .nc-lava   { background: rgba(255,54,33,0.2);  border: 1px solid rgba(255,54,33,0.4);  color: #ff9080; }
+    .nc-orange { background: rgba(255,106,51,0.2); border: 1px solid rgba(255,130,51,0.38); color: #ffb390; }
+    .nc-blue   { background: rgba(27,150,255,0.18); border: 1px solid rgba(27,150,255,0.35); color: #80c8ff; }
+    .nc-green  { background: rgba(0,169,114,0.18); border: 1px solid rgba(0,169,114,0.35);  color: #5cd6a8; }
+    .nc-amber  { background: rgba(254,171,3,0.15); border: 1px solid rgba(254,171,3,0.3);   color: #ffc94d; }
+    .nc-dark   { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); }
+
+    /* ─── MLOPS PIPELINE SLIDE ─── */
+    .mlops-wrap { display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
+
+    /* Main pipeline row */
+    .mlops-row { display: flex; align-items: stretch; width: 100%; }
+    .mlops-stage { display: flex; align-items: center; flex: 1; }
+    .mlops-card {
+      flex: 1; background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 9px; padding: 0.65rem 0.5rem;
+      text-align: center; display: flex; flex-direction: column;
+      align-items: center; gap: 2px;
+    }
+    .mlops-num {
+      font-family: var(--font-mono); font-size: 0.5rem;
+      color: rgba(255,255,255,0.2); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 1px;
+    }
+    .mlops-icon { font-size: 1.3rem; line-height: 1; margin-bottom: 2px; }
+    .mlops-name { font-weight: 700; font-size: clamp(0.65rem, 0.9vw, 0.78rem); color: #fff; line-height: 1.2; }
+    .mlops-sub  {
+      font-family: var(--font-mono); font-size: clamp(0.48rem, 0.65vw, 0.58rem);
+      color: rgba(255,255,255,0.45); line-height: 1.4; margin-top: 1px;
+    }
+    .mlops-nb {
+      margin-top: 4px; font-family: var(--font-mono);
+      font-size: 0.48rem; color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px; padding: 1px 5px; white-space: nowrap;
+    }
+    .mlops-arr { flex: 0 0 18px; display: flex; align-items: center; justify-content: center; }
+    .mlops-arr-inner { display: flex; align-items: center; }
+    .mlops-arr-line { width: 10px; height: 1.5px; background: rgba(255,255,255,0.15); }
+    .mlops-arr-head {
+      width: 0; height: 0;
+      border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+      border-left: 5px solid rgba(255,255,255,0.15);
+    }
+
+    /* Stage color accents (top border) */
+    .ms-ingest    { border-top: 2px solid #618693; }
+    .ms-transform { border-top: 2px solid #a8c4cf; }
+    .ms-enrich    { border-top: 2px solid var(--db-amber); }
+    .ms-train     { border-top: 2px solid var(--db-indigo); }
+    .ms-register  { border-top: 2px solid #c4a3e0; }
+    .ms-serve     { border-top: 2px solid #7ecfdf; }
+    .ms-deploy    { border-top: 2px solid var(--db-lava); }
+    .ms-monitor   { border-top: 2px solid #5cd6a8; }
+
+    /* MLflow tracking banner */
+    .mlflow-banner {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0.8rem; border-radius: 6px;
+      background: rgba(66,89,254,0.08); border: 1px solid rgba(66,89,254,0.2);
+      width: 100%;
+    }
+    .mlflow-label {
+      font-family: var(--font-mono); font-size: 0.58rem; font-weight: 600;
+      color: #8fa3ff; white-space: nowrap;
+    }
+    .mlflow-line { flex: 1; height: 1px; background: rgba(66,89,254,0.2); }
+    .mlflow-pill {
+      font-family: var(--font-mono); font-size: 0.52rem;
+      color: rgba(143,163,255,0.6); white-space: nowrap;
+    }
+
+    /* Parallel tracks row */
+    .parallel-row { display: flex; gap: 0.5rem; width: 100%; }
+    .parallel-card {
+      flex: 1; border-radius: 9px; padding: 0.6rem 0.7rem;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .pc-header { display: flex; align-items: center; gap: 0.4rem; }
+    .pc-icon { font-size: 1rem; }
+    .pc-name { font-weight: 700; font-size: clamp(0.65rem, 0.88vw, 0.78rem); color: #fff; }
+    .pc-sub  { font-family: var(--font-mono); font-size: clamp(0.48rem, 0.65vw, 0.58rem); color: rgba(255,255,255,0.45); line-height: 1.4; }
+    .pc-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
+    .pc-chip {
+      font-family: var(--font-mono); font-size: 0.5rem; font-weight: 600;
+      padding: 1px 6px; border-radius: 4px; color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Parallel card color variants */
+    .pc-vs      { background: rgba(27,81,98,0.2);   border: 1.5px solid rgba(27,81,98,0.6); }
+    .pc-genie   { background: rgba(100,60,150,0.12); border: 1.5px solid rgba(100,60,150,0.35); }
+    .pc-agent   { background: rgba(255,54,33,0.08);  border: 1.5px solid rgba(255,54,33,0.25); }
+    .pc-monitor { background: rgba(0,169,114,0.1);   border: 1.5px solid rgba(0,169,114,0.3); }
+
+    /* UC governance footer */
+    .uc-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.3rem 0.8rem; border-radius: 6px;
+      background: rgba(255,54,33,0.05); border: 1px solid rgba(255,54,33,0.15);
+    }
+    .uc-label { font-family: var(--font-mono); font-size: 0.58rem; font-weight: 600; color: #ff8878; white-space: nowrap; }
+    .uc-items { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .uc-pill  { font-family: var(--font-mono); font-size: 0.52rem; color: rgba(255,136,120,0.6); }
   </style>
 </head>
 <body>
@@ -249,7 +400,98 @@
   <nav class="nav-dots" aria-label="Slide navigation"></nav>
 
   <!-- ══════════════════════════════════════════════
-       SLIDE 1 — FULL SOLUTION ARCHITECTURE
+       SLIDE 1 — DATABRICKS CAPABILITIES
+  ══════════════════════════════════════════════ -->
+  <section class="slide slide-ink" aria-label="Slide 1: Databricks Capabilities" style="justify-content:flex-start; padding-top: clamp(1.5rem,3vw,2.5rem);">
+    <div class="slide-content" style="display:flex; flex-direction:column; height:100%;">
+      <div class="slide-header" style="margin-bottom:0.8rem;">
+        <div class="slide-title">Hire Right — Databricks Capabilities</div>
+        <div class="slide-subtitle">Platform features used in this solution · hover to explore</div>
+        <span class="accent-bar"></span>
+      </div>
+
+      <div class="cap-stack">
+
+        <div class="cap-layer cl-5">
+          <div class="cap-num">5</div>
+          <div class="cap-title">Outcomes / User Experience</div>
+          <div class="cap-sub">Business outcomes delivered to HR teams across every surface</div>
+          <div class="cap-chips">
+            <span class="cap-chip hi">Hire Right App</span>
+            <span class="cap-chip hi">Databricks Apps</span>
+            <span class="cap-chip">FastAPI + HTML</span>
+            <span class="cap-chip">HR Manager Interface</span>
+          </div>
+        </div>
+
+        <div class="cap-layer cl-4">
+          <div class="cap-num">4</div>
+          <div class="cap-title">AI-Powered Insights</div>
+          <div class="cap-sub">Intelligent assistants, agentic workflows, and automated analysis</div>
+          <div class="cap-chips">
+            <span class="cap-chip hi">Hire Right Agent</span>
+            <span class="cap-chip hi">ResponsesAgent</span>
+            <span class="cap-chip hi">Genie Space</span>
+            <span class="cap-chip hi">Agent Bricks</span>
+            <span class="cap-chip hi">AI Gateway</span>
+            <span class="cap-chip hi">MLflow 3.0</span>
+            <span class="cap-chip hi">XGBoost ML Model</span>
+            <span class="cap-chip hi">Vector Search</span>
+            <span class="cap-chip">Frontier Lab LLMs</span>
+            <span class="cap-chip">AI/BI Dashboards</span>
+          </div>
+        </div>
+
+        <div class="cap-layer cl-3">
+          <div class="cap-num">3</div>
+          <div class="cap-title">Business Model (Unity Catalog)</div>
+          <div class="cap-sub">Governed meaning, AI-ready definitions, and reusable business logic</div>
+          <div class="cap-chips">
+            <span class="cap-chip hi">Metric Views</span>
+            <span class="cap-chip hi">Business Semantics</span>
+            <span class="cap-chip">Column Definitions</span>
+            <span class="cap-chip">Table Definitions</span>
+          </div>
+        </div>
+
+        <div class="cap-layer cl-2">
+          <div class="cap-num">2</div>
+          <div class="cap-title">Governance (Unity Catalog)</div>
+          <div class="cap-sub">Trust, quality, and access control across all data assets</div>
+          <div class="cap-chips">
+            <span class="cap-chip hi">Data Classification</span>
+            <span class="cap-chip hi">Data Quality Monitors</span>
+            <span class="cap-chip hi">Lineage</span>
+            <span class="cap-chip">Role Based Access Control</span>
+            <span class="cap-chip">Attribute Based Access Control</span>
+          </div>
+        </div>
+
+        <div class="cap-layer cl-1">
+          <div class="cap-num">1</div>
+          <div class="cap-title">Data Ingestion / Lakehouse</div>
+          <div class="cap-sub">Connect and ingest from any source — open formats, Bronze · Silver · Gold</div>
+          <div class="cap-chips">
+            <span class="cap-chip hi">Delta Lakehouse</span>
+            <span class="cap-chip hi">Bronze · Silver · Gold</span>
+            <span class="cap-chip hi">Resume File Ingest</span>
+            <span class="cap-chip">Open Formats</span>
+            <span class="cap-chip">Delta Sharing</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="wm">
+      <svg class="db-logo" viewBox="0 0 105 113" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M98.9 46.6L52.3 72.9L2.4 44.8L0 46.1V66.5L52.3 95.9L98.9 69.7V80.5L52.3 106.8L2.4 78.7L0 80V83.5L52.3 112.9L104.5 83.5V63.1L102.1 61.8L52.3 89.8L5.6 63.6V52.8L52.3 79L104.5 49.6V29.5L101.9 28L52.3 55.9L8 31.1L52.3 6.2L88.7 26.7L91.9 24.9V22.4L52.3 0.1L0 29.5V32.7L52.3 62.1L98.9 35.8V46.6Z" fill="#FF3621"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 2 — FULL SOLUTION ARCHITECTURE
   ══════════════════════════════════════════════ -->
   <section class="slide slide-navy" aria-label="Slide 1: Full Solution Architecture">
     <div class="slide-content">
@@ -274,6 +516,7 @@
           <div class="node n-app" style="min-width:210px;">
             <div class="n-label">Hire Right App</div>
             <div class="n-sub">Databricks App · FastAPI + HTML</div>
+            <div class="n-chips"><span class="nc nc-lava">Databricks Apps</span></div>
           </div>
         </div>
 
@@ -284,6 +527,11 @@
           <div class="node n-agent" style="min-width:250px;">
             <div class="n-label">Hire Right Agent</div>
             <div class="n-sub">ResponsesAgent · MLflow 3.0 · OpenAI-compatible</div>
+            <div class="n-chips">
+              <span class="nc nc-orange">Agent Bricks</span>
+              <span class="nc nc-orange">MLflow 3.0</span>
+              <span class="nc nc-orange">ResponsesAgent</span>
+            </div>
           </div>
         </div>
 
@@ -301,14 +549,17 @@
           <div class="node n-tool">
             <div class="n-label">Genie Space</div>
             <div class="n-sub">HR Analytics<br>Natural Language SQL</div>
+            <div class="n-chips"><span class="nc nc-orange">Genie</span></div>
           </div>
           <div class="node n-tool">
             <div class="n-label">Vector Search</div>
             <div class="n-sub">Resume Index<br>Semantic RAG</div>
+            <div class="n-chips"><span class="nc nc-orange">Vector Search</span></div>
           </div>
           <div class="node n-tool">
             <div class="n-label">ML Predictor</div>
             <div class="n-sub">Hire / No-Hire<br>XGBoost</div>
+            <div class="n-chips"><span class="nc nc-orange">Traditional ML</span><span class="nc nc-orange">MLflow 3.0</span></div>
           </div>
           <div class="node n-tool">
             <div class="n-label">Emailer</div>
@@ -324,18 +575,39 @@
           <div class="node n-data">
             <div class="n-label">Delta Lakehouse</div>
             <div class="n-sub">Bronze · Silver · Gold<br>Candidate Data · Resume Files</div>
+            <div class="n-chips">
+              <span class="nc nc-dark">Bronze</span>
+              <span class="nc nc-dark">Silver</span>
+              <span class="nc nc-dark">Gold</span>
+            </div>
           </div>
           <div class="node n-uc">
             <div class="n-label">Unity Catalog</div>
             <div class="n-sub">Data Quality · Data Classification<br>Governance · Authorization</div>
+            <div class="n-chips">
+              <span class="nc nc-green">Data Quality</span>
+              <span class="nc nc-green">Data Classification</span>
+              <span class="nc nc-blue">Lineage</span>
+              <span class="nc nc-blue">Metric Views</span>
+            </div>
           </div>
           <div class="node n-mlf">
             <div class="n-label">MLflow</div>
             <div class="n-sub">Experiments · Model Registry<br>Feature Store</div>
+            <div class="n-chips">
+              <span class="nc nc-orange">Experiments</span>
+              <span class="nc nc-orange">Model Registry</span>
+              <span class="nc nc-orange">Feature Store</span>
+            </div>
           </div>
           <div class="node n-bricks">
             <div class="n-label">Agent Bricks</div>
             <div class="n-sub">AI Gateway<br>Agent / MCP Registry</div>
+            <div class="n-chips">
+              <span class="nc nc-amber">AI Gateway</span>
+              <span class="nc nc-amber">MCP Registry</span>
+              <span class="nc nc-amber">Foundational LLMs</span>
+            </div>
           </div>
         </div>
       </div>
@@ -505,6 +777,207 @@
           <span class="fp">hire-right-agent-endpoint · v15</span>
         </div>
       </div>
+    </div>
+
+    <div class="wm">
+      <svg class="db-logo" viewBox="0 0 105 113" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M98.9 46.6L52.3 72.9L2.4 44.8L0 46.1V66.5L52.3 95.9L98.9 69.7V80.5L52.3 106.8L2.4 78.7L0 80V83.5L52.3 112.9L104.5 83.5V63.1L102.1 61.8L52.3 89.8L5.6 63.6V52.8L52.3 79L104.5 49.6V29.5L101.9 28L52.3 55.9L8 31.1L52.3 6.2L88.7 26.7L91.9 24.9V22.4L52.3 0.1L0 29.5V32.7L52.3 62.1L98.9 35.8V46.6Z" fill="#FF3621"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SLIDE 5 — MLOPS LIFECYCLE
+  ══════════════════════════════════════════════ -->
+  <section class="slide slide-ink" aria-label="Slide 5: MLOps Lifecycle">
+    <div class="slide-content">
+      <div class="slide-header" style="margin-bottom:1rem;">
+        <div class="slide-title">Hire Right — MLOps Lifecycle</div>
+        <div class="slide-subtitle">Data · Features · Train · Register · Serve · Deploy · Governed end-to-end</div>
+        <span class="accent-bar"></span>
+      </div>
+
+      <div class="mlops-wrap">
+
+        <!-- Main pipeline -->
+        <div class="mlops-row">
+
+          <div class="mlops-stage">
+            <div class="mlops-card ms-ingest">
+              <div class="mlops-num">nb 00</div>
+              <div class="mlops-icon">📥</div>
+              <div class="mlops-name">Ingest</div>
+              <div class="mlops-sub">CSV → Bronze<br>Delta Lakehouse</div>
+              <div class="mlops-nb">load_bronze</div>
+            </div>
+          </div>
+
+          <div class="mlops-arr"><div class="mlops-arr-inner"><div class="mlops-arr-line"></div><div class="mlops-arr-head"></div></div></div>
+
+          <div class="mlops-stage">
+            <div class="mlops-card ms-transform">
+              <div class="mlops-num">nb 01–02</div>
+              <div class="mlops-icon">🔧</div>
+              <div class="mlops-name">Transform</div>
+              <div class="mlops-sub">Silver: clean<br>classify · quality</div>
+              <div class="mlops-nb">load_silver</div>
+            </div>
+          </div>
+
+          <div class="mlops-arr"><div class="mlops-arr-inner"><div class="mlops-arr-line"></div><div class="mlops-arr-head"></div></div></div>
+
+          <div class="mlops-stage">
+            <div class="mlops-card ms-enrich">
+              <div class="mlops-num">nb 03–03b</div>
+              <div class="mlops-icon">✨</div>
+              <div class="mlops-name">Enrich</div>
+              <div class="mlops-sub">Gold: aggregate<br>business semantics</div>
+              <div class="mlops-nb">build_gold</div>
+            </div>
+          </div>
+
+          <div class="mlops-arr"><div class="mlops-arr-inner"><div class="mlops-arr-line"></div><div class="mlops-arr-head"></div></div></div>
+
+          <div class="mlops-stage">
+            <div class="mlops-card ms-train">
+              <div class="mlops-num">nb 05</div>
+              <div class="mlops-icon">🧠</div>
+              <div class="mlops-name">Train</div>
+              <div class="mlops-sub">GradientBoosting<br>8 features · cv</div>
+              <div class="mlops-nb">train_ml_model</div>
+            </div>
+          </div>
+
+          <div class="mlops-arr"><div class="mlops-arr-inner"><div class="mlops-arr-line"></div><div class="mlops-arr-head"></div></div></div>
+
+          <div class="mlops-stage">
+            <div class="mlops-card ms-register">
+              <div class="mlops-num">nb 06</div>
+              <div class="mlops-icon">📦</div>
+              <div class="mlops-name">Register</div>
+              <div class="mlops-sub">UC Model Registry<br>champion alias</div>
+              <div class="mlops-nb">evaluate_register</div>
+            </div>
+          </div>
+
+          <div class="mlops-arr"><div class="mlops-arr-inner"><div class="mlops-arr-line"></div><div class="mlops-arr-head"></div></div></div>
+
+          <div class="mlops-stage">
+            <div class="mlops-card ms-serve">
+              <div class="mlops-num">nb 06</div>
+              <div class="mlops-icon">🚀</div>
+              <div class="mlops-name">Serve</div>
+              <div class="mlops-sub">Model Serving<br>REST endpoint</div>
+              <div class="mlops-nb">06_evaluate_register</div>
+            </div>
+          </div>
+
+          <div class="mlops-arr"><div class="mlops-arr-inner"><div class="mlops-arr-line"></div><div class="mlops-arr-head"></div></div></div>
+
+          <div class="mlops-stage">
+            <div class="mlops-card ms-deploy">
+              <div class="mlops-num">nb 07</div>
+              <div class="mlops-icon">🌐</div>
+              <div class="mlops-name">Deploy App</div>
+              <div class="mlops-sub">Databricks App<br>Hire Right UI</div>
+              <div class="mlops-nb">07_deploy_app</div>
+            </div>
+          </div>
+
+        </div><!-- /mlops-row -->
+
+        <!-- MLflow tracking banner -->
+        <div class="mlflow-banner">
+          <span class="mlflow-label">MLflow 3.0</span>
+          <div class="mlflow-line"></div>
+          <span class="mlflow-pill">Experiment Tracking</span>
+          <div class="mlflow-line" style="flex:0 0 8px;"></div>
+          <span class="mlflow-pill">Model Registry</span>
+          <div class="mlflow-line" style="flex:0 0 8px;"></div>
+          <span class="mlflow-pill">Feature Store</span>
+          <div class="mlflow-line" style="flex:0 0 8px;"></div>
+          <span class="mlflow-pill">Agent Tracing</span>
+          <div class="mlflow-line"></div>
+          <span class="mlflow-label">hr_predictive_hiring</span>
+        </div>
+
+        <!-- Parallel tracks -->
+        <div class="parallel-row">
+
+          <div class="parallel-card pc-vs">
+            <div class="pc-header"><div class="pc-icon">🔍</div><div class="pc-name">Vector Search Index</div></div>
+            <div class="pc-sub">Silver → Resume embeddings → VS Index · Semantic RAG for agent search</div>
+            <div class="pc-chips">
+              <span class="pc-chip">nb 01b</span>
+              <span class="pc-chip">build_vector_search</span>
+              <span class="pc-chip">bx4_hrd_vs_endpoint</span>
+            </div>
+          </div>
+
+          <div class="parallel-card pc-genie">
+            <div class="pc-header"><div class="pc-icon">💬</div><div class="pc-name">Genie Space</div></div>
+            <div class="pc-sub">Gold tables → Natural Language SQL · HR analytics for historical candidates</div>
+            <div class="pc-chips">
+              <span class="pc-chip">nb 04</span>
+              <span class="pc-chip">create_genie_space</span>
+              <span class="pc-chip">Metric Views</span>
+            </div>
+          </div>
+
+          <div class="parallel-card pc-agent">
+            <div class="pc-header"><div class="pc-icon">⚡</div><div class="pc-name">Agent Deployment</div></div>
+            <div class="pc-sub">ResponsesAgent wraps all tools · Registered in UC · Served via Agent endpoint</div>
+            <div class="pc-chips">
+              <span class="pc-chip">nb 06</span>
+              <span class="pc-chip">evaluate_register_agent</span>
+              <span class="pc-chip">hire-right-agent-endpoint</span>
+            </div>
+          </div>
+
+          <div class="parallel-card pc-monitor">
+            <div class="pc-header"><div class="pc-icon">📊</div><div class="pc-name">Monitor</div></div>
+            <div class="pc-sub">Drift detection · model performance · inference quality tracking</div>
+            <div class="pc-chips">
+              <span class="pc-chip">nb 05b</span>
+              <span class="pc-chip">drift_monitor</span>
+              <span class="pc-chip">UC Monitors</span>
+            </div>
+          </div>
+
+          <div class="parallel-card pc-monitor" style="border-color: rgba(0,169,114,0.3); background: rgba(0,169,114,0.07);">
+            <div class="pc-header"><div class="pc-icon">🛡️</div><div class="pc-name">Data Quality + Governance</div></div>
+            <div class="pc-sub">UC monitors on Bronze/Silver/Gold · Data classification · Lineage tracking</div>
+            <div class="pc-chips">
+              <span class="pc-chip">Unity Catalog</span>
+              <span class="pc-chip">Data Classification</span>
+              <span class="pc-chip">Quality Monitors</span>
+            </div>
+          </div>
+
+        </div><!-- /parallel-row -->
+
+        <!-- UC governance bar -->
+        <div class="uc-bar">
+          <span class="uc-label">Unity Catalog</span>
+          <div style="flex:1; height:1px; background:rgba(255,54,33,0.12);"></div>
+          <div class="uc-items">
+            <span class="uc-pill">bx4.hrd_2030</span>
+            <span class="uc-pill">·</span>
+            <span class="uc-pill">Data Quality</span>
+            <span class="uc-pill">·</span>
+            <span class="uc-pill">Data Classification</span>
+            <span class="uc-pill">·</span>
+            <span class="uc-pill">Lineage</span>
+            <span class="uc-pill">·</span>
+            <span class="uc-pill">Model Registry</span>
+            <span class="uc-pill">·</span>
+            <span class="uc-pill">RBAC</span>
+          </div>
+          <div style="flex:1; height:1px; background:rgba(255,54,33,0.12);"></div>
+          <span class="uc-label">governs all assets</span>
+        </div>
+
+      </div><!-- /mlops-wrap -->
     </div>
 
     <div class="wm">
