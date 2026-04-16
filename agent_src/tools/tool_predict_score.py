@@ -28,7 +28,7 @@ def _get_config():
         "endpoint":     cfg_get("model_endpoint_name", "MODEL_ENDPOINT_NAME", "hr-predictive-hiring-endpoint"),
         "catalog":      cfg_get("target_catalog",       "TARGET_CATALOG",      "bx4"),
         "schema":       cfg_get("target_schema",        "TARGET_SCHEMA",       "hrd_2030"),
-        "warehouse_id": cfg_get("warehouse_id",         "DATABRICKS_WAREHOUSE_ID", "0d3bda4f46281ab5"),
+        "warehouse_id": cfg_get("warehouse_id",         "DATABRICKS_WAREHOUSE_ID", "aa06644a4b0be047"),
     }
 
 
@@ -42,7 +42,7 @@ def _fetch_via_sql_api(w, warehouse_id: str, catalog: str, schema: str, candidat
     """Fetch candidate via Statement Execution API using SDK (no token env var needed)."""
     sql = (
         f"SELECT * FROM `{catalog}`.`{schema}`.candidates "
-        f"WHERE candidate_id = '{candidate_id}' AND hired IS NULL LIMIT 1"
+        f"WHERE candidate_id = '{candidate_id}' LIMIT 1"
     )
     try:
         body = w.api_client.do(
@@ -70,7 +70,7 @@ def _fetch_via_sql_api(w, warehouse_id: str, catalog: str, schema: str, candidat
 
 
 def _fetch_candidate(catalog: str, schema: str, candidate_id: str, cfg: dict) -> dict | None:
-    """Fetch an active candidate (hired IS NULL). Tries Spark first, falls back to SDK Statement API."""
+    """Fetch a candidate by ID. Tries Spark first, falls back to SDK Statement API."""
     # Try Spark (notebook/job context)
     try:
         from pyspark.sql import SparkSession
@@ -78,7 +78,7 @@ def _fetch_candidate(catalog: str, schema: str, candidate_id: str, cfg: dict) ->
         if spark is not None:
             rows = spark.sql(
                 f"SELECT * FROM `{catalog}`.`{schema}`.candidates "
-                f"WHERE candidate_id = '{candidate_id.upper()}' AND hired IS NULL LIMIT 1"
+                f"WHERE candidate_id = '{candidate_id.upper()}' LIMIT 1"
             ).collect()
             return rows[0].asDict() if rows else None
     except Exception:
@@ -109,55 +109,72 @@ def _call_endpoint(w, endpoint: str, feature_values: dict) -> tuple[int, float |
 @mlflow.trace(span_type="TOOL")
 def predict_hiring_score(
     candidate_id: str,
-    interview_score: int = None,
+    education_score: int = None,
+    experience_score: int = None,
+    leadership_score: int = None,
+    certification_score: int = None,
     skills_match_score: int = None,
+    industry_relevance_score: int = None,
+    interview_score: int = None,
     culture_fit: int = None,
 ) -> str:
-    """Predict whether an ACTIVE pipeline candidate should be hired using the trained ML model.
-    Only works for candidates where hired IS NULL (still in the hiring process).
-    Historical candidates (C001–C010, already hired or rejected) are not scored here —
-    use query_genie to look up their historical data.
-
-    Active candidates: C011–C020 (JR002–JR004) plus C019–C020 (JR001).
-    For candidates who have completed their interview, supply interview_score,
-    skills_match_score, and culture_fit. For others these will be fetched from the database.
+    """Predict whether a candidate should be hired using the trained ML model.
+    Works for any candidate. If all 8 feature scores are supplied as arguments the
+    database lookup is skipped entirely — pass scores from conversation context when
+    available. Otherwise fetches stored scores from the database and applies overrides.
 
     Args:
-        candidate_id: Active candidate ID, e.g. "C011" or "C019"
-        interview_score: Interview rating 0–100 (if collected post-interview)
-        skills_match_score: Skills match rating 0–100 (if collected post-interview)
-        culture_fit: Culture fit rating 0–100 (if collected post-interview)
+        candidate_id: Candidate ID, e.g. "C011" or "C001"
+        education_score: Education rating 0–100
+        experience_score: Experience rating 0–100
+        leadership_score: Leadership rating 0–100
+        certification_score: Certification rating 0–100
+        skills_match_score: Skills match rating 0–100
+        industry_relevance_score: Industry relevance rating 0–100
+        interview_score: Interview rating 0–100
+        culture_fit: Culture fit rating 0–100
 
     Returns a Data Science recommendation, confidence score, and feature breakdown.
     """
     cfg = _get_config()
     cid = candidate_id.upper().strip()
 
-    # ── Fetch from Delta table ──────────────────────────────────────────────────
-    row = _fetch_candidate(cfg["catalog"], cfg["schema"], cid, cfg)
+    # Collect all provided score overrides
+    overrides = {
+        "education_score":          education_score,
+        "experience_score":         experience_score,
+        "leadership_score":         leadership_score,
+        "certification_score":      certification_score,
+        "skills_match_score":       skills_match_score,
+        "industry_relevance_score": industry_relevance_score,
+        "interview_score":          interview_score,
+        "culture_fit":              culture_fit,
+    }
+    provided = {k: v for k, v in overrides.items() if v is not None}
 
-    if row is None:
-        return (
-            f"Candidate '{cid}' is not an active hiring candidate (hired IS NULL). "
-            f"They may have already been hired or rejected (historical training data), "
-            f"or the ID is invalid. Active pipeline candidates are C011–C020 plus C019–C020 for JR001. "
-            f"Use query_genie to look up historical data on past candidates."
-        )
+    # ── If all 8 scores provided, skip DB fetch ────────────────────────────────
+    if len(provided) == len(FEATURE_COLS):
+        row = {"candidate_id": cid, "first_name": cid, "last_name": "", "job_id": "unknown", "hired": None}
+    else:
+        # Try DB fetch to fill missing scores and get candidate display info
+        row = _fetch_candidate(cfg["catalog"], cfg["schema"], cid, cfg)
+        if row is None:
+            # DB fetch failed — use provided scores only
+            row = {"candidate_id": cid, "first_name": cid, "last_name": "", "job_id": "unknown", "hired": None}
 
-    name = f"{row.get('first_name', '')} {row.get('last_name', '')}".strip()
+    name = f"{row.get('first_name', '')} {row.get('last_name', '')}".strip() or cid
     job_id = row.get("job_id", "unknown")
 
-    # ── Apply overrides for new candidates ────────────────────────────────────
-    if interview_score    is not None: row["interview_score"]    = interview_score
-    if skills_match_score is not None: row["skills_match_score"] = skills_match_score
-    if culture_fit        is not None: row["culture_fit"]        = culture_fit
+    # ── Apply all provided overrides ───────────────────────────────────────────
+    for k, v in provided.items():
+        row[k] = v
 
     # ── Check for missing features ─────────────────────────────────────────────
     missing = [c for c in FEATURE_COLS if row.get(c) is None]
     if missing:
         return (
             f"Cannot score {name} ({cid}) — missing features: {', '.join(missing)}.\n"
-            f"For new candidates, please supply: interview_score, skills_match_score, culture_fit."
+            f"Please supply the missing scores to run the prediction."
         )
 
     feature_values = {col: int(row[col]) for col in FEATURE_COLS}
@@ -189,9 +206,9 @@ def predict_hiring_score(
 
     hired_label = row.get("hired")
     if hired_label is not None:
-        actual = f"Historical training label: {'Hired ✅' if int(hired_label) == 1 else 'Not Hired ❌'} (past outcome used to train the model)"
+        actual = f"Historical outcome: {'Hired ✅' if int(hired_label) == 1 else 'Not Hired ❌'}"
     else:
-        actual = "Historical training label: N/A (new candidate — no prior outcome)"
+        actual = "Historical outcome: N/A (no prior decision on record)"
 
     fv = feature_values
     total_score = round(

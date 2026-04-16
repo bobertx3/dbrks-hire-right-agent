@@ -20,7 +20,7 @@
         "  culture_fit,\n",
         "  CASE WHEN hired = 1 THEN 'Hired' WHEN hired = 0 THEN 'Not Hired' ELSE 'Pending' END AS hire_status,\n",
         "  location\n",
-        "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+        "FROM bx4.hrd_2030.candidate_scoring_summary\n",
         "ORDER BY total_score DESC NULLS LAST"
       ]
     },
@@ -35,7 +35,7 @@
         "  SUM(CASE WHEN hired = 1 THEN 1 ELSE 0 END) AS hired_count,\n",
         "  ROUND(AVG(CASE WHEN total_score IS NOT NULL THEN total_score END), 1) AS avg_score,\n",
         "  MAX(total_score) AS top_score\n",
-        "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+        "FROM bx4.hrd_2030.candidate_scoring_summary\n",
         "GROUP BY job_id, job_title\n",
         "ORDER BY job_id"
       ]
@@ -57,7 +57,7 @@
         "  ROUND(culture_fit, 0) AS culture_fit,\n",
         "  ROUND(total_score, 1) AS total_score,\n",
         "  CASE WHEN hired = 1 THEN 'Hired' ELSE 'Not Hired' END AS hire_status\n",
-        "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+        "FROM bx4.hrd_2030.candidate_scoring_summary\n",
         "WHERE total_score IS NOT NULL\n",
         "ORDER BY total_score DESC"
       ]

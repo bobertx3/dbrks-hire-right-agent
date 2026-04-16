@@ -1,5 +1,87 @@
-job_id,title,department,location,min_years_experience,min_hr_years,min_leadership_years,required_education,preferred_certifications,required_skills,preferred_skills,salary_min,salary_max,team_size,reporting_to
-JR001,Director of Human Resources,Human Resources,New Brunswick NJ,10,8,5,MBA or MA in HR or Related Field,SPHR or SHRM-SCP,"Strategic HR Leadership,Talent Acquisition,Compensation & Benefits,Employee Relations,HR Technology,Organizational Development,Change Management,Compliance & Employment Law","Pharmaceutical or Healthcare Industry Experience,Global HR Experience,HRIS Implementation,Executive Coaching,Diversity & Inclusion Programs",175000,225000,30,Chief People Officer
-JR002,VP of Talent Acquisition,Human Resources,New Brunswick NJ,8,6,4,Bachelor's or Master's in HR or Related Field,SHRM-SCP or SPHR,"Talent Acquisition Strategy,Employer Branding,ATS Management,Diversity Recruiting,Pipeline Development,Offer Negotiation,Campus Recruiting,Workforce Planning","Pharmaceutical or Healthcare Industry Experience,LinkedIn Recruiter,Workday Recruiting,Executive Search,University Relations",160000,200000,20,Chief People Officer
-JR003,Director of Compensation & Benefits,Human Resources,New Brunswick NJ,8,6,4,MBA or MA in HR or Finance,CCP preferred,"Compensation Strategy,Benefits Administration,Job Architecture,Equity & Long-Term Incentives,Market Analysis,HRIS Administration,Total Rewards Communication,Compliance","Pharmaceutical or Healthcare Industry Experience,Workday HCM,Mercer or Willis Towers Watson surveys,Executive Compensation,Global Benefits",165000,210000,15,Chief People Officer
-JR004,Chief People Officer,Executive Leadership,New Brunswick NJ,15,12,10,MBA or PhD in Organizational Psychology or Related Field,SPHR and SHRM-SCP preferred,"Executive HR Leadership,Culture & Transformation,Board & C-Suite Engagement,Global HR Strategy,Talent Management,Organizational Design,M&A Integration,DEI Strategy","Fortune 500 HR Leadership,Pharmaceutical or Biotech Experience,IPO or M&A Experience,Executive Coaching Certification,Change Management Certification",250000,350000,100,Chief Executive Officer
+job_id,title,department,location,min_years_experience,min_hr_years,min_leadership_years,required_education,preferred_certifications,required_skills,preferred_skills,salary_min,salary_max,team_size,reporting_to,description
+JR001,Director of Human Resources,Human Resources,New Brunswick NJ,10,8,5,MBA or MA in HR or Related Field,SPHR or SHRM-SCP,"Strategic HR Leadership,Talent Acquisition,Compensation & Benefits,Employee Relations,HR Technology,Organizational Development,Change Management,Compliance & Employment Law","Pharmaceutical or Healthcare Industry Experience,Global HR Experience,HRIS Implementation,Executive Coaching,Diversity & Inclusion Programs",175000,225000,30,Chief People Officer,"JR001
+
+The Director of Human Resources serves as the strategic HR partner to senior leadership at Jackson & Jackson, driving people programs that enable organizational excellence, talent development, and a high-performance culture across our New Brunswick headquarters and regional sites. You will lead a team of 30 HR professionals across all core HR disciplines.
+
+**The impact you will have:**
+
+- **Strategic HR Leadership:** Design and execute a people strategy aligned with Jackson & Jackson's five-year growth plan, serving as a trusted advisor to senior leaders across all business units.
+- **Talent Acquisition & Retention:** Oversee enterprise-wide recruiting programs and retention initiatives, ensuring Jackson & Jackson attracts and keeps top-tier HR, operational, and scientific talent.
+- **Compensation & Benefits:** Govern total rewards frameworks that remain market-competitive, equitable, and compliant with all federal and state requirements.
+- **Change Management:** Lead organizational design and restructuring efforts, guiding employees through transitions with transparency and a people-first approach.
+- **Compliance & Risk Management:** Ensure full compliance with employment law, manage regulatory audits, and proactively mitigate people risk across a 2,000+ person workforce.
+
+**What we look for:**
+
+- 10+ years of progressive HR experience, with at least 8 years in dedicated HR leadership roles.
+- 5+ years managing and developing HR teams in a complex, matrixed organization.
+- MBA or MA in Human Resources, Organizational Psychology, or a related field.
+- SPHR or SHRM-SCP certification strongly preferred.
+- Demonstrated expertise across talent acquisition, compensation & benefits, employee relations, HRIS, and compliance.
+- Experience in pharmaceutical or healthcare environments preferred.
+- Track record of driving large-scale culture transformation and organizational change."
+JR002,VP of Talent Acquisition,Human Resources,New Brunswick NJ,8,6,4,Bachelor's or Master's in HR or Related Field,SHRM-SCP or SPHR,"Talent Acquisition Strategy,Employer Branding,ATS Management,Diversity Recruiting,Pipeline Development,Offer Negotiation,Campus Recruiting,Workforce Planning","Pharmaceutical or Healthcare Industry Experience,LinkedIn Recruiter,Workday Recruiting,Executive Search,University Relations",160000,200000,20,Chief People Officer,"JR002
+
+The VP of Talent Acquisition leads Jackson & Jackson's enterprise recruiting function, building the talent pipelines and employer brand programs that bring world-class professionals to one of New Jersey's premier pharmaceutical and healthcare organizations. Reporting to the Chief People Officer, you will own end-to-end talent acquisition strategy for all business units and functions.
+
+**The impact you will have:**
+
+- **Talent Strategy:** Define and execute a multi-year talent acquisition roadmap aligned with Jackson & Jackson's growth objectives, including workforce planning, succession pipelines, and critical hire prioritization.
+- **Employer Branding:** Build and amplify Jackson & Jackson's employer brand through digital campaigns, campus partnerships, diversity initiatives, and industry events to attract top-tier candidates.
+- **Recruiting Operations:** Modernize and scale recruiting infrastructure — ATS optimization, sourcing technology, interview process design, and offer frameworks — to deliver a best-in-class candidate experience.
+- **Diversity Recruiting:** Champion inclusive hiring practices and partnerships with diverse professional organizations, driving measurable improvement in workforce representation.
+- **Team Leadership:** Lead, mentor, and develop a team of 20 talent acquisition professionals across corporate recruiting, executive search, and campus relations.
+
+**What we look for:**
+
+- 8+ years of talent acquisition experience, with at least 6 years in HR leadership roles.
+- 4+ years managing recruiting teams in a fast-paced, high-growth environment.
+- Bachelor's or Master's degree in Human Resources, Business, or a related field.
+- SHRM-SCP or SPHR certification preferred.
+- Hands-on expertise in ATS platforms (Workday Recruiting preferred), LinkedIn Recruiter, and modern sourcing methodologies.
+- Experience recruiting in pharmaceutical, biotech, or healthcare industries strongly preferred.
+- Proven track record building employer brand programs that measurably improve candidate quality and time-to-fill."
+JR003,Director of Compensation & Benefits,Human Resources,New Brunswick NJ,8,6,4,MBA or MA in HR or Finance,CCP preferred,"Compensation Strategy,Benefits Administration,Job Architecture,Equity & Long-Term Incentives,Market Analysis,HRIS Administration,Total Rewards Communication,Compliance","Pharmaceutical or Healthcare Industry Experience,Workday HCM,Mercer or Willis Towers Watson surveys,Executive Compensation,Global Benefits",165000,210000,15,Chief People Officer,"JR003
+
+The Director of Compensation & Benefits architects the total rewards framework that attracts, retains, and motivates top talent at Jackson & Jackson. You will lead a team of 15 compensation and benefits professionals, partnering closely with Finance, Legal, and HR Business Partners to design and deliver programs that are competitive, equitable, and compliant across all levels of the organization.
+
+**The impact you will have:**
+
+- **Total Rewards Strategy:** Design and maintain a comprehensive total rewards philosophy — base pay, incentive compensation, equity programs, and benefits — benchmarked against pharmaceutical and healthcare industry peers.
+- **Compensation Architecture:** Develop and manage job architecture, salary bands, and grade structures that support internal equity, external competitiveness, and career path clarity across all functions.
+- **Benefits Administration:** Oversee medical, dental, vision, retirement, leave, and wellness programs for 2,000+ employees, managing vendor relationships and annual renewal negotiations.
+- **Equity & Long-Term Incentives:** Administer equity award programs, partnering with Legal and Finance to ensure accurate, compliant administration of stock options, RSUs, and performance awards.
+- **Compliance & Governance:** Maintain compliance with federal and state compensation regulations, including FLSA, pay equity laws, and ACA requirements, and lead all compensation-related regulatory reporting.
+
+**What we look for:**
+
+- 8+ years of compensation and benefits experience, with at least 6 years in a leadership role.
+- 4+ years managing total rewards teams in a complex organization.
+- MBA or MA in Human Resources, Finance, or a related field.
+- Certified Compensation Professional (CCP) designation preferred.
+- Deep expertise in job architecture, salary survey methodology (Mercer, Willis Towers Watson), and incentive plan design.
+- Experience with Workday HCM or a comparable HRIS platform.
+- Pharmaceutical or healthcare industry compensation experience preferred.
+- Strong analytical and financial modeling skills with the ability to present complex data to executive audiences."
+JR004,Chief People Officer,Executive Leadership,New Brunswick NJ,15,12,10,MBA or PhD in Organizational Psychology or Related Field,SPHR and SHRM-SCP preferred,"Executive HR Leadership,Culture & Transformation,Board & C-Suite Engagement,Global HR Strategy,Talent Management,Organizational Design,M&A Integration,DEI Strategy","Fortune 500 HR Leadership,Pharmaceutical or Biotech Experience,IPO or M&A Experience,Executive Coaching Certification,Change Management Certification",250000,350000,100,Chief Executive Officer,"JR004
+
+The Chief People Officer is a member of the Executive Leadership Team at Jackson & Jackson, responsible for shaping the people strategy that underpins the organization's long-term vision. Reporting directly to the CEO and partnering with the Board of Directors, you will lead an HR organization of 100+ professionals and serve as the ultimate steward of culture, talent, and organizational health across Jackson & Jackson's global operations.
+
+**The impact you will have:**
+
+- **Executive People Strategy:** Define and lead a bold, forward-looking people strategy that positions Jackson & Jackson as an employer of choice in the pharmaceutical and healthcare sectors, directly enabling the organization's five-year growth plan.
+- **Culture & Transformation:** Champion a values-driven, inclusive, and high-performance culture — translating organizational vision into tangible programs, behaviors, and leadership expectations at every level.
+- **Board & C-Suite Partnership:** Serve as the primary HR advisor to the Board of Directors, CEO, and Executive Leadership Team on talent, succession planning, compensation governance, and organizational risk.
+- **M&A & Organizational Design:** Lead the people integration workstreams for mergers, acquisitions, and divestitures, ensuring structural alignment, culture integration, and talent retention throughout.
+- **DEI & ESG:** Own Jackson & Jackson's diversity, equity, and inclusion agenda and people-related ESG commitments, reporting progress to the Board and to external stakeholders.
+
+**What we look for:**
+
+- 15+ years of progressive HR leadership, with at least 12 years in senior HR executive roles and 10 years leading large HR organizations.
+- MBA or PhD in Organizational Psychology, Organizational Leadership, or a related field.
+- SPHR and SHRM-SCP certifications preferred.
+- Proven track record as a C-suite HR executive, ideally at a Fortune 500 or large pharmaceutical or biotech organization.
+- Experience leading HR through M&A transactions, IPOs, or major organizational transformations.
+- Deep expertise across all HR disciplines: talent management, total rewards, organizational design, DEI, and HR technology.
+- Exceptional executive presence with the ability to influence and advise boards, investors, and senior leadership.
+- Willingness to travel domestically and internationally as required."

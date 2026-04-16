@@ -14,7 +14,7 @@ variables:
     default: hrd_2030
   warehouse_id:
     description: SQL Warehouse ID
-    default: "0d3bda4f46281ab5"
+    default: "aa06644a4b0be047"
   app_name:
     description: Databricks App name
     default: hire-right-agent
@@ -73,7 +73,9 @@ resources:
       name: jj-hr-digital-pipeline
       parameters:
         - name: train_model
-          default: "true"
+          default: "false"
+        - name: deploy_agent
+          default: "false"
       tasks:
         - task_key: load_bronze
           notebook_task:
@@ -173,10 +175,19 @@ resources:
               endpoint_name: ${var.model_endpoint_name}
               warehouse_id: ${var.warehouse_id}
 
-        - task_key: agent
+        - task_key: agent_condition
           depends_on:
             - task_key: genie_space
             - task_key: build_vector_index_rag
+          condition_task:
+            op: EQUAL_TO
+            left: "{{job.parameters.deploy_agent}}"
+            right: "true"
+
+        - task_key: agent
+          depends_on:
+            - task_key: agent_condition
+              outcome: "true"
           notebook_task:
             notebook_path: ./notebooks/06_evaluate_register_agent.ipynb
             base_parameters:

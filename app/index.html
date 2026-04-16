@@ -36,6 +36,8 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .h-btn.agent-btn:hover{background:rgba(255,54,33,.25);}
 .h-btn.genie-btn{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#fff;}
 .h-btn.genie-btn:hover{background:rgba(59,130,246,.25);}
+.h-btn.dbrks-link{text-decoration:none;background:rgba(255,54,33,.18);border-color:rgba(255,54,33,.45);color:#ff8a78;font-weight:600;}
+.h-btn.dbrks-link:hover{background:rgba(255,54,33,.3);border-color:rgba(255,54,33,.7);color:#fff;}
 .h-badge{background:rgba(255,54,33,.15);border:1px solid rgba(255,54,33,.3);color:var(--accent);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;margin-left:6px;}
 
 /* ── Main Content ────────────────────────────────────────────── */
@@ -51,12 +53,18 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .stat-card.amber .stat-value{color:var(--amber);}
 .stat-card.blue .stat-value{color:var(--blue);}
 
-/* Filter pills */
-.filter-bar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
-.filter-lbl{font-size:11px;font-weight:600;color:var(--sub);margin-right:4px;}
-.pill{padding:4px 13px;border-radius:20px;border:1px solid var(--border);background:var(--bg);font-family:inherit;font-size:11px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;}
-.pill:hover{border-color:var(--accent);color:var(--accent);}
-.pill.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+/* Filter bar */
+.filter-bar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
+.filter-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.filter-lbl{font-size:10px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.6px;margin-right:2px;white-space:nowrap;}
+.filter-divider{width:1px;height:20px;background:var(--border);margin:0 6px;flex-shrink:0;}
+.pill{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);font-family:inherit;font-size:11px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.pill:hover{border-color:var(--primary);color:var(--primary);}
+.pill.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600;}
+.pill.active-green{background:var(--green);border-color:var(--green);color:#fff;font-weight:600;}
+.pill.active-red{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+.pill.active-blue{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600;}
+.pill-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:middle;}
 
 /* Candidate grid */
 .cands-scroll{flex:1;overflow-y:auto;padding:18px 20px;}
@@ -223,9 +231,72 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 @keyframes bounce{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
 .genie-typing .dots span{background:var(--blue);}
 
+/* ── Main Tab Nav ────────────────────────────────────────────── */
+.main-tabs{background:var(--card);border-bottom:2px solid var(--border);padding:0 20px;display:flex;gap:0;flex-shrink:0;}
+.main-tab{padding:11px 18px;border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:6px;transition:all .15s;}
+.main-tab:hover{color:var(--text);}
+.main-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+.main-tab svg{width:13px;height:13px;}
+
 /* Grid/Detail views */
 #view-grid{display:flex;flex-direction:column;flex:1;overflow:hidden;}
 #view-grid.hidden{display:none;}
+
+/* ── Jobs View ───────────────────────────────────────────────── */
+#view-jobs{display:none;flex:1;flex-direction:column;overflow:hidden;}
+#view-jobs.active{display:flex;}
+.jobs-scroll{flex:1;overflow-y:auto;padding:20px;}
+.jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px;}
+.job-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--sh-sm);transition:all .15s;}
+.job-card:hover{border-color:#CBD5E1;box-shadow:var(--sh-md);transform:translateY(-1px);}
+.job-card-top{display:flex;align-items:flex-start;gap:14px;}
+.job-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.job-icon svg{width:22px;height:22px;}
+.job-head{flex:1;min-width:0;}
+.job-id-tag{display:inline-block;font-size:9px;font-weight:700;color:var(--sub);background:var(--bg);border:1px solid var(--border);padding:2px 7px;border-radius:4px;margin-bottom:5px;}
+.job-title{font-size:16px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:3px;}
+.job-meta{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.job-meta-sep{color:var(--border);}
+.job-salary{font-size:12px;font-weight:700;color:var(--green);}
+.job-divider{height:1px;background:var(--border);}
+.job-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.job-tag{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:600;background:var(--bg);border:1px solid var(--border);color:var(--sub);}
+.job-footer{display:flex;align-items:center;justify-content:space-between;margin-top:2px;}
+.job-stat{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:4px;}
+.job-desc-btn{padding:7px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;}
+.job-desc-btn:hover{background:#26505f;}
+
+/* Job description modal */
+.jd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;}
+.jd-overlay.open{display:flex;}
+.jd-modal{background:var(--card);border-radius:var(--r);box-shadow:0 20px 60px rgba(0,0,0,.25);width:90vw;max-width:720px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.jd-modal-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;background:var(--primary);}
+.jd-modal-title{color:#fff;font-size:15px;font-weight:800;line-height:1.3;}
+.jd-modal-sub{color:rgba(255,255,255,.55);font-size:11px;margin-top:3px;}
+.jd-modal-close{width:32px;height:32px;border:none;background:rgba(255,255,255,.1);color:#fff;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:background .15s;}
+.jd-modal-close:hover{background:rgba(255,255,255,.2);}
+.jd-modal-body{flex:1;overflow-y:auto;padding:28px 32px;font-size:13.5px;line-height:1.8;color:var(--text);}
+.jd-modal-body h1,.jd-modal-body h2,.jd-modal-body h3{font-size:13px;font-weight:700;margin:20px 0 8px;color:var(--text);}
+.jd-modal-body p{margin-bottom:12px;color:var(--sub);}
+.jd-modal-body p:first-child{font-size:11px;font-weight:700;color:var(--light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+.jd-modal-body ul{padding-left:18px;margin-bottom:12px;}
+.jd-modal-body li{margin-bottom:6px;}
+.jd-modal-body strong{font-weight:700;color:var(--text);}
+
+/* ── Resume Modal ────────────────────────────────────────────── */
+.resume-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;}
+.resume-overlay.open{display:flex;}
+.resume-modal{background:var(--card);border-radius:var(--r);box-shadow:0 20px 60px rgba(0,0,0,.25);width:90vw;max-width:860px;height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.resume-modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--primary);}
+.resume-modal-title{color:#fff;font-size:14px;font-weight:700;}
+.resume-modal-sub{color:rgba(255,255,255,.55);font-size:11px;margin-top:2px;}
+.resume-modal-close{width:32px;height:32px;border:none;background:rgba(255,255,255,.1);color:#fff;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s;}
+.resume-modal-close:hover{background:rgba(255,255,255,.2);}
+.resume-modal-body{flex:1;min-height:0;padding:0;}
+#resume-iframe{width:100%;height:100%;border:none;display:block;}
+.resume-btn{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .15s;flex-shrink:0;}
+.resume-btn:hover{background:#26505f;}
+.resume-btn:disabled{background:#ccc;cursor:default;}
 </style>
 </head>
 <body>
@@ -241,10 +312,10 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
   </div>
   <div class="h-spacer"></div>
   <div class="h-actions">
-    <button class="h-btn agent-btn" onclick="openPanel('agent')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Ask Agent
-    </button>
+    <a class="h-btn dbrks-link" href="https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com/one" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Databricks One
+    </a>
     <button class="h-btn genie-btn" onclick="openPanel('genie')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
       Ask Genie
@@ -256,6 +327,18 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 <!-- ── Main Content ─────────────────────────────────────────────── -->
 <div id="main-content">
 
+  <!-- Main Tab Nav -->
+  <div class="main-tabs">
+    <button id="main-tab-candidates" class="main-tab active" onclick="switchMainTab('candidates')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Candidates
+    </button>
+    <button id="main-tab-jobs" class="main-tab" onclick="switchMainTab('jobs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      Job Openings
+    </button>
+  </div>
+
   <!-- Grid View -->
   <div id="view-grid">
     <div class="stats-bar">
@@ -265,12 +348,22 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
       <div class="stat-card amber"><div class="stat-label">Open Positions</div><div class="stat-value">4</div><div class="stat-sub">JR001 – JR004</div></div>
     </div>
     <div class="filter-bar">
-      <span class="filter-lbl">Filter by Role:</span>
-      <button class="pill active" onclick="applyFilter('all',this)">All Roles</button>
-      <button class="pill" onclick="applyFilter('JR001',this)">JR001 · Dir. HR</button>
-      <button class="pill" onclick="applyFilter('JR002',this)">JR002 · VP Talent</button>
-      <button class="pill" onclick="applyFilter('JR003',this)">JR003 · Dir. C&amp;B</button>
-      <button class="pill" onclick="applyFilter('JR004',this)">JR004 · CPO</button>
+      <div class="filter-group">
+        <span class="filter-lbl">Role</span>
+        <button class="pill active" data-filter-role="all" onclick="setRoleFilter('all',this)">All</button>
+        <button class="pill" data-filter-role="JR001" onclick="setRoleFilter('JR001',this)">JR001 · Dir. HR</button>
+        <button class="pill" data-filter-role="JR002" onclick="setRoleFilter('JR002',this)">JR002 · VP Talent</button>
+        <button class="pill" data-filter-role="JR003" onclick="setRoleFilter('JR003',this)">JR003 · Dir. C&amp;B</button>
+        <button class="pill" data-filter-role="JR004" onclick="setRoleFilter('JR004',this)">JR004 · CPO</button>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <span class="filter-lbl">Status</span>
+        <button class="pill active" data-filter-stage="all" onclick="setStageFilter('all',this)">All</button>
+        <button class="pill" data-filter-stage="pipeline" onclick="setStageFilter('pipeline',this)"><span class="pill-dot" style="background:var(--blue)"></span>Active Pipeline</button>
+        <button class="pill" data-filter-stage="hired" onclick="setStageFilter('hired',this)"><span class="pill-dot" style="background:var(--green)"></span>Hired</button>
+        <button class="pill" data-filter-stage="rejected" onclick="setStageFilter('rejected',this)"><span class="pill-dot" style="background:var(--accent)"></span>Rejected</button>
+      </div>
     </div>
     <div class="cands-scroll">
       <div class="cands-grid" id="cands-grid"></div>
@@ -288,6 +381,45 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
     </div>
   </div>
 
+  <!-- Jobs View -->
+  <div id="view-jobs">
+    <div class="jobs-scroll">
+      <div class="jobs-grid" id="jobs-grid">
+        <p style="color:var(--sub);font-size:13px">Loading job openings…</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Job Description Modal ─────────────────────────────────────── -->
+<div id="jd-overlay" class="jd-overlay" onclick="if(event.target===this)closeJD()">
+  <div class="jd-modal">
+    <div class="jd-modal-head">
+      <div>
+        <div class="jd-modal-title" id="jd-modal-title"></div>
+        <div class="jd-modal-sub" id="jd-modal-sub"></div>
+      </div>
+      <button class="jd-modal-close" onclick="closeJD()">✕</button>
+    </div>
+    <div class="jd-modal-body" id="jd-modal-body"></div>
+  </div>
+</div>
+
+<!-- ── Resume Modal ─────────────────────────────────────────────── -->
+<div id="resume-overlay" class="resume-overlay" onclick="if(event.target===this)closeResume()">
+  <div class="resume-modal">
+    <div class="resume-modal-head">
+      <div>
+        <div class="resume-modal-title" id="resume-modal-title">Resume</div>
+        <div class="resume-modal-sub" id="resume-modal-sub"></div>
+      </div>
+      <button class="resume-modal-close" onclick="closeResume()">✕</button>
+    </div>
+    <div class="resume-modal-body">
+      <iframe id="resume-iframe" src="" title="Resume"></iframe>
+    </div>
+  </div>
 </div>
 
 <!-- ── Overlay ──────────────────────────────────────────────────── -->
@@ -297,11 +429,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 <div id="slideout" class="slideout">
   <div class="so-header">
     <div class="so-tabs">
-      <button id="so-tab-agent" class="so-tab active" onclick="switchPanel('agent')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Hire Right Agent
-      </button>
-      <button id="so-tab-genie" class="so-tab" onclick="switchPanel('genie')">
+      <button id="so-tab-genie" class="so-tab active" onclick="switchPanel('genie')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         Genie Analytics
       </button>
@@ -310,7 +438,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
   </div>
 
   <!-- Agent pane -->
-  <div id="so-pane-agent" class="so-pane active">
+  <div id="so-pane-agent" class="so-pane">
     <div class="so-chat-area" id="agent-msgs">
       <div class="so-welcome" id="agent-welcome">
         <div class="so-welcome-icon" style="background:var(--primary)">
@@ -338,7 +466,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
   </div>
 
   <!-- Genie pane -->
-  <div id="so-pane-genie" class="so-pane">
+  <div id="so-pane-genie" class="so-pane active">
     <div class="genie-actions">
       <button class="genie-new-btn" onclick="resetGenie()">+ New Conversation</button>
     </div>
@@ -388,23 +516,27 @@ function closePanel() {
   document.getElementById('overlay').classList.remove('visible');
 }
 function switchPanel(tab) {
-  ['agent','genie'].forEach(t => {
-    document.getElementById(`so-tab-${t}`).classList.toggle('active', t === tab);
-    document.getElementById(`so-pane-${t}`).classList.toggle('active', t === tab);
+  // Agent tab removed from header — always use genie in the slideout
+  const resolved = tab === 'agent' ? 'genie' : tab;
+  ['genie'].forEach(t => {
+    document.getElementById(`so-tab-${t}`).classList.toggle('active', t === resolved);
+    document.getElementById(`so-pane-${t}`).classList.toggle('active', t === resolved);
   });
-  // focus input
-  const inp = document.getElementById(tab === 'agent' ? 'agent-inp' : 'genie-inp');
+  document.getElementById(`so-pane-agent`).classList.remove('active');
+  const inp = document.getElementById('genie-inp');
   setTimeout(() => inp && inp.focus(), 50);
 }
 
 // ── Candidates ────────────────────────────────────────────────
+let activeRole = 'all', activeStage = 'all';
+
 async function loadCandidates() {
   try {
     const r = await fetch('/api/candidates');
     const d = await r.json();
     allCandidates = d.candidates;
     renderStats();
-    applyFilter('all', document.querySelector('.pill.active'));
+    applyFilters();
   } catch(e) {
     document.getElementById('cands-grid').innerHTML =
       '<p style="color:var(--sub);padding:20px">Could not load candidates.</p>';
@@ -417,12 +549,36 @@ function renderStats() {
   document.getElementById('stat-rec').textContent    = allCandidates.filter(c => c.total_score >= 80).length;
 }
 
-function applyFilter(jobId, btn) {
-  filtered = jobId === 'all' ? [...allCandidates] : allCandidates.filter(c => c.job_id === jobId);
-  document.querySelectorAll('.filter-bar .pill').forEach(p => p.classList.remove('active'));
+function setRoleFilter(role, btn) {
+  activeRole = role;
+  document.querySelectorAll('[data-filter-role]').forEach(p => p.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  applyFilters();
+}
+
+const STAGE_CLS = {all:'active', pipeline:'active-blue', hired:'active-green', rejected:'active-red'};
+function setStageFilter(stage, btn) {
+  activeStage = stage;
+  document.querySelectorAll('[data-filter-stage]').forEach(p =>
+    p.classList.remove('active','active-blue','active-green','active-red'));
+  if (btn) btn.classList.add(STAGE_CLS[stage] || 'active');
+  applyFilters();
+}
+
+function applyFilters() {
+  filtered = allCandidates.filter(c => {
+    const roleOk  = activeRole  === 'all' || c.job_id === activeRole;
+    const stageOk = activeStage === 'all'
+      || (activeStage === 'pipeline' && c.hired === null)
+      || (activeStage === 'hired'    && c.hired === true)
+      || (activeStage === 'rejected' && c.hired === false);
+    return roleOk && stageOk;
+  });
   renderGrid();
 }
+
+// keep old name working (used by nothing now but safe to keep)
+function applyFilter(jobId, btn) { setRoleFilter(jobId, btn); }
 
 // ── Grid ──────────────────────────────────────────────────────
 function renderGrid() {
@@ -481,10 +637,22 @@ function cardHTML(c) {
 function openCandidate(id) {
   currentCandidate = allCandidates.find(c => c.id === id);
   const _c = currentCandidate;
-  // Seed history with candidate context so follow-up questions always know who they're about
+  // Seed history with candidate context + all known scores so the agent can run ML predictions
+  // without needing a database fetch
+  const _sc = _c.scores || {};
+  const _scoreCtx = [
+    `education_score: ${_sc.education ?? 'pending'}`,
+    `experience_score: ${_sc.experience ?? 'pending'}`,
+    `leadership_score: ${_sc.leadership ?? 'pending'}`,
+    `certification_score: ${_sc.certifications ?? 'pending'}`,
+    `skills_match_score: ${_sc.skills_match ?? 'pending'}`,
+    `industry_relevance_score: ${_sc.industry ?? 'pending'}`,
+    `interview_score: ${_sc.interview ?? 'pending'}`,
+    `culture_fit: ${_sc.culture_fit ?? 'pending'}`,
+  ].join(', ');
   recHistory = [
-    { role: 'user',      content: `Context: I am viewing the profile of ${_c.name} (${_c.id}), applying for ${_c.job_title} (${_c.job_id}). All questions in this conversation are about this specific candidate unless I say otherwise.` },
-    { role: 'assistant', content: `Understood — I'll keep ${_c.name} (${_c.id}) as the context for this conversation.` },
+    { role: 'user',      content: `Context: I am viewing the profile of ${_c.name} (${_c.id}), applying for ${_c.job_title} (${_c.job_id}). Stored scores: ${_scoreCtx}. All questions in this conversation are about this specific candidate unless I say otherwise.` },
+    { role: 'assistant', content: `Understood — I'll keep ${_c.name} (${_c.id}) as the context for this conversation. I have their stored scores and will use them when running the ML prediction.` },
   ];
   document.getElementById('view-grid').classList.add('hidden');
   document.getElementById('view-detail').classList.add('active');
@@ -541,9 +709,15 @@ function renderDetail() {
           <span class="badge b-pipe">${esc(c.certifications)}</span>
         </div>
       </div>
-      <div class="det-score-box">
-        <div class="det-sn" style="color:${totalColor}">${sc!=null?sc.toFixed(1):'—'}</div>
-        <div class="det-sl">Total Score</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;">
+        <div class="det-score-box">
+          <div class="det-sn" style="color:${totalColor}">${sc!=null?sc.toFixed(1):'—'}</div>
+          <div class="det-sl">Total Score</div>
+        </div>
+        <button class="resume-btn" onclick="showResume('${c.id}','${esc(c.name)}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Show Resume
+        </button>
       </div>
     </div>
 
@@ -872,6 +1046,122 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 // Escape key closes slideout
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// ── Resume Modal ──────────────────────────────────────────────
+function showResume(candidateId, candidateName) {
+  document.getElementById('resume-modal-title').textContent = `${candidateName} — Resume`;
+  document.getElementById('resume-modal-sub').textContent   = candidateId;
+  document.getElementById('resume-iframe').src = `/api/resume-pdf/${encodeURIComponent(candidateId)}`;
+  document.getElementById('resume-overlay').classList.add('open');
+  document.addEventListener('keydown', _resumeEsc);
+}
+function closeResume() {
+  document.getElementById('resume-iframe').src = '';
+  document.getElementById('resume-overlay').classList.remove('open');
+  document.removeEventListener('keydown', _resumeEsc);
+}
+function _resumeEsc(e) { if (e.key === 'Escape') closeResume(); }
+
+// ── Main Tab Switching ────────────────────────────────────────
+function switchMainTab(tab) {
+  const isCandidates = tab === 'candidates';
+  document.getElementById('main-tab-candidates').classList.toggle('active', isCandidates);
+  document.getElementById('main-tab-jobs').classList.toggle('active', !isCandidates);
+  // hide detail view when switching tabs
+  document.getElementById('view-detail').classList.remove('active');
+  document.getElementById('view-grid').classList.toggle('hidden', !isCandidates);
+  document.getElementById('view-jobs').classList.toggle('active', !isCandidates);
+  if (!isCandidates && !jobsLoaded) loadJobs();
+}
+
+// ── Jobs ──────────────────────────────────────────────────────
+let allJobs = [], jobsLoaded = false;
+
+const JOB_COLORS = {JR001:'#3B82F6',JR002:'#8B5CF6',JR003:'#14B8A6',JR004:'#F97316'};
+const JOB_BG     = {JR001:'rgba(59,130,246,.08)',JR002:'rgba(139,92,246,.08)',JR003:'rgba(20,184,166,.08)',JR004:'rgba(249,115,22,.08)'};
+
+async function loadJobs() {
+  try {
+    const r = await fetch('/api/jobs');
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || `HTTP ${r.status}`);
+    if (!Array.isArray(d.jobs)) throw new Error('Unexpected response from /api/jobs');
+    allJobs = d.jobs;
+    jobsLoaded = true;
+    renderJobs();
+  } catch(e) {
+    document.getElementById('jobs-grid').innerHTML =
+      `<p style="color:var(--sub);padding:20px">Could not load job openings: ${esc(e.message)}</p>`;
+  }
+}
+
+function fmtSalary(min, max) {
+  const fmt = n => n >= 1000 ? `$${Math.round(n/1000)}K` : `$${n}`;
+  return `${fmt(+min)} – ${fmt(+max)}`;
+}
+
+function renderJobs() {
+  const candidateCount = id => allCandidates.filter(c => c.job_id === id).length;
+  const pipelineCount  = id => allCandidates.filter(c => c.job_id === id && c.hired === null).length;
+
+  document.getElementById('jobs-grid').innerHTML = allJobs.map(j => {
+    const color = JOB_COLORS[j.job_id] || 'var(--sub)';
+    const bg    = JOB_BG[j.job_id]    || 'var(--bg)';
+    const skills = (j.required_skills || '').split(',').slice(0,4);
+    const total  = candidateCount(j.job_id);
+    const active = pipelineCount(j.job_id);
+    return `
+    <div class="job-card">
+      <div class="job-card-top">
+        <div class="job-icon" style="background:${bg}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <div class="job-head">
+          <div class="job-id-tag" style="color:${color};border-color:${color}20;background:${bg}">${j.job_id}</div>
+          <div class="job-title">${esc(j.title)}</div>
+          <div class="job-meta">
+            <span>${esc(j.department)}</span>
+            <span class="job-meta-sep">·</span>
+            <span>${esc(j.location)}</span>
+            <span class="job-meta-sep">·</span>
+            <span>Reports to ${esc(j.reporting_to)}</span>
+          </div>
+        </div>
+        <div class="job-salary">${fmtSalary(j.salary_min, j.salary_max)}</div>
+      </div>
+      <div class="job-divider"></div>
+      <div class="job-tags">
+        ${skills.map(s => `<span class="job-tag">${esc(s.trim())}</span>`).join('')}
+        ${j.preferred_certifications ? `<span class="job-tag" style="color:${color};border-color:${color}30">${esc(j.preferred_certifications)}</span>` : ''}
+      </div>
+      <div class="job-footer">
+        <div class="job-stat" style="cursor:pointer" onclick="drillToCandidates('${j.job_id}','all')" title="View all candidates for this role">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span style="text-decoration:underline dotted">${total} applicant${total!==1?'s':''}</span>
+          · <span style="color:${color};font-weight:600;text-decoration:underline dotted;cursor:pointer" onclick="event.stopPropagation();drillToCandidates('${j.job_id}','pipeline')" title="View active candidates">${active} active</span>
+        </div>
+        <button class="job-desc-btn" style="background:${color}" onclick="openJD(${JSON.stringify(j).replace(/"/g,'&quot;')})">View Description</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Job Description Modal ─────────────────────────────────────
+function openJD(job) {
+  document.getElementById('jd-modal-title').textContent = job.title;
+  document.getElementById('jd-modal-sub').textContent   = `${job.job_id} · ${job.department} · ${job.location}`;
+  const body = document.getElementById('jd-modal-body');
+  body.innerHTML = job.description
+    ? DOMPurify.sanitize(marked.parse(job.description))
+    : '<p style="color:var(--sub)">No description available.</p>';
+  document.getElementById('jd-overlay').classList.add('open');
+  document.addEventListener('keydown', _jdEsc);
+}
+function closeJD() {
+  document.getElementById('jd-overlay').classList.remove('open');
+  document.removeEventListener('keydown', _jdEsc);
+}
+function _jdEsc(e) { if (e.key === 'Escape') closeJD(); }
 
 // ── Init ──────────────────────────────────────────────────────
 loadCandidates();
