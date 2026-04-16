@@ -271,16 +271,20 @@
   <nav class="top-nav">
     <a href="#title" class="top-nav-brand">Hire Right</a>
     <div class="top-nav-links">
+      <a href="#charter">Charter</a>
       <a href="#platform">Platform</a>
-      <a href="#capabilities">Capabilities</a>
       <a href="#demo">Demo</a>
-      <a href="#s1">① Ingest</a>
-      <a href="#s2">② Govern</a>
-      <a href="#s3">③ Gold</a>
-      <a href="#s4">④ Train ML</a>
-      <a href="#s5">⑤ Agent</a>
-      <a href="#s6">⑥ Deploy</a>
-      <a href="#appendix">Appendix</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#mlops">MLOps</a>
+      <a href="#ingest">① Ingest</a>
+      <a href="#govern">② Govern</a>
+      <a href="#gold">③ Gold</a>
+      <a href="#train">④ Train ML</a>
+      <a href="#register">⑤ Register</a>
+      <a href="#agent">⑥ Agent</a>
+      <a href="#deploy">⑦ Deploy</a>
+      <a href="#monitor">⑧ Monitor</a>
+      <a href="#closing">Closing</a>
     </div>
   </nav>
   <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -384,226 +388,6 @@
   </section>
 
   <!-- ========================================================
-       CAPABILITIES — SLIDE A: MLOPS PLATFORM
-       ======================================================== -->
-  <section class="slide slide-ink" id="capabilities" aria-label="Capabilities: MLOps Platform">
-    <div class="slide-content">
-      <div style="text-align:center; margin-bottom:1.2rem;">
-        <p class="mono-label">End-to-End MLOps · AI · Governance</p>
-        <h2 style="margin-top:0.3rem; color:#fff;">The Full Databricks <span style="color:var(--db-lava);">MLOps Platform</span></h2>
-        <span class="accent-bar centered"></span>
-        <p style="font-size:clamp(0.8rem,1.1vw,1rem); color:rgba(255,255,255,0.6); max-width:700px; margin:0 auto;">From raw data landing to a deployed AI agent — unified, governed, and observable at every step.</p>
-      </div>
-
-      <!-- Pipeline flow -->
-      <div style="display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:1.4rem; flex-wrap:nowrap; overflow-x:auto;">
-        <div style="text-align:center; min-width:90px; padding:0 4px;">
-          <div style="background:rgba(255,110,86,0.15); border:1px solid rgba(255,110,86,0.35); border-radius:10px; padding:12px 10px; margin-bottom:6px;">
-            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#FF6E56; margin-bottom:4px">Bronze</div>
-            <div style="font-size:13px; font-weight:700; color:#fff">① Ingest</div>
-          </div>
-          <div style="font-size:9.5px; color:rgba(255,255,255,0.4)">Delta Lake</div>
-        </div>
-        <div style="color:rgba(255,255,255,0.2); font-size:16px; padding:0 4px; flex-shrink:0">→</div>
-        <div style="text-align:center; min-width:90px; padding:0 4px;">
-          <div style="background:rgba(66,89,254,0.15); border:1px solid rgba(66,89,254,0.35); border-radius:10px; padding:12px 10px; margin-bottom:6px;">
-            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#a0b0ff; margin-bottom:4px">Silver + UC</div>
-            <div style="font-size:13px; font-weight:700; color:#fff">② Govern</div>
-          </div>
-          <div style="font-size:9.5px; color:rgba(255,255,255,0.4)">PII · Masking · DQX</div>
-        </div>
-        <div style="color:rgba(255,255,255,0.2); font-size:16px; padding:0 4px; flex-shrink:0">→</div>
-        <div style="text-align:center; min-width:90px; padding:0 4px;">
-          <div style="background:rgba(254,171,3,0.15); border:1px solid rgba(254,171,3,0.35); border-radius:10px; padding:12px 10px; margin-bottom:6px;">
-            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#ffc940; margin-bottom:4px">Gold + AI</div>
-            <div style="font-size:13px; font-weight:700; color:#fff">③ Build for AI</div>
-          </div>
-          <div style="font-size:9.5px; color:rgba(255,255,255,0.4)">Genie · Vector Search</div>
-        </div>
-        <div style="color:rgba(255,255,255,0.2); font-size:16px; padding:0 4px; flex-shrink:0">→</div>
-        <div style="text-align:center; min-width:90px; padding:0 4px;">
-          <div style="background:rgba(27,150,255,0.15); border:1px solid rgba(27,150,255,0.35); border-radius:10px; padding:12px 10px; margin-bottom:6px;">
-            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#4DB8FF; margin-bottom:4px">MLflow</div>
-            <div style="font-size:13px; font-weight:700; color:#fff">④ Train ML</div>
-          </div>
-          <div style="font-size:9.5px; color:rgba(255,255,255,0.4)">Experiments · Registry</div>
-        </div>
-        <div style="color:rgba(255,255,255,0.2); font-size:16px; padding:0 4px; flex-shrink:0">→</div>
-        <div style="text-align:center; min-width:90px; padding:0 4px;">
-          <div style="background:rgba(0,169,114,0.15); border:1px solid rgba(0,169,114,0.35); border-radius:10px; padding:12px 10px; margin-bottom:6px;">
-            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#2DC98B; margin-bottom:4px">MLflow 3.0</div>
-            <div style="font-size:13px; font-weight:700; color:#fff">⑤ Agent</div>
-          </div>
-          <div style="font-size:9.5px; color:rgba(255,255,255,0.4)">ResponsesAgent · UC</div>
-        </div>
-        <div style="color:rgba(255,255,255,0.2); font-size:16px; padding:0 4px; flex-shrink:0">→</div>
-        <div style="text-align:center; min-width:90px; padding:0 4px;">
-          <div style="background:rgba(255,54,33,0.15); border:1px solid rgba(255,54,33,0.35); border-radius:10px; padding:12px 10px; margin-bottom:6px;">
-            <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#FF6E56; margin-bottom:4px">Apps</div>
-            <div style="font-size:13px; font-weight:700; color:#fff">⑥ Deploy</div>
-          </div>
-          <div style="font-size:9.5px; color:rgba(255,255,255,0.4)">Databricks Apps · Monitor</div>
-        </div>
-      </div>
-
-      <!-- Capability pills row -->
-      <div style="display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.2rem;">
-        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px 16px; text-align:center; min-width:130px;">
-          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.4); margin-bottom:5px">Governance</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">Unity Catalog</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px 16px; text-align:center; min-width:130px;">
-          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.4); margin-bottom:5px">Experiments</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">MLflow 3.0</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px 16px; text-align:center; min-width:130px;">
-          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.4); margin-bottom:5px">REST Endpoints</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">Model Serving</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px 16px; text-align:center; min-width:130px;">
-          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.4); margin-bottom:5px">Semantic RAG</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">Vector Search</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px 16px; text-align:center; min-width:130px;">
-          <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.4); margin-bottom:5px">AI Apps</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">Databricks Apps</div>
-        </div>
-      </div>
-
-      <!-- MLflow banner -->
-      <div style="text-align:center;">
-        <span style="font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em; color:rgba(143,163,255,0.55); background:rgba(66,89,254,0.08); border:1px solid rgba(66,89,254,0.2); border-radius:4px; padding:0.25rem 0.75rem;">MLflow 3.0 — unified tracking, evaluation, and governance across every step</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================
-       CAPABILITIES — SLIDE B: AGENTS AI STACK
-       ======================================================== -->
-  <section class="slide slide-ink" aria-label="Capabilities: Agents AI Stack">
-    <div class="slide-content">
-      <div style="text-align:center; margin-bottom:1.2rem;">
-        <p class="mono-label" style="color:rgba(255,110,86,0.9);">AI Agents</p>
-        <h2 style="margin-top:0.3rem; color:#fff;">Databricks <span style="color:var(--db-lava);">Agents AI Stack</span></h2>
-        <span class="accent-bar centered"></span>
-        <p style="font-size:clamp(0.8rem,1.1vw,1rem); color:rgba(255,255,255,0.6); max-width:680px; margin:0 auto;">Three integrated layers — from raw compute to prebuilt production agents — with end-to-end governance across the full agent lifecycle.</p>
-      </div>
-
-      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin-bottom:1.25rem;">
-        <div style="background:linear-gradient(135deg,rgba(255,54,33,0.2),rgba(255,54,33,0.08)); border:1px solid rgba(255,54,33,0.35); border-radius:16px; padding:22px">
-          <div style="font-size:1.5rem; margin-bottom:0.6rem">🧱</div>
-          <div style="font-size:14px; font-weight:800; color:#FF6E56; margin-bottom:8px">Agent Bricks</div>
-          <p style="font-size:12.5px; color:rgba(255,255,255,0.8); line-height:1.6; margin-bottom:12px">Prebuilt contextual reasoning agents ready to deploy — Knowledge Assistant, Supervisor Agent, Documents Agent, AI Functions.</p>
-          <div style="display:flex; flex-direction:column; gap:4px">
-            <span style="font-size:11px; color:rgba(255,110,86,0.7)">→ No build required</span>
-            <span style="font-size:11px; color:rgba(255,110,86,0.7)">→ UC-governed by default</span>
-            <span style="font-size:11px; color:rgba(255,110,86,0.7)">→ Customisable via instructions</span>
-          </div>
-        </div>
-        <div style="background:linear-gradient(135deg,rgba(0,169,114,0.2),rgba(0,169,114,0.08)); border:1px solid rgba(0,169,114,0.35); border-radius:16px; padding:22px">
-          <div style="font-size:1.5rem; margin-bottom:0.6rem">⚙️</div>
-          <div style="font-size:14px; font-weight:800; color:#2DC98B; margin-bottom:8px">Agent Platform</div>
-          <p style="font-size:12.5px; color:rgba(255,255,255,0.8); line-height:1.6; margin-bottom:12px">Developer platform for building, evaluating, and serving agents. Agent Orchestration, LLMs, MLflow Tracing &amp; Evals, AI Gateway, Agent/Skill/MCP Registry.</p>
-          <div style="display:flex; flex-direction:column; gap:4px">
-            <span style="font-size:11px; color:rgba(0,169,114,0.8)">→ A2A · MCP Registry</span>
-            <span style="font-size:11px; color:rgba(0,169,114,0.8)">→ MLflow Tracing &amp; Evals</span>
-            <span style="font-size:11px; color:rgba(0,169,114,0.8)">→ Gemini · Claude · OpenAI</span>
-          </div>
-        </div>
-        <div style="background:linear-gradient(135deg,rgba(27,150,255,0.2),rgba(27,150,255,0.08)); border:1px solid rgba(27,150,255,0.35); border-radius:16px; padding:22px">
-          <div style="font-size:1.5rem; margin-bottom:0.6rem">🖥️</div>
-          <div style="font-size:14px; font-weight:800; color:#4DB8FF; margin-bottom:8px">Serverless GPU</div>
-          <p style="font-size:12.5px; color:rgba(255,255,255,0.8); line-height:1.6; margin-bottom:12px">On-demand best-in-class accelerated hardware integrated directly into Databricks notebooks and jobs. No infrastructure management — just scale.</p>
-          <div style="display:flex; flex-direction:column; gap:4px">
-            <span style="font-size:11px; color:rgba(27,150,255,0.8)">→ Fine-tuning at scale</span>
-            <span style="font-size:11px; color:rgba(27,150,255,0.8)">→ BYOM or marketplace</span>
-            <span style="font-size:11px; color:rgba(27,150,255,0.8)">→ Scale to zero</span>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.75rem;">
-        <div style="background:rgba(27,150,255,0.1); border:1px solid rgba(27,150,255,0.25); border-radius:12px; padding:14px 12px; text-align:center;">
-          <div style="font-size:1.2rem; margin-bottom:6px">🔗</div>
-          <div style="font-size:12px; font-weight:700; color:#4DB8FF; margin-bottom:4px">Agent-to-Agent</div>
-          <p style="font-size:11px; color:rgba(255,255,255,0.55); line-height:1.5">Multi-turn delegation across any orchestrator</p>
-        </div>
-        <div style="background:rgba(0,169,114,0.1); border:1px solid rgba(0,169,114,0.25); border-radius:12px; padding:14px 12px; text-align:center;">
-          <div style="font-size:1.2rem; margin-bottom:6px">🛠️</div>
-          <div style="font-size:12px; font-weight:700; color:#2DC98B; margin-bottom:4px">MCP Registry</div>
-          <p style="font-size:11px; color:rgba(255,255,255,0.55); line-height:1.5">Auto-discovery for Claude Code, Cursor &amp; any client</p>
-        </div>
-        <div style="background:rgba(255,209,102,0.08); border:1px solid rgba(255,209,102,0.25); border-radius:12px; padding:14px 12px; text-align:center;">
-          <div style="font-size:1.2rem; margin-bottom:6px">📊</div>
-          <div style="font-size:12px; font-weight:700; color:#FFD166; margin-bottom:4px">Observability</div>
-          <p style="font-size:11px; color:rgba(255,255,255,0.55); line-height:1.5">MLflow tracing · spans · SQL-queryable logs</p>
-        </div>
-        <div style="background:rgba(255,54,33,0.1); border:1px solid rgba(255,54,33,0.25); border-radius:12px; padding:14px 12px; text-align:center;">
-          <div style="font-size:1.2rem; margin-bottom:6px">🏛️</div>
-          <div style="font-size:12px; font-weight:700; color:#FF6E56; margin-bottom:4px">Unity Catalog</div>
-          <p style="font-size:11px; color:rgba(255,255,255,0.55); line-height:1.5">RBAC · lineage · audit trail across all agents</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================
-       CAPABILITIES — SLIDE C: MLFLOW 3.0 RESPONSESAGENT
-       ======================================================== -->
-  <section class="slide slide-navy" aria-label="Capabilities: MLflow 3.0 ResponsesAgent">
-    <div class="slide-content">
-      <div style="margin-bottom:1rem;">
-        <p class="mono-label" style="margin-bottom:0.4rem;">MLflow 3.0</p>
-        <h2 style="color:#fff;"><span style="color:var(--db-lava);">ResponsesAgent</span> — The New Agent Standard</h2>
-        <span class="accent-bar"></span>
-        <p style="font-size:clamp(0.78rem,1vw,0.88rem);">MLflow 3.0 introduced <strong style="color:#fff;">ResponsesAgent</strong> — an OpenAI Responses API-compatible interface that turns any framework or model into a first-class, governable Databricks service.</p>
-      </div>
-
-      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1.25rem; margin-bottom:1.5rem;">
-        <div style="background:rgba(255,54,33,0.08); border:1px solid rgba(255,54,33,0.25); border-radius:14px; padding:22px">
-          <div style="font-size:1.5rem; margin-bottom:0.6rem">🔌</div>
-          <h3 style="margin-bottom:0.4rem;">Drop-in OpenAI Replacement</h3>
-          <p style="font-size:0.82rem; line-height:1.6;">Any client built for OpenAI works with your Databricks agent — just swap <code style="font-family:'DM Mono',monospace; font-size:0.85em; color:#5cd6a8">base_url</code>. No SDK changes, no prompt rewrites.</p>
-        </div>
-        <div style="background:rgba(27,150,255,0.08); border:1px solid rgba(27,150,255,0.25); border-radius:14px; padding:22px">
-          <div style="font-size:1.5rem; margin-bottom:0.6rem">🏗️</div>
-          <h3 style="margin-bottom:0.4rem;">Wrap Any Framework</h3>
-          <p style="font-size:0.82rem; line-height:1.6;">LangChain, LlamaIndex, LangGraph, custom Python — wrap it in <code style="font-family:'DM Mono',monospace; font-size:0.85em; color:#5cd6a8">ResponsesAgent</code> and deploy through the same governed interface.</p>
-        </div>
-        <div style="background:rgba(0,169,114,0.08); border:1px solid rgba(0,169,114,0.25); border-radius:14px; padding:22px">
-          <div style="font-size:1.5rem; margin-bottom:0.6rem">📊</div>
-          <h3 style="margin-bottom:0.4rem;">MLflow Tracing + UC Governance</h3>
-          <p style="font-size:0.82rem; line-height:1.6;">Every agent call is tracked end-to-end with MLflow spans, versioned in the model registry, and subject to Unity Catalog permissions — full enterprise governance on agentic workloads.</p>
-        </div>
-        <div style="background:rgba(254,171,3,0.08); border:1px solid rgba(254,171,3,0.25); border-radius:14px; padding:22px">
-          <div style="font-size:1.5rem; margin-bottom:0.6rem">⚖️</div>
-          <h3 style="margin-bottom:0.4rem;">Quality Gates via <code style="font-family:'DM Mono',monospace; font-size:0.85em; color:#5cd6a8">mlflow.genai.evaluate()</code></h3>
-          <p style="font-size:0.82rem; line-height:1.6;">Built-in LLM judges score safety, relevance, and custom criteria before deployment. Results flow to Delta tables — queryable with SQL.</p>
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.6rem;">
-        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:9px; padding:11px; text-align:center;">
-          <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.35); margin-bottom:5px">Experiments</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">Run Tracking</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:9px; padding:11px; text-align:center;">
-          <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.35); margin-bottom:5px">Registry</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">UC Model Registry</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:9px; padding:11px; text-align:center;">
-          <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.35); margin-bottom:5px">Observability</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">Agent Tracing</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:9px; padding:11px; text-align:center;">
-          <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.35); margin-bottom:5px">Evaluation</div>
-          <div style="font-size:12px; font-weight:600; color:#fff">LLM Judges</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================
        SLIDE 5 — DEMO
        ======================================================== -->
   <section class="slide demo-bg" id="demo" aria-label="Slide 5: Demo">
@@ -625,7 +409,7 @@
   <!-- ========================================================
        SLIDE 6 — SOLUTION ARCHITECTURE
        ======================================================== -->
-  <section class="slide slide-navy" aria-label="Solution Architecture">
+  <section class="slide slide-navy" id="architecture" aria-label="Slide 6: Solution Architecture">
     <div class="slide-content">
       <div style="text-align:center; margin-bottom:1.2rem;">
         <p class="mono-label">End-to-End Solution</p>
@@ -705,17 +489,113 @@
   </section>
 
   <!-- ========================================================
+       SLIDE 7 — MLOPS LIFECYCLE OVERVIEW
+       ======================================================== -->
+  <section class="slide slide-ink" id="mlops" aria-label="Slide 7: MLOps Lifecycle">
+    <div class="slide-content">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <p class="mono-label">End-to-End MLOps</p>
+        <h2 style="margin-top:0.3rem;">From Raw Data to Deployed AI Agent</h2>
+        <span class="accent-bar centered"></span>
+      </div>
+      <!-- Pipeline -->
+      <div class="mlops-pipeline" style="justify-content:center; margin-bottom:1.4rem;">
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 00</span>
+          <div class="mlops-step-box ms-ingest">① Ingest</div>
+          <span class="mlops-step-nb">Bronze</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 01–02</span>
+          <div class="mlops-step-box ms-silver">② Govern</div>
+          <span class="mlops-step-nb">Silver + UC</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 03–04</span>
+          <div class="mlops-step-box ms-gold">③ Build for AI</div>
+          <span class="mlops-step-nb">Gold + Genie</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 05</span>
+          <div class="mlops-step-box ms-train">④ Train ML</div>
+          <span class="mlops-step-nb">MLflow + XGBoost</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 05</span>
+          <div class="mlops-step-box ms-register">⑤ Register</div>
+          <span class="mlops-step-nb">UC Registry + Serve</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 06</span>
+          <div class="mlops-step-box ms-agent">⑥ Agent</div>
+          <span class="mlops-step-nb">ResponsesAgent</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 07</span>
+          <div class="mlops-step-box ms-deploy">⑦ Deploy App</div>
+          <span class="mlops-step-nb">Databricks Apps</span>
+        </div>
+        <span class="mlops-arrow">→</span>
+        <div class="mlops-step">
+          <span class="mlops-step-num">nb 02+</span>
+          <div class="mlops-step-box ms-monitor">⑧ Monitor</div>
+          <span class="mlops-step-nb">UC Monitors</span>
+        </div>
+      </div>
+      <!-- MLflow banner -->
+      <div style="text-align:center; margin-bottom:1rem;">
+        <span style="font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.06em; color:rgba(143,163,255,0.55); background:rgba(66,89,254,0.08); border:1px solid rgba(66,89,254,0.2); border-radius:4px; padding:0.25rem 0.75rem;">MLflow 3.0 — unified tracking across every step</span>
+      </div>
+      <!-- Supporting cards -->
+      <div class="mlops-cards">
+        <div class="mlops-card">
+          <h4>Vector Search</h4>
+          <p>Resume semantic index<br>bx4_hrd_vs_endpoint</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Genie Space</h4>
+          <p>NL-to-SQL analytics<br>HR Analytics space</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Agent Deployment</h4>
+          <p>agents.deploy() · scale to zero<br>OpenAI-compatible endpoint</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Data Quality</h4>
+          <p>UC Monitors · drift metrics<br>Profile + drift metric tables</p>
+        </div>
+        <div class="mlops-card">
+          <h4>Governance</h4>
+          <p>Unity Catalog throughout<br>PII tags, masking, RBAC</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
        SLIDE 8 — STEP 1: BRONZE INGESTION
        ======================================================== -->
-  <section class="slide slide-navy" id="s1" aria-label="Slide 8: Step 1 - Bronze Ingestion">
+  <section class="slide slide-navy" id="ingest" aria-label="Slide 8: Step 1 - Bronze Ingestion">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num">① · Notebook 00</span>
+          <span class="step-num">Step 1 · Notebook 00</span>
           <h2>Ingest — Bronze Layer</h2>
         </div>
         <span class="accent-bar"></span>
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">Raw candidate data lands in Delta Lake as a Bronze table — schema inferred from CSV, resumes uploaded as PDFs to a Unity Catalog Volume.</p>
+        <ul class="detail-bullets" style="margin-top:0;">
+          <li>20 HR candidates across 4 open roles (Director HR, VP TA, Dir Comp&amp;Ben, CPO)</li>
+          <li><code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">read_files()</code> for schema-on-read from CSV — no ETL boilerplate</li>
+          <li>Resume PDFs ingested to <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">/Volumes/bx4/hrd_2030/hr_resumes/</code></li>
+          <li>Audit column <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">ingested_at</code> stamped on every row</li>
+        </ul>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
         <img src="images/ingest.png" alt="UC Catalog Explorer showing raw_data volume" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
@@ -765,13 +645,117 @@
   </section>
 
   <!-- ========================================================
+       CAPABILITY: DATA QUALITY & CLASSIFICATION
+       ======================================================== -->
+  <section class="slide slide-oat" aria-label="Capability: Data Quality and Classification">
+    <div class="slide-content">
+      <div style="font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--db-muted-teal); margin-bottom:0.4rem;">Data Governance</div>
+      <h2 style="font-weight:700; font-size:clamp(1.3rem,2.2vw,2rem); color:var(--db-ink); letter-spacing:-0.01em; line-height:1.2; margin-bottom:0.3rem;">Quality &amp; Classification Across <span style="color:var(--db-lava);">Every Layer</span></h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.75rem,0.95vw,0.85rem); margin-bottom:0.6rem; color:#4A5E68;">Governance isn't a final step — it's embedded at every stage. Data quality checks, sensitivity classification, and access controls apply from raw ingestion all the way to ML and AI.</p>
+
+      <div style="background:linear-gradient(90deg,#fff8f6,#fff1ee); border:1.5px solid rgba(255,54,33,0.18); border-radius:10px; padding:10px 16px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px">
+        <div>
+          <div style="font-size:11px; font-weight:800; color:var(--db-lava); margin-bottom:1px">Unity Catalog — Unified Governance</div>
+          <div style="font-size:10px; color:#4A5E68">One security model: who can see what, where it came from, and how it's being used</div>
+        </div>
+        <div style="display:flex; gap:5px; flex-wrap:wrap">
+          <span style="background:#fff; border:1px solid #DBD7CE; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#4A5E68">Tables</span>
+          <span style="background:#fff; border:1px solid #DBD7CE; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#4A5E68">Volumes</span>
+          <span style="background:#fff; border:1px solid #DBD7CE; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#4A5E68">Models</span>
+          <span style="background:#fff; border:1px solid #DBD7CE; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#4A5E68">Functions</span>
+          <span style="background:#fff; border:1px solid #DBD7CE; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#4A5E68">Lineage</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 18px 1fr 18px 1fr 18px 1fr 18px 1fr; align-items:start; gap:0; margin-bottom:10px">
+        <div style="background:#F3F0EE; border:1px solid #DBD7CE; border-radius:9px; padding:11px; min-height:185px">
+          <div style="font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#618693; margin-bottom:3px">Sources</div>
+          <div style="font-size:11px; font-weight:700; color:#0B2026; margin-bottom:6px">Your Data</div>
+          <div style="font-size:9.5px; color:#4A5E68; line-height:1.5; margin-bottom:8px">Sensor telemetry, case records, asset files, streaming events, partner feeds</div>
+          <div style="border-top:1px solid #DBD7CE; padding-top:7px">
+            <div style="font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#618693; margin-bottom:4px">Governance</div>
+            <span style="font-size:9.5px; color:#4A5E68; display:block">🔗 Source tags applied</span>
+            <span style="font-size:9.5px; color:#4A5E68; display:block">📋 Schema registered</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:center; padding-top:32px; color:#C0BAB4; font-size:14px">→</div>
+        <div style="background:linear-gradient(135deg,#FDF0E4,#FAE6D2); border:1px solid #EDCFAC; border-radius:9px; padding:11px; min-height:185px">
+          <div style="font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#B87A3D; margin-bottom:3px">Raw · Bronze</div>
+          <div style="font-size:11px; font-weight:700; color:#7A4F1A; margin-bottom:6px">Landing Zone</div>
+          <div style="font-size:9.5px; color:#8B6040; line-height:1.5; margin-bottom:8px">Exact copy of source data, preserved as-is. Immutable record of what arrived.</div>
+          <div style="border-top:1px solid #EDCFAC; padding-top:7px">
+            <div style="font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#B87A3D; margin-bottom:4px">Quality &amp; Class.</div>
+            <span style="font-size:9.5px; color:#7A4F1A; display:block">🏷️ Auto-classify PII/PHI</span>
+            <span style="font-size:9.5px; color:#7A4F1A; display:block">📊 Row &amp; null profiling</span>
+            <span style="font-size:9.5px; color:#7A4F1A; display:block">🔒 Mask sensitive fields</span>
+            <span style="font-size:9.5px; color:#7A4F1A; display:block">📜 Ingest lineage</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:center; padding-top:32px; color:#C0BAB4; font-size:14px">→</div>
+        <div style="background:linear-gradient(135deg,#F0F0F6,#E8E8F0); border:1px solid #D0D0DC; border-radius:9px; padding:11px; min-height:185px">
+          <div style="font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#6A6A80; margin-bottom:3px">Cleansed · Silver</div>
+          <div style="font-size:11px; font-weight:700; color:#3A3A50; margin-bottom:6px">Validated</div>
+          <div style="font-size:9.5px; color:#5A5A70; line-height:1.5; margin-bottom:8px">Deduplicated, standardised, quality-checked. Bad records quarantined, not deleted.</div>
+          <div style="border-top:1px solid #D0D0DC; padding-top:7px">
+            <div style="font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#6A6A80; margin-bottom:4px">Quality &amp; Class.</div>
+            <span style="font-size:9.5px; color:#3A3A50; display:block">✅ Schema enforcement</span>
+            <span style="font-size:9.5px; color:#3A3A50; display:block">🚦 Expectations (DQX)</span>
+            <span style="font-size:9.5px; color:#3A3A50; display:block">🔒 Column-level security</span>
+            <span style="font-size:9.5px; color:#3A3A50; display:block">📈 UC Monitor attached</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:center; padding-top:32px; color:#C0BAB4; font-size:14px">→</div>
+        <div style="background:linear-gradient(135deg,#FFF8E6,#FFEFC4); border:1px solid #EEDD8A; border-radius:9px; padding:11px; min-height:185px">
+          <div style="font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#A08520; margin-bottom:3px">Curated · Gold</div>
+          <div style="font-size:11px; font-weight:700; color:#6B5700; margin-bottom:6px">Business-Ready</div>
+          <div style="font-size:9.5px; color:#7A6310; line-height:1.5; margin-bottom:8px">Metrics, aggregations, KPIs. Ready for reporting, feature stores, and AI.</div>
+          <div style="border-top:1px solid #EEDD8A; padding-top:7px">
+            <div style="font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#A08520; margin-bottom:4px">Quality &amp; Class.</div>
+            <span style="font-size:9.5px; color:#6B5700; display:block">🏷️ Feature &amp; label tags</span>
+            <span style="font-size:9.5px; color:#6B5700; display:block">📉 Drift baseline set</span>
+            <span style="font-size:9.5px; color:#6B5700; display:block">🔔 Quality alerts</span>
+            <span style="font-size:9.5px; color:#6B5700; display:block">🔗 Column lineage</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:center; padding-top:32px; color:#C0BAB4; font-size:14px">→</div>
+        <div style="background:linear-gradient(135deg,#FFF1EF,#FFE5E1); border:1.5px solid rgba(255,54,33,0.25); border-radius:9px; padding:11px; min-height:185px">
+          <div style="font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--db-lava); margin-bottom:3px">ML &amp; AI</div>
+          <div style="font-size:11px; font-weight:700; color:#C02010; margin-bottom:6px">Trusted Inputs</div>
+          <div style="font-size:9.5px; color:#8B2E20; line-height:1.5; margin-bottom:8px">Models, Genie spaces, and apps consume governed data — quality enforced upstream.</div>
+          <div style="border-top:1px solid rgba(255,54,33,0.2); padding-top:7px">
+            <div style="font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--db-lava); margin-bottom:4px">Quality &amp; Class.</div>
+            <span style="font-size:9.5px; color:#C02010; display:block">🤖 Model registry lineage</span>
+            <span style="font-size:9.5px; color:#C02010; display:block">📊 Training data drift</span>
+            <span style="font-size:9.5px; color:#C02010; display:block">🔒 PHI never reaches model</span>
+            <span style="font-size:9.5px; color:#C02010; display:block">📜 Full audit trail</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:linear-gradient(90deg,#edf4ff,#ddeaff); border:1px solid #b0ceef; border-radius:10px; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px">
+        <div>
+          <div style="font-size:11px; font-weight:800; color:#1B6FB5; margin-bottom:1px">Lakehouse Monitoring — Automated Quality at Every Stage</div>
+          <div style="font-size:10px; color:#3A5F80">Quality metrics flow into Delta tables — query with SQL, build dashboards, or trigger MLOps pipeline alerts</div>
+        </div>
+        <div style="display:flex; gap:5px; flex-wrap:wrap">
+          <span style="background:#fff; border:1px solid #b0ceef; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#1B6FB5">Profile Stats</span>
+          <span style="background:#fff; border:1px solid #b0ceef; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#1B6FB5">Drift Detection</span>
+          <span style="background:#fff; border:1px solid #b0ceef; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#1B6FB5">Anomaly Metrics</span>
+          <span style="background:#fff; border:1px solid #b0ceef; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:600; color:#1B6FB5">Alert Rules</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
        SLIDE 9 — STEP 2: SILVER + GOVERNANCE
        ======================================================== -->
-  <section class="slide slide-oat" id="s2" aria-label="Slide 9: Step 2 - Silver and Governance">
+  <section class="slide slide-oat" id="govern" aria-label="Slide 9: Step 2 - Silver and Governance">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num" style="color:var(--db-lava);">② · Notebooks 01–02</span>
+          <span class="step-num" style="color:var(--db-lava);">Step 2 · Notebooks 01–02</span>
           <h2>Govern &amp; Enrich — Silver Layer</h2>
         </div>
         <span class="accent-bar"></span>
@@ -792,17 +776,73 @@
   </section>
 
   <!-- ========================================================
+       CAPABILITY: GENIE — NATURAL LANGUAGE
+       ======================================================== -->
+  <section class="slide slide-navy" aria-label="Capability: Genie Natural Language">
+    <div class="slide-content">
+      <div class="mono-label" style="margin-bottom:0.4rem;">AI — Natural Language</div>
+      <h2>Genie Brings New AI Capabilities <span style="color:var(--db-lava);">to All Roles</span></h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:1rem;">Genie is the AI layer that sits on top of your Lakehouse — making your governed data instantly accessible through natural language to business users, analysts, and engineers alike.</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start">
+        <div>
+          <div style="border-radius:12px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.3)">
+            <img src="images/genie-thumb.jpeg" alt="Genie natural language capabilities" style="width:100%; display:block">
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:1rem">
+          <div style="display:flex; gap:0.75rem; align-items:flex-start">
+            <span style="font-size:1.4rem; flex-shrink:0">💬</span>
+            <div>
+              <h3>Genie — Business Users &amp; Analysts</h3>
+              <p style="font-size:0.82rem; line-height:1.55; margin-top:0.25rem;">Ask questions in plain English. Genie writes and runs the SQL, returns results, and suggests follow-up questions — no technical knowledge needed.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.75rem; align-items:flex-start">
+            <span style="font-size:1.4rem; flex-shrink:0">💻</span>
+            <div>
+              <h3>Genie Code — Technical Users</h3>
+              <p style="font-size:0.82rem; line-height:1.55; margin-top:0.25rem;">Data Scientists and Engineers get AI-assisted notebook generation, transformation code, and pipeline scaffolding grounded in your actual schemas.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.75rem; align-items:flex-start">
+            <span style="font-size:1.4rem; flex-shrink:0">🏛️</span>
+            <div>
+              <h3>AI with Enterprise Context</h3>
+              <p style="font-size:0.82rem; line-height:1.55; margin-top:0.25rem;">Genie answers are grounded in your Unity Catalog — your actual tables, column names, business rules, and access policies. Not a generic LLM guess.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.75rem; align-items:flex-start">
+            <span style="font-size:1.4rem; flex-shrink:0">🔗</span>
+            <div>
+              <h3>Built on the Full Data Platform</h3>
+              <p style="font-size:0.82rem; line-height:1.55; margin-top:0.25rem;">Lakehouse, Lakebase (Serverless Postgres), Lakeflow (ingest/ETL), Unified Governance, Unity Catalog — Delta Lake, Iceberg, open formats.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
        SLIDE 10 — STEP 3: GOLD + GENIE + VECTOR SEARCH
        ======================================================== -->
-  <section class="slide slide-navy" id="s3" aria-label="Slide 10: Step 3 - Gold and AI Readiness">
+  <section class="slide slide-navy" id="gold" aria-label="Slide 10: Step 3 - Gold and AI Readiness">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num">③ · Notebooks 03–04</span>
+          <span class="step-num">Step 3 · Notebooks 03–04</span>
           <h2>Build for AI — Gold Layer + Genie Space</h2>
         </div>
         <span class="accent-bar"></span>
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">Gold tables aggregate candidate scores for analytics and ML training. Genie Space gives the agent natural language access to HR data. Vector Search enables semantic resume retrieval.</p>
+        <ul class="detail-bullets" style="margin-top:0;">
+          <li>Gold table joins candidates + job requirements with computed hiring metrics</li>
+          <li>Business Semantics layer: COMMENT ON TABLE + column descriptions make Genie accurate</li>
+          <li>Genie Space configured with trusted assets and sample questions</li>
+          <li>Vector Search index synced from resume chunk Delta table — 1536-dim embeddings</li>
+        </ul>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
         <img src="images/masking.png" alt="Candidates table sample data with masked phone numbers" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
@@ -812,17 +852,68 @@
   </section>
 
   <!-- ========================================================
+       CAPABILITY: ML LIFECYCLE
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Capability: ML Lifecycle">
+    <div class="slide-content">
+      <div class="mono-label" style="margin-bottom:0.4rem;">MLOps</div>
+      <h2>The Full <span style="color:var(--db-lava);">ML Lifecycle</span></h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:1.25rem;">MLflow + Databricks covers every stage — from raw data to production serving. Data Scientists and Engineers each own distinct phases, with MLflow as the connective tissue throughout.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:0.9rem; margin-bottom:1.25rem;">
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:13px; padding:16px 12px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">🗄️</div>
+          <h3 style="font-size:0.8rem; margin-bottom:0.35rem">Data Prep &amp; Featurization</h3>
+          <p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5)">Delta Lake + Databricks Jobs. Data Scientists build features; Engineers automate the infra.</p>
+        </div>
+        <div style="background:rgba(255,110,86,0.1); border:1px solid rgba(255,110,86,0.25); border-radius:13px; padding:16px 12px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">🔬</div>
+          <h3 style="font-size:0.8rem; margin-bottom:0.35rem">Model Development</h3>
+          <p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5)">Databricks ML Runtime with XGBoost, Keras, custom libraries on managed compute.</p>
+        </div>
+        <div style="background:rgba(27,150,255,0.1); border:1px solid rgba(27,150,255,0.25); border-radius:13px; padding:16px 12px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">📊</div>
+          <h3 style="font-size:0.8rem; margin-bottom:0.35rem">MLflow Tracking</h3>
+          <p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5)">Automatic logging of parameters, metrics, artifacts, and environment info for every run.</p>
+        </div>
+        <div style="background:rgba(0,169,114,0.1); border:1px solid rgba(0,169,114,0.25); border-radius:13px; padding:16px 12px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">🏛️</div>
+          <h3 style="font-size:0.8rem; margin-bottom:0.35rem">Model Registry</h3>
+          <p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5)">Staging → Production promotion workflow. Unity Catalog governs access and lineage.</p>
+        </div>
+        <div style="background:rgba(255,54,33,0.1); border:1px solid rgba(255,54,33,0.25); border-radius:13px; padding:16px 12px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">🚀</div>
+          <h3 style="font-size:0.8rem; margin-bottom:0.35rem">MLflow Deployment</h3>
+          <p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5)">Serve on Databricks Model Serving or batch via Spark. Engineers manage CI/CD.</p>
+        </div>
+      </div>
+
+      <div class="screenshot-frame">
+        <img src="images/traditional_mlflow_experiment.png" alt="MLflow experiment runs showing parameter tracking and model comparison" style="width:100%; display:block; border-radius:8px; max-height:260px; object-fit:contain; object-position:top;">
+        <p class="screenshot-caption">MLflow Experiments · parameter tracking · metric comparison · model registry promotion</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
        SLIDE 11 — STEP 4: TRAIN ML MODEL
        ======================================================== -->
-  <section class="slide slide-ink" id="s4" aria-label="Slide 11: Step 4 - Train ML Model">
+  <section class="slide slide-ink" id="train" aria-label="Slide 11: Step 4 - Train ML Model">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num">④ · Notebook 05</span>
+          <span class="step-num">Step 4 · Notebook 05</span>
           <h2>Train ML Model — Hire / No-Hire Prediction</h2>
         </div>
         <span class="accent-bar"></span>
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">MLflow autolog captures every experiment run. Best model (GradientBoostingClassifier) selected by AUC-ROC and registered to Unity Catalog with the <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">@champion</code> alias.</p>
+        <ul class="detail-bullets" style="margin-top:0;">
+          <li>8 features: education, experience, leadership, certification, skills_match, industry_relevance, interview, culture_fit</li>
+          <li>GradientBoostingClassifier — 100 estimators, lr=0.1, max_depth=3</li>
+          <li>MLflow autolog: input examples, model signatures, metrics</li>
+          <li>UC registration: <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">bx4.hrd_2030.hr_predictive_hiring</code></li>
+        </ul>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
         <img src="images/traditional_mlflow_experiment.png" alt="MLflow Experiments with multiple model runs" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
@@ -834,15 +925,21 @@
   <!-- ========================================================
        SLIDE 12 — STEP 5: REGISTER & SERVE MODEL
        ======================================================== -->
-  <section class="slide slide-navy" aria-label="Slide 12: Register and Serve">
+  <section class="slide slide-navy" id="register" aria-label="Slide 12: Step 5 - Register and Serve">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num">Register · Notebook 05</span>
+          <span class="step-num">Step 5 · Notebook 05</span>
           <h2>Register &amp; Serve — @champion Model Endpoint</h2>
         </div>
         <span class="accent-bar"></span>
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">Best run registered to Unity Catalog Model Registry and aliased as <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">@champion</code>. A serverless Model Serving endpoint exposes it as a REST API — the agent calls it via <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">predict_hiring_score</code>.</p>
+        <ul class="detail-bullets" style="margin-top:0;">
+          <li>UC model name: <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">bx4.hrd_2030.hr_predictive_hiring</code></li>
+          <li>Endpoint: <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">hr-predictive-hiring-endpoint</code></li>
+          <li>Scale-to-zero serverless compute — no idle costs</li>
+          <li>Agent tool calls endpoint via Databricks SDK token-auth</li>
+        </ul>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
         <img src="images/serving_agents.png" alt="Model Serving endpoints" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
@@ -852,17 +949,196 @@
   </section>
 
   <!-- ========================================================
+       CAPABILITY: AGENTS AI STACK
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Capability: Databricks Agents AI Stack">
+    <div class="slide-content">
+      <div class="mono-label" style="color:rgba(255,110,86,0.9); margin-bottom:0.4rem;">AI Agents — Overview</div>
+      <h2>Databricks <span style="color:var(--db-lava);">Agents AI Stack</span></h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:1.25rem;">Three integrated layers — from raw compute to prebuilt production agents — built to work together with end-to-end governance across the full agent lifecycle.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin-bottom:1.25rem;">
+        <div style="background:linear-gradient(135deg,rgba(255,54,33,0.2),rgba(255,54,33,0.08)); border:1px solid rgba(255,54,33,0.35); border-radius:16px; padding:20px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">🧱</div>
+          <div style="font-size:13px; font-weight:800; color:#FF6E56; margin-bottom:7px">Agent Bricks</div>
+          <p style="font-size:12.5px; color:rgba(255,255,255,0.8); line-height:1.6">Prebuilt contextual reasoning agents built with the Developer Framework. Production AI agents ready to deploy — Knowledge Assistant, Supervisor Agent, Documents Agent, AI Functions.</p>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(0,169,114,0.2),rgba(0,169,114,0.08)); border:1px solid rgba(0,169,114,0.35); border-radius:16px; padding:20px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">⚙️</div>
+          <div style="font-size:13px; font-weight:800; color:#2DC98B; margin-bottom:7px">Agent Platform</div>
+          <p style="font-size:12.5px; color:rgba(255,255,255,0.8); line-height:1.6">Developer platform for building, evaluating, and serving agents. Agent Orchestration, LLMs, MLflow Tracing &amp; Evals, AI Gateway, Agent/Skill/MCP Registry — end-to-end governance.</p>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(27,150,255,0.2),rgba(27,150,255,0.08)); border:1px solid rgba(27,150,255,0.35); border-radius:16px; padding:20px">
+          <div style="font-size:1.4rem; margin-bottom:0.5rem">🖥️</div>
+          <div style="font-size:13px; font-weight:800; color:#4DB8FF; margin-bottom:7px">Serverless GPU Compute</div>
+          <p style="font-size:12.5px; color:rgba(255,255,255,0.8); line-height:1.6">On-demand best-in-class accelerated hardware integrated directly into Databricks notebooks and jobs. No infrastructure management — just scale.</p>
+        </div>
+      </div>
+
+      <div class="screenshot-frame">
+        <img src="images/agents_deploy.png" alt="Databricks agent serving endpoints" style="width:100%; display:block; border-radius:8px; max-height:230px; object-fit:contain; object-position:top;">
+        <p class="screenshot-caption">Databricks Agent Platform · serving endpoints · model registry · governance</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CAPABILITY: AGENT PLATFORM
+       ======================================================== -->
+  <section class="slide slide-navy" aria-label="Capability: Agent Platform and Control Plane">
+    <div class="slide-content">
+      <div class="mono-label" style="margin-bottom:0.4rem;">AI Agents — Platform</div>
+      <h2>Agent Bricks — <span style="color:var(--db-lava);">Agent Platform &amp; Control Plane</span></h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.9rem;">Whether you use prebuilt Agent Bricks, build conversational BI with Genie, or deploy fully custom apps — it all runs on the same Agent Platform with unified governance.</p>
+
+      <div class="screenshot-frame" style="margin-bottom:0.9rem; max-width:860px; margin-left:auto; margin-right:auto">
+        <img src="images/building agent with tools.png" alt="Building an agent with tools in Databricks" style="width:100%; display:block; border-radius:8px; max-height:240px; object-fit:contain; object-position:top;">
+        <p class="screenshot-caption">Agent development · tool declaration · MLflow tracing · evaluation pipeline</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.9rem">
+        <div style="background:rgba(255,54,33,0.15); border:1px solid rgba(255,54,33,0.3); border-radius:11px; padding:14px">
+          <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#FF6E56; margin-bottom:7px">Contextual Reasoning Agents</div>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">Knowledge Assistant</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">Supervisor Agent</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">Documents Agent</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block">AI Functions</span>
+        </div>
+        <div style="background:rgba(27,150,255,0.15); border:1px solid rgba(27,150,255,0.3); border-radius:11px; padding:14px">
+          <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#4DB8FF; margin-bottom:7px">Developer Platform</div>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">Agent Orchestration</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">LLMs — Gemini, Claude, OpenAI</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">Tracing &amp; Evals (MLflow)</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block">Feedback &amp; Guidelines</span>
+        </div>
+        <div style="background:rgba(0,169,114,0.15); border:1px solid rgba(0,169,114,0.3); border-radius:11px; padding:14px">
+          <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#2DC98B; margin-bottom:7px">AI Governance</div>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">Agent/Skill/MCP Registry</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">AI Gateway</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block; margin-bottom:4px">Agent Observability</span>
+          <span style="font-size:12px; color:rgba(255,255,255,0.85); font-weight:600; display:block">Managed OAuth Apps</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CAPABILITY: MLFLOW 3.0 — RESPONSESAGENT
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Capability: MLflow 3.0 ResponsesAgent">
+    <div class="slide-content">
+      <div class="mono-label" style="margin-bottom:0.4rem;">Agent Framework</div>
+      <h2><span style="color:var(--db-lava);">MLflow 3.0</span> — ResponsesAgent</h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:1rem;">MLflow 3 introduced <strong style="color:#fff;">ResponseAgent</strong> — an OpenAI Responses API-compatible agent interface that turns any model or agentic workflow into a first-class, governable Databricks service.</p>
+
+      <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:start">
+        <div>
+          <div style="background:rgba(26,26,46,0.8); padding:14px; border-radius:12px; margin-bottom:0.6rem;">
+            <img src="images/agent_evals.png" alt="MLflow agent evaluations" style="width:100%; display:block; border-radius:8px">
+          </div>
+          <p class="screenshot-caption">MLflow Evaluate · safety, relevance &amp; custom scorer · quality gates</p>
+        </div>
+        <div>
+          <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:13px; margin-bottom:0.65rem">
+            <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.35); margin-bottom:7px">ChatAgent (MLflow 2.x)</div>
+            <span style="font-size:11px; background:rgba(255,255,255,0.07); border-radius:5px; padding:3px 8px; color:rgba(255,255,255,0.55); display:inline-block; margin:2px">MLflow-specific API</span>
+            <span style="font-size:11px; background:rgba(255,255,255,0.07); border-radius:5px; padding:3px 8px; color:rgba(255,255,255,0.55); display:inline-block; margin:2px">Manual streaming</span>
+            <span style="font-size:11px; background:rgba(255,255,255,0.07); border-radius:5px; padding:3px 8px; color:rgba(255,255,255,0.55); display:inline-block; margin:2px">Framework wiring</span>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(0,169,114,0.2),rgba(0,169,114,0.08)); border:1.5px solid rgba(0,169,114,0.4); border-radius:10px; padding:13px; margin-bottom:0.85rem">
+            <div style="font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#2DC98B; margin-bottom:7px">ResponseAgent (MLflow 3) — Recommended</div>
+            <span style="font-size:11px; background:rgba(0,169,114,0.2); border-radius:5px; padding:3px 8px; color:#2DC98B; display:inline-block; margin:2px">OpenAI Responses API</span>
+            <span style="font-size:11px; background:rgba(0,169,114,0.2); border-radius:5px; padding:3px 8px; color:#2DC98B; display:inline-block; margin:2px">Streaming built-in</span>
+            <span style="font-size:11px; background:rgba(0,169,114,0.2); border-radius:5px; padding:3px 8px; color:#2DC98B; display:inline-block; margin:2px">Framework-agnostic</span>
+            <span style="font-size:11px; background:rgba(0,169,114,0.2); border-radius:5px; padding:3px 8px; color:#2DC98B; display:inline-block; margin:2px">Tool calling standard</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:0.6rem">
+            <div style="display:flex; gap:0.6rem; align-items:flex-start">
+              <span style="font-size:1.1rem; flex-shrink:0">🔌</span>
+              <div><h3 style="font-size:0.8rem; margin-bottom:0.15rem">Drop-in OpenAI Replacement</h3><p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5);">Any client built for OpenAI works — just swap <code style="font-family:var(--font-mono); font-size:0.75em; color:#5cd6a8">base_url</code>. No SDK changes.</p></div>
+            </div>
+            <div style="display:flex; gap:0.6rem; align-items:flex-start">
+              <span style="font-size:1.1rem; flex-shrink:0">🏗️</span>
+              <div><h3 style="font-size:0.8rem; margin-bottom:0.15rem">Wrap Any Framework</h3><p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5);">LangChain, LlamaIndex, LangGraph, custom Python — wrap in <code style="font-family:var(--font-mono); font-size:0.75em; color:#5cd6a8">ResponsesAgent</code> and deploy.</p></div>
+            </div>
+            <div style="display:flex; gap:0.6rem; align-items:flex-start">
+              <span style="font-size:1.1rem; flex-shrink:0">📦</span>
+              <div><h3 style="font-size:0.8rem; margin-bottom:0.15rem">MLflow Tracing + Governance</h3><p style="font-size:0.72rem; line-height:1.5; color:rgba(255,255,255,0.5);">Every agent call tracked, versioned, and subject to Unity Catalog permissions — full enterprise governance.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CAPABILITY: AGENT ORCHESTRATION
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Capability: Agent Orchestration">
+    <div class="slide-content">
+      <div class="mono-label" style="color:rgba(255,110,86,0.9); margin-bottom:0.4rem;">Agent Bricks</div>
+      <h2><span style="color:var(--db-lava);">Agent Orchestration</span></h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:1.5rem;">How Databricks agents connect, communicate, and stay governed — across every framework, orchestrator, and enterprise system.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem">
+        <div style="background:rgba(27,150,255,0.12); border:1px solid rgba(27,150,255,0.3); border-radius:16px; padding:20px 16px">
+          <div style="font-size:1.5rem; margin-bottom:0.75rem">🔗</div>
+          <div style="font-size:13px; font-weight:800; color:#4DB8FF; margin-bottom:6px">Agent-to-Agent (A2A)</div>
+          <p style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6; margin-bottom:12px">Databricks agents participate as peer agents in multi-agent workflows. Any orchestrator can delegate multi-turn tasks and receive governed, traceable responses.</p>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ Multi-turn delegation</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ State-aware handoffs</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ Any orchestrator</span>
+        </div>
+        <div style="background:rgba(0,169,114,0.12); border:1px solid rgba(0,169,114,0.3); border-radius:16px; padding:20px 16px">
+          <div style="font-size:1.5rem; margin-bottom:0.75rem">🛠️</div>
+          <div style="font-size:13px; font-weight:800; color:#2DC98B; margin-bottom:6px">MCP Registry</div>
+          <p style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6; margin-bottom:12px">Agents, skills, and tools are registered as MCP resources. Claude Code, Cursor, or any MCP-compatible client can discover and call them with no Databricks SDK required.</p>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ Auto-discovery</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ Open standard protocol</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ AI Gateway routing</span>
+        </div>
+        <div style="background:rgba(255,209,102,0.1); border:1px solid rgba(255,209,102,0.3); border-radius:16px; padding:20px 16px">
+          <div style="font-size:1.5rem; margin-bottom:0.75rem">📊</div>
+          <div style="font-size:13px; font-weight:800; color:#FFD166; margin-bottom:6px">Observability</div>
+          <p style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6; margin-bottom:12px">Every agent call is traced end-to-end with MLflow. Spans, tool calls, latency, token usage, and quality scores flow into Delta tables — queryable with SQL.</p>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ MLflow Tracing</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ Evals &amp; quality scores</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ SQL-queryable logs</span>
+        </div>
+        <div style="background:rgba(255,54,33,0.12); border:1px solid rgba(255,54,33,0.3); border-radius:16px; padding:20px 16px">
+          <div style="font-size:1.5rem; margin-bottom:0.75rem">🏛️</div>
+          <div style="font-size:13px; font-weight:800; color:#FF6E56; margin-bottom:6px">Unity Catalog</div>
+          <p style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6; margin-bottom:12px">Agents, models, skills, and tools are Unity Catalog objects — with RBAC, lineage, audit logs, and access policies applied automatically across every call.</p>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ RBAC &amp; ABAC</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ Full audit trail</span>
+          <span style="font-size:11px; color:rgba(255,255,255,0.45); display:block">→ Lineage across agents</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
        SLIDE 13 — STEP 6: BUILD AGENT
        ======================================================== -->
-  <section class="slide slide-ink" id="s5" aria-label="Slide 13: Step 6 - Build Agent">
+  <section class="slide slide-ink" id="agent" aria-label="Slide 13: Step 6 - Build Agent">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num">⑤ · Notebook 06</span>
+          <span class="step-num">Step 6 · Notebook 06</span>
           <h2>Build &amp; Deploy Agent — ResponsesAgent + MLflow 3.0</h2>
         </div>
         <span class="accent-bar"></span>
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">The Hire Right Agent is a <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">ResponsesAgent</code> (OpenAI-compatible ChatAgent) packaged with MLflow 3.0, evaluated with <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">mlflow.genai.evaluate()</code>, and deployed as a serverless endpoint.</p>
+        <ul class="detail-bullets" style="margin-top:0;">
+          <li>4 tools declared as resources: Genie, Vector Search, ML Endpoint, Mailgun</li>
+          <li>Evaluation: Safety, RelevanceToQuery, custom jnj_tone scorer</li>
+          <li><code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">agents.deploy()</code> — scale-to-zero, env vars injected at serve time</li>
+          <li>Registered as <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">bx4.hrd_2030.hire_right_agent</code> in UC</li>
+        </ul>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
         <img src="images/llm_judge.png" alt="MLflow evaluation with JnJ Tone judge scores" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
@@ -872,26 +1148,53 @@
   </section>
 
   <!-- ========================================================
-       STEP 5 SUB-SLIDE: AGENT EVALS
+       CAPABILITY: DATABRICKS APPS
        ======================================================== -->
-  <section class="slide slide-ink" aria-label="Step 5 sub: Agent Evaluations">
-    <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
-      <div style="flex-shrink:0; margin-bottom:0.75rem;">
-        <div class="step-header">
-          <span class="step-num">⑤ · MLflow Evaluate</span>
-          <h2>Agent Quality Gates — LLM Judges &amp; Feedback</h2>
+  <section class="slide slide-ink" aria-label="Capability: Databricks Apps">
+    <div class="slide-content">
+      <div class="mono-label" style="color:rgba(255,110,86,0.9); margin-bottom:0.4rem;">User Experience</div>
+      <h2>Databricks <span style="color:var(--db-lava);">Apps</span></h2>
+      <span class="accent-bar"></span>
+      <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:1.5rem;">Deploy governed, AI-powered applications directly on your Databricks lakehouse — no external hosting, no data movement, full Unity Catalog security.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.25rem">
+        <div style="background:linear-gradient(135deg,rgba(255,54,33,0.2),rgba(255,54,33,0.08)); border:1px solid rgba(255,54,33,0.35); border-radius:16px; padding:20px">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem">📱</div>
+          <div style="font-size:13px; font-weight:700; color:#FF6E56; margin-bottom:5px">Databricks Apps</div>
+          <p style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6">Build and deploy Python/Streamlit/React apps natively on Databricks. Apps inherit UC permissions — no credential management, no VPN, no egress.</p>
         </div>
-        <span class="accent-bar"></span>
-        <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">Custom JnJ Tone scorer plus built-in safety and relevance judges run against the agent before deployment. Every assessment is logged to MLflow and queryable with SQL.</p>
+        <div style="background:linear-gradient(135deg,rgba(0,169,114,0.2),rgba(0,169,114,0.08)); border:1px solid rgba(0,169,114,0.35); border-radius:16px; padding:20px">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem">🌐</div>
+          <div style="font-size:13px; font-weight:700; color:#2DC98B; margin-bottom:5px">Databricks One &amp; One Chat</div>
+          <p style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6">The unified web and mobile experience for business users. Access Genie spaces, dashboards, and apps from browser or iOS/Android — no Databricks login required for end users.</p>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(27,150,255,0.2),rgba(27,150,255,0.08)); border:1px solid rgba(27,150,255,0.35); border-radius:16px; padding:20px">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem">🔗</div>
+          <div style="font-size:13px; font-weight:700; color:#4DB8FF; margin-bottom:5px">Integrations</div>
+          <p style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6">Meet users where they work. MS Teams bot, Slack integration, and 3rd-party BI tools (Tableau, Power BI, Looker) all connect to the same governed lakehouse data.</p>
+        </div>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; flex:1; min-height:0;">
-        <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/agent_evals_2.png" alt="MLflow agent evaluation results table" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
-          <p class="screenshot-caption">MLflow Evaluate · evaluation results · safety · relevance · JnJ Tone</p>
+
+      <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:0.6rem">
+        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px; text-align:center">
+          <div style="font-size:9.5px; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px">Deploy</div>
+          <div style="font-size:12px; font-weight:600; color:#fff">Databricks Apps</div>
         </div>
-        <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/agent_evals.png" alt="MLflow trace with JnJ Tone assessment detail" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
-          <p class="screenshot-caption">MLflow Trace · JnJ Tone assessment · rationale · pass / fail</p>
+        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px; text-align:center">
+          <div style="font-size:9.5px; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px">Browse</div>
+          <div style="font-size:12px; font-weight:600; color:#fff">Databricks One</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px; text-align:center">
+          <div style="font-size:9.5px; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px">Mobile</div>
+          <div style="font-size:12px; font-weight:600; color:#fff">One Chat</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px; text-align:center">
+          <div style="font-size:9.5px; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px">Collaborate</div>
+          <div style="font-size:12px; font-weight:600; color:#fff">MS Teams</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:12px; text-align:center">
+          <div style="font-size:9.5px; font-weight:700; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px">Visualize</div>
+          <div style="font-size:12px; font-weight:600; color:#fff">3rd Party BI</div>
         </div>
       </div>
     </div>
@@ -900,15 +1203,21 @@
   <!-- ========================================================
        SLIDE 14 — STEP 7: DEPLOY APP
        ======================================================== -->
-  <section class="slide slide-navy" id="s6" aria-label="Slide 14: Step 7 - Deploy App">
+  <section class="slide slide-navy" id="deploy" aria-label="Slide 14: Step 7 - Deploy App">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num">⑥ · Notebook 07</span>
+          <span class="step-num">Step 7 · Notebook 07</span>
           <h2>Deploy — Hire Right App on Databricks Apps</h2>
         </div>
         <span class="accent-bar"></span>
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">The Hire Right App is a Databricks App (FastAPI backend + vanilla HTML/JS frontend) that proxies chat messages to the agent endpoint — with Databricks OAuth handling auth seamlessly.</p>
+        <ul class="detail-bullets" style="margin-top:0;">
+          <li>FastAPI server routes <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">POST /chat</code> to agent serving endpoint</li>
+          <li>Databricks OAuth — no separate auth layer needed</li>
+          <li>Single HTML chat interface with streaming support</li>
+          <li>Deployed via <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">databricks apps deploy hire-right-app</code></li>
+        </ul>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; flex:1; min-height:0;">
         <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
@@ -926,15 +1235,21 @@
   <!-- ========================================================
        SLIDE 15 — STEP 8: MONITOR & GOVERN
        ======================================================== -->
-  <section class="slide slide-oat" aria-label="Slide 15: Monitor and Govern">
+  <section class="slide slide-oat" id="monitor" aria-label="Slide 15: Step 8 - Monitor and Govern">
     <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
       <div style="flex-shrink:0; margin-bottom:0.75rem;">
         <div class="step-header">
-          <span class="step-num" style="color:var(--db-lava);">Monitor · Continuous</span>
+          <span class="step-num" style="color:var(--db-lava);">Step 8 · Continuous</span>
           <h2>Monitor &amp; Govern — Unity Catalog Throughout</h2>
         </div>
         <span class="accent-bar"></span>
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem; color:#4A5E68;">Data quality monitors and model drift detection run continuously. Unity Catalog enforces governance at every layer — from raw Bronze to deployed agent.</p>
+        <ul class="charter-bullets" style="font-size:clamp(0.75rem,0.95vw,0.85rem);">
+          <li><strong>Lakehouse Monitor:</strong> snapshot monitor on candidates table — null rates, value distributions, drift metrics</li>
+          <li><strong>Model Drift:</strong> inference monitor comparing live predictions to training baseline</li>
+          <li><strong>UC Lineage:</strong> end-to-end column lineage from CSV → Bronze → Silver → Gold → ML feature</li>
+          <li><strong>Audit Log:</strong> all data access tracked — who queried what, when</li>
+        </ul>
         <div class="gov-chip-row" style="margin-top:0.5rem;">
           <span class="gov-chip qual">Profile Metrics Table</span>
           <span class="gov-chip qual">Drift Metrics Table</span>
@@ -952,21 +1267,6 @@
           <img src="images/agent_registry.png" alt="Databricks Agents registry showing hire-right-agent-endpoint" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
           <p class="screenshot-caption">Databricks Agents Registry · hire-right-agent-endpoint</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================
-       APPENDIX
-       ======================================================== -->
-  <section class="slide slide-ink" id="appendix" aria-label="Appendix">
-    <div class="slide-content" style="text-align:center;">
-      <p style="font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:1rem;">Reference</p>
-      <h1 style="font-size:clamp(3rem,9vw,7rem); font-weight:700; letter-spacing:-0.04em; color:#fff; line-height:0.9; margin-bottom:1.5rem;">Appendix</h1>
-      <p style="color:rgba(255,255,255,0.5); font-size:clamp(0.9rem,1.5vw,1.2rem); max-width:500px; margin:0 auto 2rem;">Detailed capability mapping, charter, and supporting reference material.</p>
-      <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-        <span style="font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:0.25rem 0.65rem; color:rgba(255,255,255,0.4);">Capability Mapping</span>
-        <span style="font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:0.25rem 0.65rem; color:rgba(255,255,255,0.4);">Workshop Charter</span>
       </div>
     </div>
   </section>

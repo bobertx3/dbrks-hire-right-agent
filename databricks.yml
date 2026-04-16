@@ -75,7 +75,7 @@ resources:
         - name: train_model
           default: "false"
         - name: deploy_agent
-          default: "false"
+          default: "true"
       tasks:
         - task_key: load_bronze
           notebook_task:
