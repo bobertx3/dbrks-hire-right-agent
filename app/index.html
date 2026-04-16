@@ -1146,6 +1146,16 @@ function renderJobs() {
   }).join('');
 }
 
+function drillToCandidates(jobId, stage) {
+  switchMainTab('candidates');
+  // Set role filter to this job
+  const roleBtn = document.querySelector(`[data-filter-role="${jobId}"]`);
+  setRoleFilter(jobId, roleBtn);
+  // Optionally set stage filter
+  const stageBtn = document.querySelector(`[data-filter-stage="${stage}"]`);
+  setStageFilter(stage, stageBtn);
+}
+
 // ── Job Description Modal ─────────────────────────────────────
 function openJD(job) {
   document.getElementById('jd-modal-title').textContent = job.title;
