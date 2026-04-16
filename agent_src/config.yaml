@@ -1,0 +1,12 @@
+# Development config — mirrors model_config passed to mlflow.pyfunc.log_model.
+# In serving, MLflow bakes these values into the artifact and ModelConfig reads them.
+# In development (notebook), ModelConfig reads from this file.
+# Sensitive values (Mailgun) are NOT here — they come from environment variables.
+
+llm_endpoint: "databricks-gpt-5-4"
+genie_space_id: ""
+vs_endpoint_name: "bx4_hrd_vs_endpoint"
+vs_index: "hr_resumes_vs_index"
+target_catalog: "bx4"
+target_schema: "hrd_2030"
+model_endpoint_name: "hr-predictive-hiring-endpoint"

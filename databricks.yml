@@ -1,0 +1,189 @@
+bundle:
+  name: jnj-hrd-2030-demo
+
+variables:
+  catalog:
+    description: Unity Catalog catalog name
+    default: bx4
+  schema:
+    description: Unity Catalog schema name
+    default: hrd_2030
+  warehouse_id:
+    description: SQL Warehouse ID
+    default: "0d3bda4f46281ab5"
+  app_name:
+    description: Databricks App name
+    default: hire-right-agent
+  vs_endpoint_name:
+    description: Vector Search endpoint name
+    default: bx4_hrd_vs_endpoint
+  model_endpoint_name:
+    description: ML model serving endpoint name
+    default: hr-predictive-hiring-endpoint
+  agent_endpoint_name:
+    description: Agent serving endpoint name
+    default: hire-right-agent-endpoint
+  llm_endpoint_name:
+    description: LLM serving endpoint (via AI Gateway)
+    default: databricks-gpt-5-4
+  mlflow_experiment:
+    description: MLflow experiment name
+    default: hr_predictive_hiring
+  agent_name:
+    description: Registered model name for the agent
+    default: hire_right
+  genie_space_id:
+    description: Genie Space ID for HR analytics (set after space is created in UI or notebook 04)
+    default: "01f1388a821b1e42a9d579bb45510abf"
+
+resources:
+  apps:
+    hire_right_app:
+      name: ${var.app_name}
+      description: "HireRight AI Agent — J&J HRD 2030 Predictive Hiring"
+      source_code_path: ./app
+      resources:
+        - name: agent_endpoint
+          serving_endpoint:
+            name: ${var.agent_endpoint_name}
+            permission: CAN_QUERY
+        - name: sql_warehouse
+          sql_warehouse:
+            id: ${var.warehouse_id}
+            permission: CAN_USE
+
+  dashboards:
+    hiring_analytics:
+      display_name: "J&J HRD 2030 — Hiring Analytics"
+      file_path: ./dashboard/hiring_analytics.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      parent_path: "/Workspace/Users/robert.leach@databricks.com"
+
+  jobs:
+    hrd_setup_job:
+      name: jnj-hrd-ml-pipeline
+      parameters:
+        - name: train_model
+          default: "true"
+      tasks:
+        - task_key: load_bronze
+          notebook_task:
+            notebook_path: ./notebooks/00_load_bronze.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              volume_name: raw_data
+
+        - task_key: load_silver
+          depends_on:
+            - task_key: load_bronze
+          notebook_task:
+            notebook_path: ./notebooks/01_load_silver.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
+        - task_key: build_vector_index_rag
+          depends_on:
+            - task_key: load_bronze
+          notebook_task:
+            notebook_path: ./notebooks/01b_build_vector_search.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              volume_name: raw_data
+              vs_endpoint_name: ${var.vs_endpoint_name}
+              vs_index_name: hr_resumes_vs_index
+
+        - task_key: classify_and_quality
+          depends_on:
+            - task_key: load_silver
+          notebook_task:
+            notebook_path: ./notebooks/02_apply_data_quality_and_classification.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
+        - task_key: build_gold
+          depends_on:
+            - task_key: classify_and_quality
+          notebook_task:
+            notebook_path: ./notebooks/03_build_gold.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
+        - task_key: apply_business_semantics
+          depends_on:
+            - task_key: build_gold
+          notebook_task:
+            notebook_path: ./notebooks/03b_apply_business_semantics.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
+        - task_key: genie_space
+          depends_on:
+            - task_key: apply_business_semantics
+          notebook_task:
+            notebook_path: ./notebooks/04_create_genie_space.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              warehouse_id: ${var.warehouse_id}
+
+        - task_key: train_condition
+          depends_on:
+            - task_key: genie_space
+          condition_task:
+            op: EQUAL_TO
+            left: "{{job.parameters.train_model}}"
+            right: "true"
+
+        - task_key: ml_model
+          depends_on:
+            - task_key: train_condition
+              outcome: "true"
+          notebook_task:
+            notebook_path: ./notebooks/05_train_ml_model.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mlflow_experiment: ${var.mlflow_experiment}
+              model_name: hr_predictive_hiring
+              endpoint_name: ${var.model_endpoint_name}
+
+        - task_key: agent
+          depends_on:
+            - task_key: genie_space
+            - task_key: build_vector_index_rag
+          notebook_task:
+            notebook_path: ./notebooks/06_evaluate_register_agent.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              genie_space_id: ${var.genie_space_id}
+              vs_index_name: hr_resumes_vs_index
+              vs_endpoint_name: ${var.vs_endpoint_name}
+              model_endpoint_name: ${var.model_endpoint_name}
+              agent_name: ${var.agent_name}
+              agent_endpoint_name: ${var.agent_endpoint_name}
+              llm_endpoint: ${var.llm_endpoint_name}
+
+        - task_key: refresh_dashboard
+          depends_on:
+            - task_key: apply_business_semantics
+          notebook_task:
+            notebook_path: ./notebooks/08_refresh_dashboard.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              warehouse_id: ${var.warehouse_id}
+              dashboard_name: "J&J HRD 2030 — Hiring Analytics"
+
+targets:
+  prod:
+    mode: production
+    workspace:
+      host: https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com
+      root_path: /Workspace/Users/robert.leach@databricks.com/.bundle/${bundle.name}/${bundle.target}

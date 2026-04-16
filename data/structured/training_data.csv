@@ -1,0 +1,11 @@
+candidate_id,job_id,education_score,experience_score,leadership_score,certification_score,skills_match_score,industry_relevance_score,interview_score,total_score,hired
+C001,JR001,85,90,85,95,92,95,88,90,1
+C002,JR001,75,85,80,90,85,90,82,84,1
+C003,JR001,60,55,40,0,50,40,58,42,0
+C004,JR001,85,95,92,95,95,95,90,93,1
+C005,JR001,95,85,75,90,88,88,85,85,1
+C006,JR001,60,35,25,65,40,45,45,42,0
+C007,JR001,75,50,45,65,55,50,60,55,0
+C008,JR001,85,65,55,75,60,55,65,65,0
+C009,JR001,60,70,45,65,58,45,62,58,0
+C010,JR001,75,75,40,95,70,60,70,67,0

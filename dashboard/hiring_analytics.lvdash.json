@@ -1,0 +1,177 @@
+{
+  "datasets": [
+    {
+      "name": "candidate_scores",
+      "displayName": "Candidate Scores",
+      "queryLines": [
+        "SELECT\n",
+        "  candidate_id,\n",
+        "  first_name || ' ' || last_name AS candidate_name,\n",
+        "  job_id,\n",
+        "  job_title,\n",
+        "  total_score,\n",
+        "  education_score,\n",
+        "  experience_score,\n",
+        "  leadership_score,\n",
+        "  certification_score,\n",
+        "  skills_match_score,\n",
+        "  industry_relevance_score,\n",
+        "  interview_score,\n",
+        "  culture_fit,\n",
+        "  CASE WHEN hired = 1 THEN 'Hired' WHEN hired = 0 THEN 'Not Hired' ELSE 'Pending' END AS hire_status,\n",
+        "  location\n",
+        "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+        "ORDER BY total_score DESC NULLS LAST"
+      ]
+    },
+    {
+      "name": "hiring_summary",
+      "displayName": "Hiring Summary by Job",
+      "queryLines": [
+        "SELECT\n",
+        "  job_id,\n",
+        "  job_title,\n",
+        "  COUNT(*) AS total_candidates,\n",
+        "  SUM(CASE WHEN hired = 1 THEN 1 ELSE 0 END) AS hired_count,\n",
+        "  ROUND(AVG(CASE WHEN total_score IS NOT NULL THEN total_score END), 1) AS avg_score,\n",
+        "  MAX(total_score) AS top_score\n",
+        "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+        "GROUP BY job_id, job_title\n",
+        "ORDER BY job_id"
+      ]
+    },
+    {
+      "name": "score_breakdown",
+      "displayName": "Score Breakdown (Training Set)",
+      "queryLines": [
+        "SELECT\n",
+        "  first_name || ' ' || last_name AS candidate_name,\n",
+        "  job_id,\n",
+        "  ROUND(education_score, 0) AS education,\n",
+        "  ROUND(experience_score, 0) AS experience,\n",
+        "  ROUND(leadership_score, 0) AS leadership,\n",
+        "  ROUND(certification_score, 0) AS certification,\n",
+        "  ROUND(skills_match_score, 0) AS skills_match,\n",
+        "  ROUND(industry_relevance_score, 0) AS industry,\n",
+        "  ROUND(interview_score, 0) AS interview,\n",
+        "  ROUND(culture_fit, 0) AS culture_fit,\n",
+        "  ROUND(total_score, 1) AS total_score,\n",
+        "  CASE WHEN hired = 1 THEN 'Hired' ELSE 'Not Hired' END AS hire_status\n",
+        "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+        "WHERE total_score IS NOT NULL\n",
+        "ORDER BY total_score DESC"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "page_overview",
+      "displayName": "Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "header_text",
+            "multilineTextboxSpec": {
+              "lines": ["# J&J HRD 2030 — Predictive Hiring Dashboard\n", "\n", "AI-powered candidate analytics across **4 open HR roles** (JR001–JR004). Candidates are scored across 8 dimensions."]
+            }
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "total_candidates_counter",
+            "queries": [{"name": "main_query", "query": {"datasetName": "candidate_scores", "fields": [{"name": "total_candidates", "expression": "COUNT(`candidate_id`)"}], "disaggregated": false}}],
+            "spec": {"version": 2, "widgetType": "counter", "encodings": {"value": {"fieldName": "total_candidates", "displayName": "Total Candidates"}}}
+          },
+          "position": {"x": 0, "y": 2, "width": 1, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "hired_count_counter",
+            "queries": [{"name": "main_query", "query": {"datasetName": "candidate_scores", "fields": [{"name": "hired_count", "expression": "COUNT_IF(`hire_status` = 'Hired')"}], "disaggregated": false}}],
+            "spec": {"version": 2, "widgetType": "counter", "encodings": {"value": {"fieldName": "hired_count", "displayName": "Hired"}}}
+          },
+          "position": {"x": 1, "y": 2, "width": 1, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "avg_score_counter",
+            "queries": [{"name": "main_query", "query": {"datasetName": "candidate_scores", "fields": [{"name": "avg_score", "expression": "AVG(`total_score`)"}], "disaggregated": false}}],
+            "spec": {"version": 2, "widgetType": "counter", "encodings": {"value": {"fieldName": "avg_score", "displayName": "Avg Score"}}}
+          },
+          "position": {"x": 2, "y": 2, "width": 1, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "top_candidates_bar",
+            "queries": [{"name": "main_query", "query": {"datasetName": "candidate_scores", "fields": [{"name": "candidate_name", "expression": "`candidate_name`"}, {"name": "total_score", "expression": "`total_score`"}, {"name": "hire_status", "expression": "`hire_status`"}], "disaggregated": true}}],
+            "spec": {"version": 3, "widgetType": "bar", "encodings": {"x": {"fieldName": "candidate_name", "displayName": "Candidate", "scale": {"type": "categorical"}}, "y": {"fieldName": "total_score", "displayName": "Total Score (0–100)", "scale": {"type": "quantitative"}}, "color": {"fieldName": "hire_status", "displayName": "Hire Status", "scale": {"type": "categorical"}}}, "frame": {"showTitle": true, "title": "Candidates by Score"}}
+          },
+          "position": {"x": 3, "y": 2, "width": 3, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "candidates_table",
+            "queries": [{"name": "main_query", "query": {"datasetName": "candidate_scores", "fields": [{"name": "candidate_id", "expression": "`candidate_id`"}, {"name": "candidate_name", "expression": "`candidate_name`"}, {"name": "job_id", "expression": "`job_id`"}, {"name": "job_title", "expression": "`job_title`"}, {"name": "total_score", "expression": "`total_score`"}, {"name": "hire_status", "expression": "`hire_status`"}, {"name": "location", "expression": "`location`"}], "disaggregated": true}}],
+            "spec": {"version": 2, "widgetType": "table", "encodings": {"columns": [{"fieldName": "candidate_id", "displayName": "ID"}, {"fieldName": "candidate_name", "displayName": "Candidate"}, {"fieldName": "job_id", "displayName": "Job"}, {"fieldName": "job_title", "displayName": "Role"}, {"fieldName": "total_score", "displayName": "Total Score"}, {"fieldName": "hire_status", "displayName": "Status"}, {"fieldName": "location", "displayName": "Location"}]}}
+          },
+          "position": {"x": 0, "y": 5, "width": 3, "height": 6}
+        }
+      ]
+    },
+    {
+      "name": "page_scores",
+      "displayName": "Score Breakdown",
+      "layout": [
+        {
+          "widget": {
+            "name": "scores_header",
+            "multilineTextboxSpec": {
+              "lines": ["## Dimension Score Breakdown\n", "\n", "Detailed scoring across all 8 dimensions for the 10 training candidates (C001–C010)."]
+            }
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "score_breakdown_table",
+            "queries": [{"name": "main_query", "query": {"datasetName": "score_breakdown", "fields": [{"name": "candidate_name", "expression": "`candidate_name`"}, {"name": "job_id", "expression": "`job_id`"}, {"name": "education", "expression": "`education`"}, {"name": "experience", "expression": "`experience`"}, {"name": "leadership", "expression": "`leadership`"}, {"name": "certification", "expression": "`certification`"}, {"name": "skills_match", "expression": "`skills_match`"}, {"name": "industry", "expression": "`industry`"}, {"name": "interview", "expression": "`interview`"}, {"name": "culture_fit", "expression": "`culture_fit`"}, {"name": "total_score", "expression": "`total_score`"}, {"name": "hire_status", "expression": "`hire_status`"}], "disaggregated": true}}],
+            "spec": {"version": 2, "widgetType": "table", "encodings": {"columns": [{"fieldName": "candidate_name", "displayName": "Candidate"}, {"fieldName": "job_id", "displayName": "Job"}, {"fieldName": "education", "displayName": "Education"}, {"fieldName": "experience", "displayName": "Experience"}, {"fieldName": "leadership", "displayName": "Leadership"}, {"fieldName": "certification", "displayName": "Certs"}, {"fieldName": "skills_match", "displayName": "Skills"}, {"fieldName": "industry", "displayName": "Industry"}, {"fieldName": "interview", "displayName": "Interview"}, {"fieldName": "culture_fit", "displayName": "Culture Fit"}, {"fieldName": "total_score", "displayName": "Total"}, {"fieldName": "hire_status", "displayName": "Status"}]}}
+          },
+          "position": {"x": 0, "y": 2, "width": 6, "height": 8}
+        }
+      ]
+    },
+    {
+      "name": "page_by_role",
+      "displayName": "By Role",
+      "layout": [
+        {
+          "widget": {
+            "name": "by_role_header",
+            "multilineTextboxSpec": {
+              "lines": ["## Candidates by Open Role\n", "\n", "Summary statistics per job requisition across all 4 open HR positions."]
+            }
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "by_role_table",
+            "queries": [{"name": "main_query", "query": {"datasetName": "hiring_summary", "fields": [{"name": "job_id", "expression": "`job_id`"}, {"name": "job_title", "expression": "`job_title`"}, {"name": "total_candidates", "expression": "`total_candidates`"}, {"name": "hired_count", "expression": "`hired_count`"}, {"name": "avg_score", "expression": "`avg_score`"}, {"name": "top_score", "expression": "`top_score`"}], "disaggregated": true}}],
+            "spec": {"version": 2, "widgetType": "table", "encodings": {"columns": [{"fieldName": "job_id", "displayName": "Job ID"}, {"fieldName": "job_title", "displayName": "Role"}, {"fieldName": "total_candidates", "displayName": "Candidates"}, {"fieldName": "hired_count", "displayName": "Hired"}, {"fieldName": "avg_score", "displayName": "Avg Score"}, {"fieldName": "top_score", "displayName": "Top Score"}]}}
+          },
+          "position": {"x": 0, "y": 2, "width": 3, "height": 5}
+        },
+        {
+          "widget": {
+            "name": "by_role_bar",
+            "queries": [{"name": "main_query", "query": {"datasetName": "hiring_summary", "fields": [{"name": "job_title", "expression": "`job_title`"}, {"name": "total_candidates", "expression": "`total_candidates`"}, {"name": "hired_count", "expression": "`hired_count`"}], "disaggregated": true}}],
+            "spec": {"version": 3, "widgetType": "bar", "encodings": {"x": {"fieldName": "job_title", "displayName": "Role", "scale": {"type": "categorical"}}, "y": {"fieldName": "total_candidates", "displayName": "Candidates", "scale": {"type": "quantitative"}}, "color": {"fieldName": "hired_count", "displayName": "Hired", "scale": {"type": "quantitative"}}}, "frame": {"showTitle": true, "title": "Candidates per Role"}}
+          },
+          "position": {"x": 3, "y": 2, "width": 3, "height": 5}
+        }
+      ]
+    }
+  ]
+}

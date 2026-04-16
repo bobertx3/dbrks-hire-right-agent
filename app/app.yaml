@@ -1,0 +1,27 @@
+command:
+  - uvicorn
+  - app:app
+  - --host
+  - 0.0.0.0
+  - --port
+  - "8000"
+
+env:
+  - name: DATABRICKS_AGENT_ENDPOINT
+    value: "hire-right-agent-endpoint"
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql_warehouse
+  - name: TARGET_CATALOG
+    value: "bx4"
+  - name: TARGET_SCHEMA
+    value: "hrd_2030"
+
+resources:
+  - name: agent_endpoint
+    serving_endpoint:
+      name: hire-right-agent-endpoint
+      permission: CAN_QUERY
+  - name: sql_warehouse
+    sql_warehouse:
+      id: "0d3bda4f46281ab5"
+      permission: CAN_USE

@@ -1,0 +1,42 @@
+# Secrets / credentials
+.env
+.env.*
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.egg
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Databricks bundle state (Terraform + deploy artifacts)
+.databricks/
+
+# IDE / editor
+.vscode/
+.cursor/
+*.swp
+
+# Claude Code local config (use .claude/settings.json — not local overrides or skills cache)
+.claude/settings.local.json
+.claude/skills/
+
+# AI dev kit runtime state
+.ai-dev-kit/.installed-skills
+.ai-dev-kit/.skills-profile
+.ai-dev-kit/version
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# MCP config (may contain tokens)
+.mcp.json
