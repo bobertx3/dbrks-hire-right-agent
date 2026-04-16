@@ -8,6 +8,7 @@ then calls the ML serving endpoint for a hire/no-hire prediction + probability.
 import os
 import json
 import requests
+import mlflow
 from langchain_core.tools import tool
 from config_helper import cfg_get
 
@@ -75,6 +76,7 @@ def _call_endpoint(host: str, token: str, endpoint: str, feature_values: dict) -
 
 
 @tool
+@mlflow.trace(span_type="TOOL")
 def predict_hiring_score(
     candidate_id: str,
     interview_score: int = None,

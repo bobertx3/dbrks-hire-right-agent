@@ -3,286 +3,745 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hire Right — J&J HRD 2030</title>
+<title>J&J HRD Data Science Applicant Tracking Insights</title>
 <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root {
-    --db-red: #FF3621; --db-red-light: #FF6E56; --db-dark: #1B3139;
-    --bg: #F8F6F4; --card: #FFFFFF; --text: #1B1B1B; --text-sub: #5A5A5A;
-    --border: rgba(0,0,0,0.08); --shadow: 0 4px 16px rgba(0,0,0,0.08);
-  }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+/* ── Reset & Variables ─────────────────────────────────────── */
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --primary:#1B3139; --accent:#FF3621; --accent-h:#e02d19;
+  --green:#00A972; --amber:#F5A623; --blue:#3B82F6;
+  --purple:#8B5CF6; --teal:#14B8A6; --orange:#F97316;
+  --bg:#F0F2F5; --card:#FFFFFF; --border:#E0E4E8;
+  --text:#1A1A2E; --sub:#64748B; --light:#94A3B8;
+  --sh-sm:0 1px 3px rgba(0,0,0,.08); --sh-md:0 4px 12px rgba(0,0,0,.1);
+  --r:12px; --r-sm:8px; --r-xs:6px;
+}
+body { font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); height:100vh; display:flex; flex-direction:column; overflow:hidden; }
 
-  /* ── Header ── */
-  header { background:var(--db-dark); padding:12px 24px; display:flex; align-items:center; gap:16px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.3); }
-  .logo { color:var(--db-red); font-size:18px; font-weight:800; letter-spacing:1.5px; }
-  .logo-sub { color:rgba(255,255,255,0.5); font-size:12px; font-weight:500; }
-  .header-badge { margin-left:auto; background:rgba(255,54,33,0.15); border:1px solid rgba(255,54,33,0.3); color:var(--db-red); font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; }
+/* ── Header ─────────────────────────────────────────────────── */
+header { background:var(--primary); height:54px; display:flex; align-items:center; padding:0 20px; gap:0; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,.25); z-index:100; }
+.brand { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.brand-logo { width:34px; height:34px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; letter-spacing:.3px; }
+.brand-name { color:#fff; font-size:14px; font-weight:700; line-height:1.2; }
+.brand-sub { color:rgba(255,255,255,.42); font-size:10px; }
+.h-nav { display:flex; gap:2px; margin-left:28px; }
+.nav-btn { display:flex; align-items:center; gap:5px; padding:6px 13px; border:none; background:transparent; color:rgba(255,255,255,.55); font-family:inherit; font-size:12px; font-weight:500; cursor:pointer; border-radius:var(--r-xs); transition:all .15s; white-space:nowrap; }
+.nav-btn:hover { color:#fff; background:rgba(255,255,255,.07); }
+.nav-btn.active { color:#fff; background:rgba(255,54,33,.18); border-bottom:2px solid var(--accent); border-radius:var(--r-xs) var(--r-xs) 0 0; }
+.nav-btn svg { width:14px; height:14px; flex-shrink:0; }
+.h-spacer { flex:1; }
+.h-badge { background:rgba(255,54,33,.15); border:1px solid rgba(255,54,33,.3); color:var(--accent); font-size:10px; font-weight:600; padding:3px 9px; border-radius:20px; flex-shrink:0; }
 
-  /* ── Layout ── */
-  .layout { display:flex; flex:1; overflow:hidden; }
+/* ── Tab Panes ──────────────────────────────────────────────── */
+.tab-pane { display:none; flex:1; overflow:hidden; }
+.tab-pane.active { display:flex; flex-direction:column; }
 
-  /* ── Sidebar ── */
-  .sidebar { width:280px; background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
-  .sidebar-title { padding:16px 20px 8px; font-size:11px; font-weight:700; color:var(--text-sub); text-transform:uppercase; letter-spacing:1px; }
-  .candidate-list { padding:0 12px 12px; display:flex; flex-direction:column; gap:4px; }
-  .candidate-card { padding:10px 12px; border-radius:8px; cursor:pointer; transition:all 0.15s; border:1px solid transparent; }
-  .candidate-card:hover { background:var(--bg); border-color:var(--border); }
-  .candidate-card.hired { border-left:3px solid #00A972; }
-  .candidate-card.not-hired { border-left:3px solid var(--db-red); }
-  .cc-name { font-size:13px; font-weight:600; }
-  .cc-title { font-size:11px; color:var(--text-sub); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .cc-score { font-size:11px; font-weight:700; margin-top:4px; }
-  .cc-score.high { color:#00A972; }
-  .cc-score.low { color:var(--db-red); }
+/* ── Dashboard sub-views ────────────────────────────────────── */
+.dash-view { display:none; flex-direction:column; flex:1; overflow:hidden; }
+.dash-view.active { display:flex; }
 
-  /* ── Chat ── */
-  .chat-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-  .chat-messages { flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:16px; }
+/* Stats bar */
+.stats-bar { background:var(--card); border-bottom:1px solid var(--border); padding:14px 20px; display:flex; gap:12px; flex-shrink:0; }
+.stat-card { flex:1; padding:14px 16px; background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); }
+.stat-label { font-size:10px; font-weight:700; color:var(--sub); text-transform:uppercase; letter-spacing:.8px; margin-bottom:5px; }
+.stat-value { font-size:26px; font-weight:800; line-height:1; color:var(--text); }
+.stat-sub { font-size:11px; color:var(--light); margin-top:3px; }
+.stat-card.green .stat-value { color:var(--green); }
+.stat-card.amber .stat-value { color:var(--amber); }
+.stat-card.blue .stat-value { color:var(--blue); }
 
-  /* ── Welcome ── */
-  .welcome { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; text-align:center; padding:40px; }
-  .welcome h2 { font-size:28px; font-weight:800; color:var(--db-dark); margin-bottom:8px; }
-  .welcome p { color:var(--text-sub); font-size:15px; max-width:480px; line-height:1.6; }
-  .suggestions { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:24px; max-width:560px; width:100%; }
-  .suggestion { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; cursor:pointer; text-align:left; font-size:13px; font-family:inherit; color:var(--text); transition:all 0.15s; }
-  .suggestion:hover { border-color:var(--db-red); color:var(--db-red); box-shadow:var(--shadow); }
+/* Filter pills */
+.filter-bar { background:var(--card); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; gap:6px; align-items:center; flex-shrink:0; flex-wrap:wrap; }
+.filter-lbl { font-size:11px; font-weight:600; color:var(--sub); margin-right:4px; }
+.pill { padding:4px 13px; border-radius:20px; border:1px solid var(--border); background:var(--bg); font-family:inherit; font-size:11px; font-weight:500; color:var(--sub); cursor:pointer; transition:all .15s; }
+.pill:hover { border-color:var(--accent); color:var(--accent); }
+.pill.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
 
-  /* ── Messages ── */
-  .message { display:flex; gap:12px; max-width:780px; }
-  .message.user { flex-direction:row-reverse; align-self:flex-end; }
-  .message.user .bubble { background:var(--db-red); color:#fff; border-radius:20px 20px 4px 20px; }
-  .message.assistant .bubble { background:var(--card); border:1px solid var(--border); border-radius:20px 20px 20px 4px; box-shadow:var(--shadow); }
-  .bubble { padding:14px 18px; font-size:14px; line-height:1.65; max-width:640px; }
-  .bubble p { margin-bottom:8px; }
-  .bubble p:last-child { margin-bottom:0; }
-  .bubble h3, .bubble h4 { margin:12px 0 6px; }
-  .bubble ul, .bubble ol { padding-left:20px; margin-bottom:8px; }
-  .bubble li { margin-bottom:4px; }
-  .bubble strong { font-weight:700; }
-  .bubble code { background:rgba(0,0,0,0.06); padding:2px 6px; border-radius:4px; font-size:12px; }
-  .avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; flex-shrink:0; }
-  .avatar.user { background:var(--db-red); color:#fff; }
-  .avatar.assistant { background:var(--db-dark); color:#fff; }
+/* Candidate grid */
+.cands-scroll { flex:1; overflow-y:auto; padding:18px 20px; }
+.cands-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:14px; }
 
-  /* ── Typing ── */
-  .typing-dots { display:flex; gap:4px; padding:6px 0; }
-  .typing-dots span { width:7px; height:7px; background:var(--db-red); border-radius:50%; animation:bounce 1.2s infinite; }
-  .typing-dots span:nth-child(2) { animation-delay:.2s; }
-  .typing-dots span:nth-child(3) { animation-delay:.4s; }
-  @keyframes bounce { 0%,80%,100%{transform:scale(0.7);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+/* Candidate card */
+.c-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:18px; cursor:pointer; transition:all .15s; }
+.c-card:hover { border-color:#CBD5E1; box-shadow:var(--sh-md); transform:translateY(-1px); }
+.c-top { display:flex; gap:12px; align-items:flex-start; margin-bottom:12px; }
+.c-av { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; flex-shrink:0; }
+.c-meta { flex:1; min-width:0; }
+.c-name { font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.c-id-tag { display:inline-block; font-size:9px; font-weight:700; color:var(--sub); background:var(--bg); padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:middle; }
+.c-sub { font-size:11px; color:var(--sub); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.c-score-box { flex-shrink:0; text-align:center; padding:6px 9px; border-radius:var(--r-xs); min-width:48px; }
+.c-score-box .sn { font-size:17px; font-weight:800; line-height:1; }
+.c-score-box .sl { font-size:8px; font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-top:2px; }
+.s-high { background:rgba(0,169,114,.1); color:var(--green); }
+.s-mid  { background:rgba(245,166,35,.1); color:var(--amber); }
+.s-low  { background:rgba(255,54,33,.1);  color:var(--accent); }
+.s-pen  { background:var(--bg); color:var(--light); }
+.c-badges { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
+.badge { padding:2px 7px; border-radius:4px; font-size:10px; font-weight:600; }
+.bj1 { background:rgba(59,130,246,.1); color:var(--blue); }
+.bj2 { background:rgba(139,92,246,.1); color:var(--purple); }
+.bj3 { background:rgba(20,184,166,.1); color:var(--teal); }
+.bj4 { background:rgba(249,115,22,.1); color:var(--orange); }
+.b-hired    { background:rgba(0,169,114,.1); color:var(--green); }
+.b-rejected { background:rgba(229,57,53,.1); color:#E53935; }
+.b-inter    { background:rgba(245,166,35,.1); color:var(--amber); }
+.b-screen   { background:rgba(59,130,246,.1); color:var(--blue); }
+.b-pipe     { background:rgba(100,116,139,.1); color:var(--sub); }
+.b-final    { background:rgba(249,115,22,.1); color:var(--orange); }
+.c-footer { display:flex; align-items:center; justify-content:space-between; }
+.c-loc { font-size:10px; color:var(--light); display:flex; align-items:center; gap:3px; }
+.view-btn { padding:5px 12px; background:var(--primary); color:#fff; border:none; border-radius:var(--r-xs); font-family:inherit; font-size:11px; font-weight:600; cursor:pointer; transition:background .15s; }
+.view-btn:hover { background:#26505f; }
 
-  /* ── Input ── */
-  .chat-input-area { padding:16px 24px; background:var(--card); border-top:1px solid var(--border); }
-  .input-row { display:flex; gap:8px; background:var(--bg); border:2px solid var(--border); border-radius:16px; padding:8px 12px; transition:border-color 0.15s; }
-  .input-row:focus-within { border-color:var(--db-red); }
-  #user-input { flex:1; border:none; background:transparent; font-family:inherit; font-size:14px; color:var(--text); resize:none; outline:none; min-height:24px; max-height:120px; }
-  .send-btn { background:var(--db-red); border:none; border-radius:10px; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; transition:background 0.15s; flex-shrink:0; align-self:flex-end; }
-  .send-btn:hover { background:var(--db-red-light, #FF6E56); }
-  .send-btn:disabled { background:#ccc; cursor:default; }
-  .input-hint { font-size:11px; color:var(--text-sub); margin-top:6px; text-align:center; }
+/* ── Candidate Detail ───────────────────────────────────────── */
+.det-scroll { flex:1; overflow-y:auto; padding:18px 20px; }
+.det-back { display:flex; align-items:center; gap:5px; padding:5px 0; border:none; background:transparent; font-family:inherit; font-size:12px; font-weight:600; color:var(--sub); cursor:pointer; margin-bottom:14px; transition:color .15s; }
+.det-back:hover { color:var(--text); }
+.det-header { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:20px; display:flex; gap:18px; align-items:flex-start; margin-bottom:16px; box-shadow:var(--sh-sm); }
+.det-av { width:64px; height:64px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:#fff; flex-shrink:0; }
+.det-info { flex:1; }
+.det-name { font-size:20px; font-weight:800; margin-bottom:3px; }
+.det-title { font-size:13px; color:var(--sub); margin-bottom:8px; }
+.det-badges { display:flex; gap:6px; flex-wrap:wrap; }
+.det-score-box { text-align:center; padding:14px 20px; background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); flex-shrink:0; }
+.det-sn { font-size:32px; font-weight:800; line-height:1; }
+.det-sl { font-size:10px; font-weight:600; color:var(--sub); text-transform:uppercase; letter-spacing:.7px; margin-top:3px; }
+.det-body { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:860px) { .det-body { grid-template-columns:1fr; } }
+.panel { background:var(--card); border:1px solid var(--border); border-radius:var(--r); box-shadow:var(--sh-sm); }
+.panel-head { padding:16px 18px 12px; border-bottom:1px solid var(--border); }
+.panel-title { font-size:11px; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:.8px; }
+.panel-sub { font-size:11px; color:var(--sub); margin-top:2px; }
+.panel-body { padding:16px 18px; }
 
-  /* ── New chat button ── */
-  .new-chat-btn { margin:12px; padding:10px; background:var(--db-red); color:#fff; border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:opacity 0.15s; }
-  .new-chat-btn:hover { opacity:0.9; }
+/* Score rows */
+.s-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.s-row:last-child { margin-bottom:0; }
+.s-row-lbl { font-size:11px; font-weight:500; color:var(--sub); width:120px; flex-shrink:0; }
+.s-row-bar { flex:1; height:7px; background:var(--bg); border-radius:4px; overflow:hidden; }
+.s-row-fill { height:100%; border-radius:4px; transition:width .6s ease; }
+.s-row-num { font-size:12px; font-weight:700; width:32px; text-align:right; flex-shrink:0; }
+.s-row-wt  { font-size:9px; color:var(--light); width:24px; text-align:right; flex-shrink:0; }
+
+/* Recommendation panel */
+.rec-panel { display:flex; flex-direction:column; overflow:hidden; }
+.rec-panel-head { padding:16px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.rec-btn { padding:8px 14px; background:var(--accent); color:#fff; border:none; border-radius:var(--r-xs); font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; transition:background .15s; display:flex; align-items:center; gap:5px; white-space:nowrap; flex-shrink:0; }
+.rec-btn:hover { background:var(--accent-h); }
+.rec-btn:disabled { background:#ccc; cursor:default; }
+.rec-msgs { padding:14px 18px; display:flex; flex-direction:column; gap:10px; min-height:80px; max-height:340px; overflow-y:auto; }
+.rec-empty { color:var(--light); font-size:12px; text-align:center; padding:18px 0; }
+.rec-footer { padding:10px 14px; border-top:1px solid var(--border); background:var(--bg); display:flex; gap:8px; }
+.rec-inp { flex:1; border:1px solid var(--border); border-radius:var(--r-xs); padding:7px 11px; font-family:inherit; font-size:12px; background:var(--card); color:var(--text); outline:none; transition:border-color .15s; }
+.rec-inp:focus { border-color:var(--accent); }
+.rec-send { padding:7px 14px; background:var(--primary); color:#fff; border:none; border-radius:var(--r-xs); font-family:inherit; font-size:11px; font-weight:600; cursor:pointer; flex-shrink:0; transition:background .15s; }
+.rec-send:hover { background:#26505f; }
+.rec-send:disabled { background:#ccc; cursor:default; }
+
+/* Mini messages (candidate detail chat) */
+.mm { display:flex; gap:0; font-size:12px; line-height:1.6; }
+.mm.user { flex-direction:row-reverse; }
+.mm-bub { padding:9px 13px; border-radius:10px; max-width:95%; }
+.mm.user  .mm-bub { background:var(--accent); color:#fff; border-radius:10px 10px 3px 10px; }
+.mm.assistant .mm-bub { background:var(--bg); border:1px solid var(--border); border-radius:10px 10px 10px 3px; }
+.mm.assistant .mm-bub p { margin-bottom:5px; }
+.mm.assistant .mm-bub p:last-child { margin-bottom:0; }
+.mm.assistant .mm-bub ul, .mm.assistant .mm-bub ol { padding-left:15px; margin-bottom:5px; }
+.mm.assistant .mm-bub strong { font-weight:700; }
+.mm.assistant .mm-bub code { background:rgba(0,0,0,.06); padding:1px 4px; border-radius:3px; }
+
+/* ── Chat Tabs (Agent + Genie) ──────────────────────────────── */
+.chat-tab { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.chat-area { flex:1; overflow-y:auto; padding:22px; display:flex; flex-direction:column; gap:14px; }
+.chat-welcome { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; text-align:center; padding:40px 20px; }
+.chat-welcome-icon { width:58px; height:58px; border-radius:16px; background:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+.chat-welcome h2 { font-size:20px; font-weight:800; margin-bottom:6px; }
+.chat-welcome p { color:var(--sub); font-size:13px; max-width:400px; line-height:1.65; margin-bottom:22px; }
+.sugg-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; max-width:500px; width:100%; }
+.sugg { background:var(--card); border:1px solid var(--border); border-radius:var(--r-sm); padding:11px 13px; cursor:pointer; text-align:left; font-size:11px; font-family:inherit; color:var(--sub); transition:all .15s; line-height:1.45; }
+.sugg:hover { border-color:var(--accent); color:var(--text); box-shadow:var(--sh-sm); }
+
+/* Chat messages */
+.msg { display:flex; gap:9px; max-width:780px; }
+.msg.user { flex-direction:row-reverse; align-self:flex-end; }
+.msg-av { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; }
+.msg.user      .msg-av { background:var(--accent); color:#fff; }
+.msg.assistant .msg-av { background:var(--primary); color:#fff; }
+.msg.genie     .msg-av { background:var(--blue); color:#fff; }
+.msg-bub { padding:11px 15px; border-radius:11px; font-size:13px; line-height:1.65; max-width:640px; }
+.msg.user      .msg-bub { background:var(--accent); color:#fff; border-radius:11px 11px 3px 11px; }
+.msg.assistant .msg-bub { background:var(--card); border:1px solid var(--border); border-radius:11px 11px 11px 3px; box-shadow:var(--sh-sm); }
+.msg.genie     .msg-bub { background:var(--card); border:1px solid var(--border); border-radius:11px 11px 11px 3px; box-shadow:var(--sh-sm); }
+.msg-bub p { margin-bottom:7px; }
+.msg-bub p:last-child { margin-bottom:0; }
+.msg-bub h3,.msg-bub h4 { margin:9px 0 4px; }
+.msg-bub ul,.msg-bub ol { padding-left:17px; margin-bottom:7px; }
+.msg-bub li { margin-bottom:3px; }
+.msg-bub strong { font-weight:700; }
+.msg-bub code { background:rgba(0,0,0,.06); padding:1px 5px; border-radius:4px; font-size:11px; }
+.msg-bub pre { background:rgba(0,0,0,.04); border-radius:6px; padding:10px; overflow-x:auto; margin:7px 0; }
+.msg-bub pre code { background:none; padding:0; }
+
+/* Typing dots */
+.dots { display:flex; gap:4px; padding:3px 0; }
+.dots span { width:6px; height:6px; background:var(--accent); border-radius:50%; animation:bounce .12e+4ms infinite; }
+.dots span:nth-child(2) { animation-delay:.2s; }
+.dots span:nth-child(3) { animation-delay:.4s; }
+@keyframes bounce { 0%,80%,100%{transform:scale(.7);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+/* Chat input bar */
+.chat-bar { padding:12px 20px; background:var(--card); border-top:1px solid var(--border); flex-shrink:0; }
+.chat-wrap { display:flex; gap:9px; background:var(--bg); border:2px solid var(--border); border-radius:13px; padding:7px 10px; transition:border-color .15s; }
+.chat-wrap:focus-within { border-color:var(--accent); }
+.chat-input { flex:1; border:none; background:transparent; font-family:inherit; font-size:13px; color:var(--text); resize:none; outline:none; min-height:20px; max-height:100px; }
+.chat-submit { background:var(--accent); border:none; border-radius:7px; width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; transition:background .15s; flex-shrink:0; align-self:flex-end; }
+.chat-submit:hover { background:var(--accent-h); }
+.chat-submit:disabled { background:#ccc; cursor:default; }
+.chat-hint { font-size:10px; color:var(--light); text-align:center; margin-top:5px; }
 </style>
 </head>
 <body>
 
+<!-- ── Header ────────────────────────────────────────────────── -->
 <header>
-  <div>
-    <div class="logo">HIRE RIGHT</div>
-    <div class="logo-sub">J&J HRD 2030 · AI-Powered Hiring</div>
+  <div class="brand">
+    <div class="brand-logo">J&amp;J</div>
+    <div>
+      <div class="brand-name">HRD Data Science Applicant Tracking Insights</div>
+      <div class="brand-sub">Jackson &amp; Jackson · AI-Powered Hiring</div>
+    </div>
   </div>
-  <div class="header-badge">Databricks AI Agent</div>
+  <nav class="h-nav">
+    <button id="nav-dashboard" class="nav-btn active" onclick="switchTab('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+    <button id="nav-agent" class="nav-btn" onclick="switchTab('agent')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Ask Agent
+    </button>
+    <button id="nav-genie" class="nav-btn" onclick="switchTab('genie')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Ask Genie
+    </button>
+  </nav>
+  <div class="h-spacer"></div>
+  <span class="h-badge">Databricks AI</span>
 </header>
 
-<div class="layout">
+<!-- ── Dashboard Tab ─────────────────────────────────────────── -->
+<div id="tab-dashboard" class="tab-pane active">
 
-  <!-- Sidebar: Candidate List -->
-  <aside class="sidebar">
-    <div class="sidebar-title">Candidates</div>
-    <div class="candidate-list" id="candidate-list">
-      <!-- populated by JS -->
+  <!-- Grid View -->
+  <div id="view-grid" class="dash-view active">
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat-card"><div class="stat-label">Total Candidates</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub">Across 4 open roles</div></div>
+      <div class="stat-card blue"><div class="stat-label">Active Pipeline</div><div class="stat-value" id="stat-active">—</div><div class="stat-sub">In evaluation</div></div>
+      <div class="stat-card green"><div class="stat-label">DS Recommended</div><div class="stat-value" id="stat-rec">—</div><div class="stat-sub">Score ≥ 80</div></div>
+      <div class="stat-card amber"><div class="stat-label">Open Positions</div><div class="stat-value">4</div><div class="stat-sub">JR001 – JR004</div></div>
     </div>
-    <button class="new-chat-btn" onclick="newChat()">+ New Conversation</button>
-  </aside>
+    <div class="filter-bar">
+      <span class="filter-lbl">Filter by Role:</span>
+      <button class="pill active" onclick="applyFilter('all',this)">All Roles</button>
+      <button class="pill" onclick="applyFilter('JR001',this)">JR001 · Dir. HR</button>
+      <button class="pill" onclick="applyFilter('JR002',this)">JR002 · VP Talent</button>
+      <button class="pill" onclick="applyFilter('JR003',this)">JR003 · Dir. C&amp;B</button>
+      <button class="pill" onclick="applyFilter('JR004',this)">JR004 · CPO</button>
+    </div>
+    <div class="cands-scroll">
+      <div class="cands-grid" id="cands-grid"></div>
+    </div>
+  </div>
 
-  <!-- Chat Area -->
-  <section class="chat-area">
-    <div class="chat-messages" id="chat-messages">
-      <!-- Welcome screen -->
-      <div class="welcome" id="welcome-screen">
-        <h2>Hire Right Agent</h2>
-        <p>Ask me anything about the Director of HR candidates — their background, ML predictions, comparisons, or email a report to your team.</p>
-        <div class="suggestions">
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Who are the top 3 candidates by total score?</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Summarize Sarah Chen's background and predict her hiring score</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Compare David Kim and Amanda Rodriguez</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Email the hiring shortlist to robert.leach@databricks.com</button>
-        </div>
-      </div>
+  <!-- Detail View -->
+  <div id="view-detail" class="dash-view">
+    <div class="det-scroll">
+      <button class="det-back" onclick="showGrid()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+      </button>
+      <div id="det-content"></div>
     </div>
-
-    <!-- Input -->
-    <div class="chat-input-area">
-      <div class="input-row">
-        <textarea id="user-input" placeholder="Ask about a candidate, request an analysis, or send a report..." rows="1"></textarea>
-        <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-      <div class="input-hint">Hire Right is powered by Databricks AI · Agent + Genie + ML Model</div>
-    </div>
-  </section>
+  </div>
 
 </div>
 
-<script>
-  let conversationHistory = [];
-  let isLoading = false;
-
-  // ── Load candidates sidebar ──────────────────────────────────────────────
-  async function loadCandidates() {
-    try {
-      const res = await fetch('/api/candidates');
-      const data = await res.json();
-      const list = document.getElementById('candidate-list');
-      list.innerHTML = '';
-      data.candidates.forEach(c => {
-        const div = document.createElement('div');
-        div.className = `candidate-card ${c.hired ? 'hired' : 'not-hired'}`;
-        div.innerHTML = `
-          <div class="cc-name">${c.name}</div>
-          <div class="cc-title">${c.title}</div>
-          <div class="cc-score ${c.total_score >= 80 ? 'high' : 'low'}">Score: ${c.total_score}/100${c.hired ? ' · Hired ✓' : ''}</div>`;
-        div.onclick = () => submitSuggestion(`Tell me about ${c.name} (${c.id}) and predict their hiring score`);
-        list.appendChild(div);
-      });
-    } catch (e) {
-      console.error('Could not load candidates:', e);
-    }
-  }
-
-  // ── Chat ─────────────────────────────────────────────────────────────────
-  async function sendMessage(text) {
-    const input = document.getElementById('user-input');
-    const message = text || input.value.trim();
-    if (!message || isLoading) return;
-
-    // Hide welcome screen
-    const welcome = document.getElementById('welcome-screen');
-    if (welcome) welcome.remove();
-
-    input.value = '';
-    input.style.height = 'auto';
-    isLoading = true;
-    document.getElementById('send-btn').disabled = true;
-
-    addMessage('user', message);
-    const typingEl = addTyping();
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          message,
-          conversation_history: conversationHistory
-        })
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.detail || 'Request failed');
-      }
-
-      const data = await res.json();
-      conversationHistory = data.conversation_history;
-
-      typingEl.remove();
-      addMessage('assistant', data.reply);
-    } catch (e) {
-      typingEl.remove();
-      addMessage('assistant', `⚠️ Error: ${e.message}`);
-    } finally {
-      isLoading = false;
-      document.getElementById('send-btn').disabled = false;
-    }
-  }
-
-  function submitSuggestion(text) {
-    sendMessage(text);
-  }
-
-  function addMessage(role, content) {
-    const container = document.getElementById('chat-messages');
-    const wrapper = document.createElement('div');
-    wrapper.className = `message ${role}`;
-
-    const avatar = document.createElement('div');
-    avatar.className = `avatar ${role}`;
-    avatar.textContent = role === 'user' ? 'U' : 'HR';
-
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-
-    if (role === 'assistant') {
-      bubble.innerHTML = DOMPurify.sanitize(marked.parse(content));
-    } else {
-      bubble.textContent = content;
-    }
-
-    wrapper.appendChild(avatar);
-    wrapper.appendChild(bubble);
-    container.appendChild(wrapper);
-    container.scrollTop = container.scrollHeight;
-    return wrapper;
-  }
-
-  function addTyping() {
-    const container = document.getElementById('chat-messages');
-    const wrapper = document.createElement('div');
-    wrapper.className = 'message assistant';
-    wrapper.innerHTML = `<div class="avatar assistant">HR</div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-    container.appendChild(wrapper);
-    container.scrollTop = container.scrollHeight;
-    return wrapper;
-  }
-
-  function newChat() {
-    conversationHistory = [];
-    const container = document.getElementById('chat-messages');
-    container.innerHTML = `
-      <div class="welcome" id="welcome-screen">
-        <h2>Hire Right Agent</h2>
-        <p>Ask me anything about the Director of HR candidates — their background, ML predictions, comparisons, or email a report to your team.</p>
-        <div class="suggestions">
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Who are the top 3 candidates by total score?</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Summarize Sarah Chen's background and predict her hiring score</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Compare David Kim and Amanda Rodriguez</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Email the hiring shortlist to robert.leach@databricks.com</button>
+<!-- ── Ask Agent Tab ─────────────────────────────────────────── -->
+<div id="tab-agent" class="tab-pane">
+  <div class="chat-tab">
+    <div class="chat-area" id="agent-msgs">
+      <div class="chat-welcome" id="agent-welcome">
+        <div class="chat-welcome-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
-      </div>`;
+        <h2>Hire Right Agent</h2>
+        <p>Ask me about candidates, request comparisons, run ML predictions, or email a hiring report to your team.</p>
+        <div class="sugg-grid">
+          <button class="sugg" onclick="agentSend(this.textContent)">Who are the top 3 candidates for JR001 by total score?</button>
+          <button class="sugg" onclick="agentSend(this.textContent)">Compare David Kim and Amanda Rodriguez for JR001</button>
+          <button class="sugg" onclick="agentSend(this.textContent)">What are Priya Sharma's qualifications for the VP Talent role?</button>
+          <button class="sugg" onclick="agentSend(this.textContent)">Email the JR001 hiring shortlist to robert.leach@databricks.com</button>
+        </div>
+      </div>
+    </div>
+    <div class="chat-bar">
+      <div class="chat-wrap">
+        <textarea class="chat-input" id="agent-inp" placeholder="Ask the Hire Right Agent anything..." rows="1"></textarea>
+        <button class="chat-submit" id="agent-btn" onclick="agentSend()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="chat-hint">Hire Right Agent · Databricks AI + MLflow · Genie + Vector Search + ML Model</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Ask Genie Tab ─────────────────────────────────────────── -->
+<div id="tab-genie" class="tab-pane">
+  <div class="chat-tab">
+    <div class="chat-area" id="genie-msgs">
+      <div class="chat-welcome" id="genie-welcome">
+        <div class="chat-welcome-icon" style="background:var(--blue)">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+        <h2>Ask Genie</h2>
+        <p>Query the HR Analytics data warehouse directly for real-time insights on candidates, scores, certifications, and hiring trends.</p>
+        <div class="sugg-grid">
+          <button class="sugg" onclick="genieSend(this.textContent)">What is the average total score for JR001 candidates?</button>
+          <button class="sugg" onclick="genieSend(this.textContent)">Show hired vs. rejected breakdown by education level</button>
+          <button class="sugg" onclick="genieSend(this.textContent)">Which role has the highest average culture fit score?</button>
+          <button class="sugg" onclick="genieSend(this.textContent)">List top 5 candidates across all roles by total score</button>
+        </div>
+      </div>
+    </div>
+    <div class="chat-bar">
+      <div class="chat-wrap">
+        <textarea class="chat-input" id="genie-inp" placeholder="Ask a data question about the hiring pipeline..." rows="1"></textarea>
+        <button class="chat-submit" id="genie-btn" onclick="genieSend()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="chat-hint">Powered by Databricks Genie · J&amp;J HR Analytics Space</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────
+let allCandidates = [], filtered = [], activeFilter = 'all';
+let currentCandidate = null;
+let agentHistory = [], agentBusy = false;
+let genieBusy = false;
+let recHistory = [], recBusy = false;
+
+// ── Tab Switching ─────────────────────────────────────────────
+function switchTab(tab) {
+  ['dashboard','agent','genie'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+    document.getElementById(`nav-${t}`).classList.toggle('active', t === tab);
+  });
+}
+
+// ── Load Candidates ───────────────────────────────────────────
+async function loadCandidates() {
+  try {
+    const r = await fetch('/api/candidates');
+    const d = await r.json();
+    allCandidates = d.candidates;
+    renderStats();
+    applyFilter('all', document.querySelector('.pill.active'));
+  } catch(e) {
+    document.getElementById('cands-grid').innerHTML =
+      '<p style="color:var(--sub);padding:20px">Could not load candidates.</p>';
+  }
+}
+
+function renderStats() {
+  const active = allCandidates.filter(c => c.hired === null).length;
+  const rec    = allCandidates.filter(c => c.total_score >= 80).length;
+  document.getElementById('stat-total').textContent  = allCandidates.length;
+  document.getElementById('stat-active').textContent = active;
+  document.getElementById('stat-rec').textContent    = rec;
+}
+
+// ── Filter ────────────────────────────────────────────────────
+function applyFilter(jobId, btn) {
+  activeFilter = jobId;
+  filtered = jobId === 'all' ? [...allCandidates] : allCandidates.filter(c => c.job_id === jobId);
+  document.querySelectorAll('.filter-bar .pill').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderGrid();
+}
+
+// ── Grid ──────────────────────────────────────────────────────
+function renderGrid() {
+  document.getElementById('cands-grid').innerHTML = filtered.map(cardHTML).join('');
+}
+
+const JOB_ABBR = { JR001:'Dir. HR', JR002:'VP Talent', JR003:'Dir. C&B', JR004:'CPO' };
+const JOB_CLS  = { JR001:'bj1', JR002:'bj2', JR003:'bj3', JR004:'bj4' };
+const AV_COLORS = ['#1B3139','#FF3621','#00A972','#3B82F6','#8B5CF6','#F97316',
+                   '#14B8A6','#EC4899','#0EA5E9','#84CC16','#F59E0B','#6366F1',
+                   '#10B981','#F43F5E','#06B6D4','#7C3AED','#EF4444','#22C55E',
+                   '#EAB308','#6366F1'];
+
+function avColor(id) { return AV_COLORS[(parseInt(id.replace('C',''))-1) % AV_COLORS.length]; }
+function initials(name) { return name.split(' ').map(n=>n[0]).join(''); }
+
+function scoreClass(s) {
+  if (s === null || s === undefined) return 's-pen';
+  return s >= 80 ? 's-high' : s >= 60 ? 's-mid' : 's-low';
+}
+function scoreColor(s) {
+  if (s === null || s === undefined) return 'var(--light)';
+  return s >= 80 ? 'var(--green)' : s >= 60 ? 'var(--amber)' : 'var(--accent)';
+}
+function stageCls(stage) {
+  const s = (stage||'').toLowerCase();
+  if (s.includes('hired'))   return 'b-hired';
+  if (s.includes('reject'))  return 'b-rejected';
+  if (s.includes('final'))   return 'b-final';
+  if (s.includes('interview')) return 'b-inter';
+  if (s.includes('screen'))  return 'b-screen';
+  return 'b-pipe';
+}
+
+function cardHTML(c) {
+  const sc = c.total_score;
+  return `
+  <div class="c-card" onclick="openCandidate('${c.id}')">
+    <div class="c-top">
+      <div class="c-av" style="background:${avColor(c.id)}">${initials(c.name)}</div>
+      <div class="c-meta">
+        <div class="c-name">${esc(c.name)}<span class="c-id-tag">${c.id}</span></div>
+        <div class="c-sub">${esc(c.title)} · ${esc(c.company)}</div>
+      </div>
+      <div class="c-score-box ${scoreClass(sc)}">
+        <div class="sn">${sc !== null && sc !== undefined ? sc.toFixed(0) : '—'}</div>
+        <div class="sl">${sc !== null ? 'Score' : 'Pending'}</div>
+      </div>
+    </div>
+    <div class="c-badges">
+      <span class="badge ${JOB_CLS[c.job_id]||'b-pipe'}">${c.job_id} · ${JOB_ABBR[c.job_id]||''}</span>
+      <span class="badge ${stageCls(c.stage)}">${esc(c.stage)}</span>
+    </div>
+    <div class="c-footer">
+      <span class="c-loc">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${esc(c.location)}
+      </span>
+      <button class="view-btn" onclick="event.stopPropagation();openCandidate('${c.id}')">View Profile →</button>
+    </div>
+  </div>`;
+}
+
+// ── Candidate Detail ──────────────────────────────────────────
+function openCandidate(id) {
+  currentCandidate = allCandidates.find(c => c.id === id);
+  recHistory = [];
+  document.getElementById('view-grid').classList.remove('active');
+  document.getElementById('view-detail').classList.add('active');
+  renderDetail();
+}
+function showGrid() {
+  document.getElementById('view-detail').classList.remove('active');
+  document.getElementById('view-grid').classList.add('active');
+}
+
+const SCORE_META = [
+  {key:'education',    label:'Education',          wt:'10%'},
+  {key:'experience',   label:'Experience',          wt:'20%'},
+  {key:'leadership',   label:'Leadership',          wt:'20%'},
+  {key:'certifications',label:'Certifications',    wt:'10%'},
+  {key:'skills_match', label:'Skills Match',        wt:'10%'},
+  {key:'industry',     label:'Industry Relevance',  wt:'10%'},
+  {key:'interview',    label:'Interview',           wt:'10%'},
+  {key:'culture_fit',  label:'Culture Fit',         wt:'10%'},
+];
+
+function renderDetail() {
+  const c = currentCandidate;
+  const sc = c.total_score;
+  const totalColor = scoreColor(sc);
+  const inits = initials(c.name);
+
+  const scoreRows = SCORE_META.map(({key,label,wt}) => {
+    const v = c.scores[key];
+    const col = scoreColor(v);
+    const w = v !== null && v !== undefined ? v : 0;
+    return `
+    <div class="s-row">
+      <div class="s-row-lbl">${label}</div>
+      <div class="s-row-bar"><div class="s-row-fill" style="width:${w}%;background:${col}"></div></div>
+      <div class="s-row-num" style="color:${v !== null && v !== undefined ? col : 'var(--light)'}">${v !== null && v !== undefined ? v : '—'}</div>
+      <div class="s-row-wt">${wt}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('det-content').innerHTML = `
+    <div class="det-header">
+      <div class="det-av" style="background:${avColor(c.id)}">${inits}</div>
+      <div class="det-info">
+        <div class="det-name">${esc(c.name)}</div>
+        <div class="det-title">${esc(c.title)} · ${esc(c.company)} · ${esc(c.location)}</div>
+        <div class="det-badges">
+          <span class="badge ${JOB_CLS[c.job_id]||'b-pipe'}">${c.job_id} — ${esc(c.job_title)}</span>
+          <span class="badge ${stageCls(c.stage)}">${esc(c.stage)}</span>
+          <span class="badge b-pipe">${esc(c.education)}</span>
+          <span class="badge b-pipe">${esc(c.certifications)}</span>
+        </div>
+      </div>
+      <div class="det-score-box">
+        <div class="det-sn" style="color:${totalColor}">${sc !== null && sc !== undefined ? sc.toFixed(1) : '—'}</div>
+        <div class="det-sl">Total Score</div>
+      </div>
+    </div>
+
+    <div class="det-body">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Score Breakdown</div>
+          <div class="panel-sub">8-factor weighted assessment</div>
+        </div>
+        <div class="panel-body">${scoreRows}</div>
+      </div>
+
+      <div class="panel rec-panel">
+        <div class="rec-panel-head">
+          <div>
+            <div class="panel-title">DS Hire Recommendation</div>
+            <div class="panel-sub">AI-powered prediction · Hire Right Agent</div>
+          </div>
+          <button class="rec-btn" id="rec-btn" onclick="generateRec()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Generate Recommendation
+          </button>
+        </div>
+        <div class="rec-msgs" id="rec-msgs">
+          <div class="rec-empty" id="rec-empty">Click "Generate Recommendation" to get an AI-powered hiring prediction for ${esc(c.name)}.</div>
+        </div>
+        <div class="rec-footer">
+          <input type="text" class="rec-inp" id="rec-inp" placeholder="Ask a follow-up about ${esc(c.name)}…" onkeydown="if(event.key==='Enter')sendRec()">
+          <button class="rec-send" id="rec-send" onclick="sendRec()">Send</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── DS Recommendation ─────────────────────────────────────────
+async function generateRec() {
+  if (recBusy) return;
+  const c = currentCandidate;
+  const btn = document.getElementById('rec-btn');
+  const empty = document.getElementById('rec-empty');
+  if (empty) empty.remove();
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+  recBusy = true;
+
+  // Map UI score keys → ML tool parameter names, split into available vs missing
+  const scoreMap = [
+    ['education',      'education_score',          c.scores.education],
+    ['experience',     'experience_score',          c.scores.experience],
+    ['leadership',     'leadership_score',          c.scores.leadership],
+    ['certifications', 'certification_score',       c.scores.certifications],
+    ['skills_match',   'skills_match_score',        c.scores.skills_match],
+    ['industry',       'industry_relevance_score',  c.scores.industry],
+    ['interview',      'interview_score',           c.scores.interview],
+    ['culture_fit',    'culture_fit',               c.scores.culture_fit],
+  ];
+  const available = scoreMap.filter(([,,v]) => v !== null && v !== undefined);
+  const missing   = scoreMap.filter(([,,v]) => v === null  || v === undefined);
+  const scoreStr  = available.map(([,api,v]) => `${api}=${v}`).join(', ');
+
+  let prompt;
+  if (missing.length === 0) {
+    prompt = `Run the ML hire prediction for ${c.name} (${c.id}) applying for the ${c.job_title} (${c.job_id}) role. All scores are on file: ${scoreStr}. Provide the full DS recommendation with confidence score and score breakdown.`;
+  } else {
+    const missingNames = missing.map(([,api]) => api).join(', ');
+    prompt = `I'd like an ML hire prediction for ${c.name} (${c.id}) applying for the ${c.job_title} (${c.job_id}) role. ` +
+      `Scores already on file: ${scoreStr}. ` +
+      `Not yet recorded: ${missingNames}. ` +
+      `Please ask me to provide the missing scores so you can run the ML prediction.`;
   }
 
-  // ── Auto-resize textarea ─────────────────────────────────────────────────
-  document.getElementById('user-input').addEventListener('input', function() {
+  addRecMsg('user', `Generate DS Hire Recommendation for ${c.name} (${c.id})`);
+  const tp = addRecTyping();
+
+  try {
+    const r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: prompt, conversation_history: recHistory})
+    });
+    const d = await r.json();
+    recHistory = d.conversation_history;
+    tp.remove();
+    addRecMsg('assistant', d.reply);
+  } catch(e) {
+    tp.remove();
+    addRecMsg('assistant', `⚠️ Error: ${e.message}`);
+  } finally {
+    recBusy = false;
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate Recommendation`;
+  }
+}
+
+async function sendRec() {
+  const inp = document.getElementById('rec-inp');
+  const msg = inp.value.trim();
+  if (!msg || recBusy) return;
+  inp.value = '';
+  recBusy = true;
+  document.getElementById('rec-send').disabled = true;
+  addRecMsg('user', msg);
+  const tp = addRecTyping();
+  try {
+    const r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: msg, conversation_history: recHistory})
+    });
+    const d = await r.json();
+    recHistory = d.conversation_history;
+    tp.remove();
+    addRecMsg('assistant', d.reply);
+  } catch(e) {
+    tp.remove();
+    addRecMsg('assistant','⚠️ Error');
+  } finally {
+    recBusy = false;
+    document.getElementById('rec-send').disabled = false;
+  }
+}
+
+function addRecMsg(role, content) {
+  const box = document.getElementById('rec-msgs');
+  const d = document.createElement('div');
+  d.className = `mm ${role}`;
+  const safe = role === 'user' ? esc(content) : DOMPurify.sanitize(marked.parse(content || ''));
+  d.innerHTML = `<div class="mm-bub">${safe}</div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+function addRecTyping() {
+  const box = document.getElementById('rec-msgs');
+  const d = document.createElement('div');
+  d.className = 'mm assistant';
+  d.innerHTML = `<div class="mm-bub"><div class="dots"><span></span><span></span><span></span></div></div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+
+// ── Agent Chat ────────────────────────────────────────────────
+async function agentSend(text) {
+  const inp = document.getElementById('agent-inp');
+  const msg = text || inp.value.trim();
+  if (!msg || agentBusy) return;
+  const w = document.getElementById('agent-welcome');
+  if (w) w.remove();
+  if (!text) inp.value = '';
+  inp.style.height = 'auto';
+  agentBusy = true;
+  document.getElementById('agent-btn').disabled = true;
+  addMsg('agent-msgs','user',msg);
+  const tp = addTyping('agent-msgs','agent');
+  try {
+    const r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message:msg, conversation_history:agentHistory})
+    });
+    const d = await r.json();
+    agentHistory = d.conversation_history;
+    tp.remove();
+    addMsg('agent-msgs','assistant',d.reply);
+  } catch(e) {
+    tp.remove();
+    addMsg('agent-msgs','assistant',`⚠️ Error: ${e.message}`);
+  } finally {
+    agentBusy = false;
+    document.getElementById('agent-btn').disabled = false;
+  }
+}
+
+// ── Genie Chat ────────────────────────────────────────────────
+async function genieSend(text) {
+  const inp = document.getElementById('genie-inp');
+  const msg = text || inp.value.trim();
+  if (!msg || genieBusy) return;
+  const w = document.getElementById('genie-welcome');
+  if (w) w.remove();
+  if (!text) inp.value = '';
+  inp.style.height = 'auto';
+  genieBusy = true;
+  document.getElementById('genie-btn').disabled = true;
+  addMsg('genie-msgs','user',msg);
+  const tp = addTyping('genie-msgs','genie');
+  try {
+    const r = await fetch('/api/genie', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({question:msg})
+    });
+    const d = await r.json();
+    tp.remove();
+    addMsg('genie-msgs','genie',d.answer);
+  } catch(e) {
+    tp.remove();
+    addMsg('genie-msgs','genie',`⚠️ Error: ${e.message}`);
+  } finally {
+    genieBusy = false;
+    document.getElementById('genie-btn').disabled = false;
+  }
+}
+
+// ── Message Helpers ───────────────────────────────────────────
+function addMsg(containerId, role, content) {
+  const box = document.getElementById(containerId);
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  const lbl = role === 'user' ? 'U' : role === 'genie' ? 'G' : 'AI';
+  const safe = role === 'user' ? esc(content) : DOMPurify.sanitize(marked.parse(content || ''));
+  d.innerHTML = `<div class="msg-av">${lbl}</div><div class="msg-bub">${safe}</div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+function addTyping(containerId, role) {
+  const box = document.getElementById(containerId);
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  const lbl = role === 'genie' ? 'G' : 'AI';
+  d.innerHTML = `<div class="msg-av">${lbl}</div><div class="msg-bub"><div class="dots"><span></span><span></span><span></span></div></div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Auto-resize textareas ─────────────────────────────────────
+['agent-inp','genie-inp'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', function() {
     this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
   });
-  document.getElementById('user-input').addEventListener('keydown', function(e) {
+  el.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      if (id === 'agent-inp') agentSend();
+      else genieSend();
     }
   });
+});
 
-  // ── Init ──────────────────────────────────────────────────────────────────
-  loadCandidates();
+// ── Init ──────────────────────────────────────────────────────
+loadCandidates();
 </script>
 </body>
 </html>

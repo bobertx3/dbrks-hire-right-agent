@@ -1,0 +1,69 @@
+flowchart LR
+    classDef user fill:#F0F2F5,stroke:#94A3B8,color:#1A1A2E
+    classDef app fill:#1B3139,stroke:#0F1F25,color:#FFFFFF
+    classDef endpoint fill:#243B47,stroke:#0F1F25,color:#FFFFFF
+    classDef agent fill:#FF3621,stroke:#CC2B1A,color:#FFFFFF
+    classDef tool fill:#F8FAFC,stroke:#94A3B8,color:#1A1A2E
+    classDef data fill:#F0FDF4,stroke:#00A972,color:#1A1A2E
+    classDef ml fill:#EFF6FF,stroke:#3B82F6,color:#1A1A2E
+    classDef external fill:#FFF7ED,stroke:#F97316,color:#1A1A2E,stroke-dasharray:6 4
+    classDef uc fill:#FEF2F2,stroke:#FF3621,color:#1A1A2E
+
+    User(["HR Manager"]):::user
+
+    App["Hire Right App
+    Databricks App
+    FastAPI + HTML"]:::app
+
+    EP["Agent Serving Endpoint
+    Model Serving"]:::endpoint
+
+    Agent["Hire Right Agent
+    ResponsesAgent · MLflow 3.0
+    LangGraph"]:::agent
+
+    Genie["Genie Space
+    HR Analytics
+    Natural Language SQL"]:::tool
+
+    VS["Vector Search
+    Resume Index
+    Semantic RAG"]:::tool
+
+    ML["ML Predictor
+    Hire / No-Hire
+    sklearn / XGBoost"]:::tool
+
+    Email["Mailgun API
+    Email Delivery
+    external"]:::external
+
+    LH["Delta Lakehouse
+    Bronze → Silver → Gold
+    Candidate Data · Resume Files"]:::data
+
+    MLF["MLflow
+    Experiments · Model Registry
+    Agent Tracing"]:::ml
+
+    UC["Unity Catalog
+    Governance · Auth
+    Authorization"]:::uc
+
+    User -->|"① chat"| App
+    App -->|"② messages"| EP
+    EP -->|"③ invoke"| Agent
+
+    Agent -->|"④ query_genie"| Genie
+    Agent -->|"⑤ search_resumes"| VS
+    Agent -->|"⑥ predict_hiring_score"| ML
+    Agent -->|"⑦ send_email"| Email
+
+    Genie --> LH
+    VS --> LH
+    ML --> MLF
+    LH --> MLF
+
+    UC -. "governs" .-> LH
+    UC -. "governs" .-> MLF
+    UC -. "governs" .-> VS

@@ -4,6 +4,7 @@ Uses Databricks Vector Search to find relevant resumes by semantic similarity.
 Returns the top-3 matching resume excerpts for the agent to summarize.
 """
 import os
+import mlflow
 from langchain_core.tools import tool
 from config_helper import cfg_get
 
@@ -18,6 +19,7 @@ def _get_vs_config():
 
 
 @tool
+@mlflow.trace(span_type="TOOL")
 def search_resumes(query: str) -> str:
     """Search candidate resumes using semantic vector search to find candidates matching
     specific qualifications, experience, or skills. Use this to look up a specific candidate's
@@ -42,7 +44,12 @@ def search_resumes(query: str) -> str:
         if not results or not results.get("result", {}).get("data_array"):
             return "No matching resumes found for that query."
 
-        cols = [c["name"] for c in results["result"]["manifest"]["columns"]]
+        # manifest is at the top level of the response, not inside result
+        manifest = results.get("manifest") or results.get("result", {}).get("manifest", {})
+        cols = [c["name"] for c in manifest.get("columns", [])]
+        if not cols:
+            cols = ["candidate_id", "first_name", "last_name", "current_title", "resume_text"]
+
         output_parts = []
         for row in results["result"]["data_array"]:
             rec = dict(zip(cols, row))

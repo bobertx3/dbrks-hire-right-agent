@@ -1,5 +1,9 @@
 bundle:
-  name: jnj-hrd-2030-demo
+  name: jj-hr-digital-demo
+
+sync:
+  include:
+    - .env
 
 variables:
   catalog:
@@ -27,8 +31,8 @@ variables:
     description: LLM serving endpoint (via AI Gateway)
     default: databricks-gpt-5-4
   mlflow_experiment:
-    description: MLflow experiment name
-    default: hr_predictive_hiring
+    description: MLflow experiment name for the ML model (notebook 05)
+    default: ml-hr-predictive-hiring
   agent_name:
     description: Registered model name for the agent
     default: hire_right
@@ -40,7 +44,7 @@ resources:
   apps:
     hire_right_app:
       name: ${var.app_name}
-      description: "HireRight AI Agent — J&J HRD 2030 Predictive Hiring"
+      description: "HireRight AI Agent — Jackson and Jackson HR Digital"
       source_code_path: ./app
       resources:
         - name: agent_endpoint
@@ -54,14 +58,14 @@ resources:
 
   dashboards:
     hiring_analytics:
-      display_name: "J&J HRD 2030 — Hiring Analytics"
+      display_name: "Jackson and Jackson HR Digital — Hiring Analytics"
       file_path: ./dashboard/hiring_analytics.lvdash.json
       warehouse_id: ${var.warehouse_id}
       parent_path: "/Workspace/Users/robert.leach@databricks.com"
 
   jobs:
     hrd_setup_job:
-      name: jnj-hrd-ml-pipeline
+      name: jj-hr-digital-pipeline
       parameters:
         - name: train_model
           default: "true"
@@ -153,6 +157,17 @@ resources:
               model_name: hr_predictive_hiring
               endpoint_name: ${var.model_endpoint_name}
 
+        - task_key: drift_monitor
+          depends_on:
+            - task_key: ml_model
+          notebook_task:
+            notebook_path: ./notebooks/05b_create_drift_monitor.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              endpoint_name: ${var.model_endpoint_name}
+              warehouse_id: ${var.warehouse_id}
+
         - task_key: agent
           depends_on:
             - task_key: genie_space
@@ -179,7 +194,7 @@ resources:
               catalog: ${var.catalog}
               schema: ${var.schema}
               warehouse_id: ${var.warehouse_id}
-              dashboard_name: "J&J HRD 2030 — Hiring Analytics"
+              dashboard_name: "Jackson and Jackson HR Digital — Hiring Analytics"
 
 targets:
   prod:

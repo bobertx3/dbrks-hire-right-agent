@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "resources": [
+    {
+      "type": "dashboard",
+      "name": "Workspace Cost Analytics \u2014 fevm-bx3",
+      "id": "01f1394f0c171a6bac49645bfae5ccb7",
+      "created_at": "2026-04-16T04:45:09.622967+00:00",
+      "updated_at": "2026-04-16T04:45:09.622967+00:00",
+      "url": "https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com/sql/dashboardsv3/01f1394f0c171a6bac49645bfae5ccb7"
+    },
+    {
+      "type": "dashboard",
+      "name": "Jackson and Jackson HR Digital \u2014 Hiring Analytics",
+      "id": "01f1387fd0df15968e5d14dc9d5662b9",
+      "created_at": "2026-04-16T05:05:27.977705+00:00",
+      "updated_at": "2026-04-16T05:05:27.977705+00:00",
+      "url": "https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com/sql/dashboardsv3/01f1387fd0df15968e5d14dc9d5662b9"
+    }
+  ]
+}

@@ -10,13 +10,15 @@ All instantiation is deferred to invocation time — nothing runs at import.
 import os
 import time
 import requests
+import mlflow
 from langchain_core.tools import tool
 from config_helper import cfg_get
 
 
 @tool
+@mlflow.trace(span_type="TOOL")
 def query_genie(question: str) -> str:
-    """Query the J&J HRD 2030 HR Analytics Genie Space to answer data questions about
+    """Query the Jackson and Jackson HR Digital HR Analytics Genie Space to answer data questions about
     candidates, hiring scores, ML predictions, job requirements, and HR metrics.
     Use this tool whenever the user asks for data about candidates, comparisons,
     hire rates, scores, certifications, or any structured HR analytics.

@@ -72,7 +72,7 @@
           "widget": {
             "name": "header_text",
             "multilineTextboxSpec": {
-              "lines": ["# J&J HRD 2030 — Predictive Hiring Dashboard\n", "\n", "AI-powered candidate analytics across **4 open HR roles** (JR001–JR004). Candidates are scored across 8 dimensions."]
+              "lines": ["# Jackson and Jackson HR Digital — Predictive Hiring Dashboard\n", "\n", "AI-powered candidate analytics across **4 open HR roles** (JR001–JR004). Candidates are scored across 8 dimensions."]
             }
           },
           "position": {"x": 0, "y": 0, "width": 6, "height": 2}

@@ -11,6 +11,8 @@ env:
     value: "hire-right-agent-endpoint"
   - name: DATABRICKS_WAREHOUSE_ID
     valueFrom: sql_warehouse
+  - name: GENIE_SPACE_ID
+    value: "01f1388a821b1e42a9d579bb45510abf"
   - name: TARGET_CATALOG
     value: "bx4"
   - name: TARGET_SCHEMA

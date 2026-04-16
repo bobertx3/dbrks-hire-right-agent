@@ -1,7 +1,7 @@
 """
-Hire Right Agent — J&J HRD 2030 Predictive Hiring
+Hire Right Agent — Jackson and Jackson HR Digital
 ==================================================
-A Response Agent (ChatAgent pattern, NOT LangGraph) that helps HR leaders
+A ResponsesAgent (MLflow 3.0 standard, NOT LangGraph) that helps HR leaders
 evaluate Director of HR candidates using:
   - Genie Space for data analytics (databricks_langchain.GenieTool or REST fallback)
   - Vector Search for resume semantic retrieval
@@ -9,17 +9,24 @@ evaluate Director of HR candidates using:
   - Mailgun for emailing results to managers
 
 Usage:
-    from hire_right_agent import AGENT, tools
-    response = AGENT.predict([{"role": "user", "content": "Tell me about Sarah Chen"}])
+    from hire_right_agent import AGENT
+    from mlflow.types.responses import ResponsesAgentRequest
+    request = ResponsesAgentRequest(input=[{"role": "user", "content": "Tell me about Sarah Chen"}])
+    response = AGENT.predict(request)
 """
 import os
+import json
 import uuid
 import logging
-from typing import Optional
+from typing import Generator
 
 import mlflow
-from mlflow.pyfunc import ChatAgent
-from mlflow.types.agent import ChatAgentMessage, ChatAgentResponse
+from mlflow.pyfunc import ResponsesAgent
+from mlflow.types.responses import (
+    ResponsesAgentRequest,
+    ResponsesAgentResponse,
+    ResponsesAgentStreamEvent,
+)
 
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage, SystemMessage
 from databricks_langchain import ChatDatabricks
@@ -32,7 +39,7 @@ logger = logging.getLogger(__name__)
 # ── Configuration ─────────────────────────────────────────────────────────────
 LLM_ENDPOINT = cfg_get("llm_endpoint", "LLM_ENDPOINT_NAME", "databricks-gpt-5-4")
 
-SYSTEM_PROMPT = """You are the **Hire Right Agent** for J&J HRD 2030 — an AI-powered hiring assistant
+SYSTEM_PROMPT = """You are the **Hire Right Agent** for Jackson and Jackson HR Digital — an AI-powered hiring assistant
 that helps HR leaders and hiring managers evaluate candidates across four open HR roles at Johnson & Johnson.
 
 ## Your Capabilities
@@ -120,8 +127,22 @@ Skills Match 10% | Industry Relevance 10% | Interview 10% | Culture Fit 10%
 - For resume narrative and qualifications, use **search_resumes**
 - To get an ML prediction for a new candidate after their interview, use **predict_hiring_score**
   and ask the user for interview_score, skills_match_score, and culture_fit if not provided
-- When composing email summaries, be professional and lead with the recommendation
 - Always be data-driven and concise
+
+## Email Composition Guidelines
+When sending a candidate summary email, use this structure:
+
+**Opening line:** "For Job ID [JR00X] — [Role Title] — the following candidates are predicted to be the best fit:"
+
+**Per candidate, write a 2–3 sentence narrative** (do NOT show raw total scores). Cover:
+  1. Qualifications strength — reference their experience and/or skills match score in plain language
+  2. Interview and culture fit — describe their interview performance and cultural alignment
+  3. Data Science verdict — close with "Based on our Data Science prediction, [First Name] is a **Data Science — Recommend Hire**."
+
+**Example narrative format:**
+> "1. **David Kim (C004)** — David brings exceptional HR leadership experience with a strong skills match for this role. His interview performance was outstanding and he demonstrated excellent cultural alignment with the organization. Based on our Data Science prediction, David is a **Data Science — Recommend Hire**."
+
+Do NOT include a "Total Score" line. Do NOT include the disclaimer about historical training labels in the email body.
 
 ## Recommendation Language — ALWAYS USE THESE EXACT TERMS
 When communicating ML predictions in emails, summaries, or any output, always use:
@@ -136,53 +157,77 @@ current recommendation. Keep these two concepts clearly separate in all communic
 # ── Tools ─────────────────────────────────────────────────────────────────────
 TOOLS = [query_genie, search_resumes, predict_hiring_score, send_email]
 
-# Alias for WeatherWise pattern compatibility
+# Alias for compatibility
 tools = TOOLS
 
 
 # ── Agent ──────────────────────────────────────────────────────────────────────
-class HireRightAgent(ChatAgent):
+class HireRightAgent(ResponsesAgent):
     """
-    Response Agent using a simple Python tool-calling loop.
-    NOT LangGraph — uses plain while-loop with LangChain message accumulation.
+    MLflow 3.0 ResponsesAgent using a simple Python tool-calling loop.
+    NOT LangGraph — uses a plain while-loop with LangChain message accumulation.
+    Tool calls are emitted as structured output items for full MLflow trace visibility.
     """
 
-    def _build_lc_messages(self, messages: list) -> list:
+    def _build_lc_messages(self, input_messages) -> list:
         lc_messages = [SystemMessage(content=SYSTEM_PROMPT)]
-        for msg in messages:
-            role = msg.get("role", "user") if isinstance(msg, dict) else msg.role
-            content = msg.get("content", "") if isinstance(msg, dict) else (msg.content or "")
+        for msg in input_messages:
+            role    = msg.role    if hasattr(msg, "role")    else msg.get("role", "user")
+            content = msg.content if hasattr(msg, "content") else msg.get("content", "")
+
+            # Responses API delivers content as a list of typed params (e.g. ResponseInputTextParam).
+            # Extract plain text from each item so LangChain gets a str, not a pydantic object.
+            if isinstance(content, list):
+                parts = []
+                for item in content:
+                    if isinstance(item, str):
+                        parts.append(item)
+                    elif hasattr(item, "text"):
+                        parts.append(item.text)
+                    elif isinstance(item, dict):
+                        parts.append(item.get("text", str(item)))
+                    else:
+                        parts.append(str(item))
+                content = " ".join(parts)
+
+            content = content or ""
             if role == "user":
                 lc_messages.append(HumanMessage(content=content))
             elif role == "assistant":
                 lc_messages.append(AIMessage(content=content))
         return lc_messages
 
-    def predict(
-        self,
-        messages: list,
-        context=None,
-        custom_inputs: Optional[dict] = None,
-    ) -> ChatAgentResponse:
-        llm = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=2048)
+    def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
+        llm            = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=2048)
         llm_with_tools = llm.bind_tools(TOOLS)
 
-        lc_messages = self._build_lc_messages(messages)
+        lc_messages  = self._build_lc_messages(request.input)
+        output_items = []
 
         for _ in range(10):
             response = llm_with_tools.invoke(lc_messages)
             lc_messages.append(response)
 
             if not response.tool_calls:
-                return ChatAgentResponse(
-                    messages=[ChatAgentMessage(
-                        role="assistant",
-                        content=response.content or "",
+                output_items.append(
+                    self.create_text_output_item(
+                        text=response.content or "",
                         id=str(uuid.uuid4()),
-                    )]
+                    )
                 )
+                return ResponsesAgentResponse(output=output_items)
 
             for tc in response.tool_calls:
+                # Emit the function call so MLflow traces it as a span
+                output_items.append(
+                    self.create_function_call_item(
+                        id=str(uuid.uuid4()),
+                        call_id=tc["id"],
+                        name=tc["name"],
+                        arguments=json.dumps(tc["args"]),
+                    )
+                )
+
                 result = f"Tool '{tc['name']}' not found."
                 for t in TOOLS:
                     if t.name == tc["name"]:
@@ -191,28 +236,45 @@ class HireRightAgent(ChatAgent):
                         except Exception as e:
                             result = f"Tool error ({tc['name']}): {str(e)}"
                         break
+
                 logger.debug("Tool %s → %s", tc["name"], str(result)[:100])
+
+                # Emit the tool result so MLflow traces it as a span
+                output_items.append(
+                    self.create_function_call_output_item(
+                        call_id=tc["id"],
+                        output=str(result),
+                    )
+                )
                 lc_messages.append(ToolMessage(content=str(result), tool_call_id=tc["id"]))
 
         # Max iterations — get final answer without tools
         llm_plain = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=1024)
         final = llm_plain.invoke(lc_messages)
-        return ChatAgentResponse(
-            messages=[ChatAgentMessage(
-                role="assistant",
-                content=final.content or "",
+        output_items.append(
+            self.create_text_output_item(
+                text=final.content or "",
                 id=str(uuid.uuid4()),
-            )]
+            )
         )
+        return ResponsesAgentResponse(output=output_items)
+
+    def predict_stream(
+        self, request: ResponsesAgentRequest
+    ) -> Generator[ResponsesAgentStreamEvent, None, None]:
+        result = self.predict(request)
+        for item in result.output:
+            yield ResponsesAgentStreamEvent(type="response.output_item.done", item=item)
 
 
 # ── Singleton instance ─────────────────────────────────────────────────────────
+mlflow.langchain.autolog()
 AGENT = HireRightAgent()
 
 
 def get_input_example():
     return {
-        "messages": [
+        "input": [
             {"role": "user", "content": "Tell me about Sarah Chen (C001) — what are her qualifications?"}
         ]
     }
@@ -224,6 +286,9 @@ mlflow.models.set_model(AGENT)
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    mlflow.langchain.autolog()
-    result = AGENT.predict([{"role": "user", "content": "Who are the top 3 candidates for Director of HR?"}])
-    print(result.messages[0].content)
+    request = ResponsesAgentRequest(
+        input=[{"role": "user", "content": "Who are the top 3 candidates for Director of HR?"}]
+    )
+    result = AGENT.predict(request)
+    text = next((item.text for item in reversed(result.output) if hasattr(item, "text")), "")
+    print(text)

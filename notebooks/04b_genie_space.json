@@ -1,6 +1,6 @@
 {
-  "title": "J&J HRD 2030 — Hiring Analytics Genie",
-  "description": "AI-powered HR analytics for J&J 4-role HR candidate evaluation. Covers 20 candidates across Director of HR, VP Talent Acquisition, Director Comp & Benefits, and Chief People Officer roles. Use candidate_scoring_summary for all analytical questions about scores, rankings, and hiring outcomes.",
+  "title": "Jackson and Jackson HR Digital — Hiring Analytics Genie",
+  "description": "AI-powered HR analytics for Jackson and Jackson 4-role HR candidate evaluation. Covers 20 candidates across Director of HR, VP Talent Acquisition, Director Comp & Benefits, and Chief People Officer roles. Use candidate_scoring_summary for all analytical questions about scores, rankings, and hiring outcomes.",
   "table_identifiers": [
     "__CATALOG__.__SCHEMA__.candidate_scoring_summary",
     "__CATALOG__.__SCHEMA__.candidates",
@@ -36,7 +36,7 @@
         {
           "id": "000000000000000000000000000000c8",
           "content": [
-            "## J&J HRD 2030 — Hiring Analytics\n",
+            "## Jackson and Jackson HR Digital — Hiring Analytics\n",
             "This Genie space covers 20 candidates evaluated across 4 open HR roles at Johnson & Johnson.\n",
             "\n",
             "## Key Tables\n",
