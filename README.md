@@ -128,49 +128,127 @@ The `ResponsesAgent` uses four tools:
 - **`predict_hiring_score`** — Calls the `hire_right` ML model endpoint for a hire/no-hire prediction
 - **`send_email`** — Sends candidate summaries via Mailgun
 
-## Setup
+## Installation
 
 ### Prerequisites
 
-- Databricks workspace with Unity Catalog enabled
-- Databricks CLI configured (`databricks configure`)
+- Databricks workspace with Unity Catalog and Vector Search enabled
+- Databricks CLI installed and configured (`databricks configure`)
 - Python 3.10+
+- A Mailgun account for email (free tier: 3,000 emails/month)
 
-### Environment Configuration
+---
+
+### Step 1 — Configure `.env` (notebooks)
+
+The `.env` file is the single source of truth used by the notebooks when they run on Databricks. It is never committed to git.
 
 ```bash
 cp env.template .env
-# Edit .env with your values
 ```
 
-Key variables:
+Then fill in your values:
 
-| Variable | Description |
-|----------|-------------|
-| `DATABRICKS_AGENT_ENDPOINT` | Model serving endpoint name |
-| `GENIE_SPACE_ID` | HR Analytics Genie Space ID |
-| `TARGET_CATALOG` | Unity Catalog catalog name |
-| `TARGET_SCHEMA` | Unity Catalog schema name |
-| `DATABRICKS_WAREHOUSE_ID` | SQL warehouse for job queries |
-| `LLM_ENDPOINT_NAME` | Databricks LLM endpoint |
-| `VS_ENDPOINT_NAME` | Vector Search endpoint |
-| `VS_INDEX` | Vector Search index name |
-| `MAILGUN_API_KEY` | Mailgun API key for email |
-| `MAILGUN_API_URL` | Mailgun API URL |
-| `SENDER` | Sender email address |
+| Variable | Where to find it | Notes |
+|----------|-----------------|-------|
+| `TARGET_CATALOG` | Your Unity Catalog catalog name | e.g. `my_catalog` |
+| `TARGET_SCHEMA` | Schema to create for this project | e.g. `hrd_demo` |
+| `GENIE_SPACE_ID` | Created by notebook `04_create_genie_space` — copy the ID from the Genie Space URL after running it | Leave blank initially; fill in after step 3 |
+| `LLM_ENDPOINT_NAME` | Databricks Serving Endpoints page | e.g. `databricks-claude-3-7-sonnet` |
+| `VS_ENDPOINT_NAME` | Databricks Vector Search page | Must exist before running notebooks |
+| `VS_INDEX` | Name for the resume index — keep default or rename | `hr_resumes_vs_index` |
+| `MODEL_ENDPOINT_NAME` | Created by notebook `05_train_ml_model` | Keep default: `hr-predictive-hiring-endpoint` |
+| `AGENT_NAME` | Registered model name in Unity Catalog | Keep default: `hire_right` |
+| `AGENT_ENDPOINT_NAME` | Created by notebook `06_evaluate_register_agent` | Keep default: `hire-right-agent-endpoint` |
+| `APP_NAME` | Databricks App name | Keep default: `hire-right-agent` |
+| `DATABRICKS_WAREHOUSE_ID` | Databricks SQL Warehouses page — copy the ID from any running warehouse | Required for Genie and dashboard queries |
+| `MAILGUN_API_URL` | Your Mailgun dashboard → Sending → Domains | Format: `https://api.mailgun.net/v3/<your-domain>/messages` |
+| `MAILGUN_API_KEY` | Your Mailgun dashboard → API Keys | Keep secret |
+| `SENDER` | Email address you send from — must match your Mailgun domain | e.g. `noreply@yourdomain.com` |
+| `RECIPIENT` | Default recipient for agent emails | e.g. `you@yourcompany.com` |
 
-### Deploy with Databricks Bundles
+---
+
+### Step 2 — Update `databricks.yml` (bundle deployment)
+
+`databricks.yml` drives the full deployment — job, app, dashboard. Update two things:
+
+**Your workspace target** (bottom of the file) — only `host` needs updating, `root_path` resolves automatically to the deploying user:
+```yaml
+targets:
+  prod:
+    workspace:
+      host: https://<your-workspace>.cloud.databricks.com
+```
+
+**Variable defaults** — these default to the reference deployment values. Override any that differ in your workspace:
+```yaml
+variables:
+  catalog:
+    default: my_catalog           # must match TARGET_CATALOG in .env
+  schema:
+    default: hrd_demo             # must match TARGET_SCHEMA in .env
+  warehouse_id:
+    default: "<your-warehouse-id>"  # must match DATABRICKS_WAREHOUSE_ID in .env
+  vs_endpoint_name:
+    default: "<your-vs-endpoint>"   # must match VS_ENDPOINT_NAME in .env
+  llm_endpoint_name:
+    default: "<your-llm-endpoint>"  # must match LLM_ENDPOINT_NAME in .env
+  genie_space_id:
+    default: ""                     # fill in after notebook 04 runs
+```
+
+The remaining variables (`agent_name`, `agent_endpoint_name`, `app_name`, `model_endpoint_name`) can be left as defaults unless you want different resource names.
+
+---
+
+### Step 3 — Update `app/app.yaml` (Databricks App runtime)
+
+`app.yaml` configures the running Databricks App. Most env vars are injected automatically from the `resources:` block via `valueFrom:` — you only need to update the `resources:` section and two env vars:
+
+```yaml
+env:
+  - name: TARGET_CATALOG
+    value: "my_catalog"     # update to match your catalog
+  - name: TARGET_SCHEMA
+    value: "hrd_demo"       # update to match your schema
+
+resources:
+  - name: agent_endpoint
+    serving_endpoint:
+      name: hire-right-agent-endpoint   # update if you changed AGENT_ENDPOINT_NAME
+  - name: sql_warehouse
+    sql_warehouse:
+      id: "<your-warehouse-id>"          # update to your warehouse ID
+  - name: genie_space
+    genie_space:
+      name: "Jackson and Johnson HR Digital — Hiring Analytics Genie"  # update if you renamed it
+      space_id: "<your-genie-space-id>"  # fill in after notebook 04 runs
+```
+
+`DATABRICKS_AGENT_ENDPOINT`, `DATABRICKS_WAREHOUSE_ID`, and `GENIE_SPACE_ID` are injected automatically from the resources above — no need to set them as literal values.
+
+---
+
+### Step 4 — Deploy
 
 ```bash
-# Validate the bundle
+# Validate everything looks correct
 databricks bundle validate
 
-# Deploy to your workspace
+# Deploy the job, app, and dashboard
 databricks bundle deploy
 
-# Run the full pipeline
+# Run the full pipeline (builds Bronze → Gold → trains model → deploys agent)
 databricks bundle run jj-hr-digital-pipeline
 ```
+
+After the pipeline completes:
+1. Copy the Genie Space ID from the Genie Space URL
+2. Update `GENIE_SPACE_ID` in `.env`, `genie_space_id` default in `databricks.yml`, and `space_id` in `app/app.yaml`
+3. Redeploy: `databricks bundle deploy`
+
+---
 
 ### Local Development
 

@@ -28,7 +28,7 @@ def _get_config():
         "endpoint":     cfg_get("model_endpoint_name", "MODEL_ENDPOINT_NAME", "hr-predictive-hiring-endpoint"),
         "catalog":      cfg_get("target_catalog",       "TARGET_CATALOG",      "bx4"),
         "schema":       cfg_get("target_schema",        "TARGET_SCHEMA",       "hrd_2030"),
-        "warehouse_id": cfg_get("warehouse_id",         "DATABRICKS_WAREHOUSE_ID", "aa06644a4b0be047"),
+        "warehouse_id": cfg_get("warehouse_id",         "DATABRICKS_WAREHOUSE_ID", ""),
     }
 
 

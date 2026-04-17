@@ -2,16 +2,19 @@
 Tool: query_genie
 Wraps the Databricks Genie Space as a LangChain tool.
 
-Preferred: databricks_langchain.GenieTool (native SDK, available in >= 0.3)
-Fallback:  WorkspaceClient().api_client.do() — handles endpoint credential
-           passthrough automatically (no DATABRICKS_TOKEN env var needed).
+Uses WorkspaceClient REST polling as the primary path — it auto-uses endpoint
+credentials (SP token or on_behalf_of_user forwarded token) without needing
+explicit DATABRICKS_TOKEN env var.
 
-All instantiation is deferred to invocation time — nothing runs at import.
+GenieTool from databricks_langchain is tried first; if it returns an error
+string or raises, we fall back to WorkspaceClient REST.
 """
 import time
 import mlflow
 from langchain_core.tools import tool
 from config_helper import cfg_get
+
+_ERROR_HINTS = ("error", "exception", "failed", "denied", "blocked", "not found", "invalid", "permission")
 
 
 @tool
@@ -28,20 +31,26 @@ def query_genie(question: str) -> str:
     if not sid:
         return "Error: GENIE_SPACE_ID is not configured on this endpoint."
 
-    # ── Preferred: databricks_langchain GenieTool ────────────────────────────
+    # ── Attempt 1: databricks_langchain GenieTool ────────────────────────────
     try:
         from databricks_langchain import GenieTool as _GenieTool
         genie  = _GenieTool(space_id=sid)
         result = genie._run(question)
-        return str(result)
+        result_str = str(result)
+        # If GenieTool returned an error string, fall through to REST
+        lower = result_str.lower()
+        if not any(hint in lower for hint in _ERROR_HINTS):
+            return result_str
+        import logging
+        logging.getLogger(__name__).warning("GenieTool returned error response, using REST fallback: %s", result_str[:200])
     except Exception as _genie_tool_err:
         import logging
-        logging.getLogger(__name__).warning("GenieTool failed, using REST fallback: %s", _genie_tool_err)
+        logging.getLogger(__name__).warning("GenieTool raised, using REST fallback: %s", _genie_tool_err)
 
-    # ── Fallback: WorkspaceClient REST polling ───────────────────────────────
-    # WorkspaceClient() automatically uses endpoint credentials — no token env var needed.
-    # When on_behalf_of_user=True is set in model resources, the SDK forwards the
-    # calling user's token so Genie runs SQL with the user's table permissions.
+    # ── Attempt 2: WorkspaceClient REST polling ──────────────────────────────
+    # WorkspaceClient() on a serving endpoint automatically uses endpoint
+    # credentials — no explicit token needed. With on_behalf_of_user=True in
+    # the model resources, it forwards the calling user's token to Genie.
     try:
         from databricks.sdk import WorkspaceClient
         w = WorkspaceClient()

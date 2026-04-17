@@ -66,14 +66,14 @@ resources:
       display_name: "Jackson and Jackson HR Digital — Hiring Analytics"
       file_path: ./dashboard/hiring_analytics.lvdash.json
       warehouse_id: ${var.warehouse_id}
-      parent_path: "/Workspace/Users/robert.leach@databricks.com"
+      parent_path: "/Workspace/Users/${workspace.current_user.userName}"
 
   jobs:
     hrd_setup_job:
       name: jj-hr-digital-pipeline
       parameters:
         - name: train_model
-          default: "false"
+          default: "true"
         - name: deploy_agent
           default: "true"
       tasks:
@@ -164,9 +164,22 @@ resources:
               model_name: hr_predictive_hiring
               endpoint_name: ${var.model_endpoint_name}
 
+        - task_key: deploy_app
+          depends_on:
+            - task_key: agent
+          notebook_task:
+            notebook_path: ./notebooks/07_deploy_app.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              agent_endpoint_name: ${var.agent_endpoint_name}
+              warehouse_id: ${var.warehouse_id}
+              app_name: ${var.app_name}
+              genie_space_id: ${var.genie_space_id}
+
         - task_key: drift_monitor
           depends_on:
-            - task_key: ml_model
+            - task_key: deploy_app
           notebook_task:
             notebook_path: ./notebooks/05b_create_drift_monitor.ipynb
             base_parameters:
@@ -217,4 +230,4 @@ targets:
     mode: production
     workspace:
       host: https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com
-      root_path: /Workspace/Users/robert.leach@databricks.com/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

@@ -25,7 +25,7 @@ AGENT_ENDPOINT = os.getenv("DATABRICKS_AGENT_ENDPOINT", "hire-right-agent-endpoi
 GENIE_SPACE_ID = os.getenv("GENIE_SPACE_ID", "01f13a0f6a081fabbea933cfb0db1d01")
 TARGET_CATALOG = os.getenv("TARGET_CATALOG", "bx4")
 TARGET_SCHEMA  = os.getenv("TARGET_SCHEMA", "hrd_2030")
-WAREHOUSE_ID   = os.getenv("DATABRICKS_WAREHOUSE_ID", "aa06644a4b0be047")
+WAREHOUSE_ID   = os.getenv("DATABRICKS_WAREHOUSE_ID", "")
 
 
 def get_client() -> WorkspaceClient:
