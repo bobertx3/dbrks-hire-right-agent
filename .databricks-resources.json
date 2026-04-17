@@ -16,6 +16,13 @@
       "created_at": "2026-04-16T05:05:27.977705+00:00",
       "updated_at": "2026-04-16T05:05:27.977705+00:00",
       "url": "https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com/sql/dashboardsv3/01f1387fd0df15968e5d14dc9d5662b9"
+    },
+    {
+      "type": "app",
+      "name": "obo-test",
+      "id": "obo-test",
+      "created_at": "2026-04-17T18:45:02.803677+00:00",
+      "updated_at": "2026-04-17T18:45:02.803677+00:00"
     }
   ]
 }
