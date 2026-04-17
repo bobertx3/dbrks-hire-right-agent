@@ -329,7 +329,7 @@
       </div>
       <div class="cake-stack">
         <div class="cake-layer cake-app">
-          <span class="cake-layer-label">Application</span>
+          <span class="cake-layer-label">User Experience</span>
           <div class="cake-chips">
             <span class="c-chip">Databricks Apps</span>
             <span class="c-chip">Databricks One</span>
@@ -354,29 +354,28 @@
             <span class="c-chip">Model Registry · UC-native</span>
             <span class="c-chip">Model Serving · REST Endpoints</span>
             <span class="c-chip">Feature Store</span>
-            <span class="c-chip">mlflow.genai.evaluate()</span>
+            <span class="c-chip">Versioning · Models &amp; Agents</span>
             <span class="c-chip">AutoML · sklearn · XGBoost</span>
           </div>
         </div>
         <div class="cake-layer cake-gov">
           <span class="cake-layer-label">Governance</span>
           <div class="cake-chips">
-            <span class="c-chip">Unity Catalog · Single Metastore</span>
+            <span class="c-chip">Unity Catalog · Organize / Manage / Secure</span>
             <span class="c-chip">Data Classification · Tags</span>
-            <span class="c-chip">Column Masking</span>
-            <span class="c-chip">Lakehouse Monitors</span>
-            <span class="c-chip">Row &amp; Column Level Security</span>
+            <span class="c-chip">Quality Monitors · Freshness · Completeness · Drift Detection</span>
             <span class="c-chip">End-to-End Lineage</span>
+            <span class="c-chip">Full Auditability · System Tables</span>
           </div>
         </div>
         <div class="cake-layer cake-data">
           <span class="cake-layer-label">Data Platform</span>
           <div class="cake-chips">
-            <span class="c-chip">Delta Lakehouse · Bronze/Silver/Gold</span>
-            <span class="c-chip">Delta Live Tables</span>
-            <span class="c-chip">Databricks Workflows</span>
-            <span class="c-chip">AI/BI · Genie &amp; Dashboards</span>
-            <span class="c-chip">UC Volumes</span>
+            <span class="c-chip">Lakeflow · ETL Pipelines</span>
+            <span class="c-chip">Lakehouse · Bronze / Silver / Gold</span>
+            <span class="c-chip">Volumes · Unstructured Data</span>
+            <span class="c-chip">Dashboards</span>
+            <span class="c-chip">Business Semantics</span>
           </div>
         </div>
       </div>
@@ -478,7 +477,25 @@
   </section>
 
   <!-- ========================================================
-       CAPABILITIES — SLIDE B: AGENTS AI STACK
+       CAPABILITIES — SLIDE B: ML LIFECYCLE
+       ======================================================== -->
+  <section class="slide slide-ink" aria-label="Capabilities: ML Lifecycle">
+    <div class="slide-content" style="display:flex; flex-direction:column; height:calc(100dvh - 8rem);">
+      <div style="flex-shrink:0; margin-bottom:0.75rem;">
+        <p class="mono-label">MLflow 3.0 · End-to-End</p>
+        <h2 style="margin-top:0.3rem; color:#fff;">The <span style="color:var(--db-lava);">ML Lifecycle</span> on Databricks</h2>
+        <span class="accent-bar"></span>
+        <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">From feature engineering to production monitoring — MLflow 3.0 tracks every experiment, registers every model, and governs every deployment through Unity Catalog.</p>
+      </div>
+      <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
+        <img src="images/ml-lifecycle.png" alt="The ML lifecycle on Databricks — from data to deployment" style="width:100%; height:100%; object-fit:contain; object-position:center; display:block;">
+        <p class="screenshot-caption">ML Lifecycle · Experiments → Registry → Serving → Monitoring</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CAPABILITIES — SLIDE C: AGENTS AI STACK
        ======================================================== -->
   <section class="slide slide-ink" aria-label="Capabilities: Agents AI Stack">
     <div class="slide-content">

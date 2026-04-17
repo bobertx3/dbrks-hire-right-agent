@@ -38,7 +38,10 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .h-btn.genie-btn:hover{background:rgba(59,130,246,.25);}
 .h-btn.dbrks-link{text-decoration:none;background:rgba(255,54,33,.18);border-color:rgba(255,54,33,.45);color:#ff8a78;font-weight:600;}
 .h-btn.dbrks-link:hover{background:rgba(255,54,33,.3);border-color:rgba(255,54,33,.7);color:#fff;}
-.h-badge{background:rgba(255,54,33,.15);border:1px solid rgba(255,54,33,.3);color:var(--accent);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;margin-left:6px;}
+.h-arch-sm{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.65);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0;cursor:pointer;font-family:inherit;transition:all .15s;}
+.h-arch-sm:hover{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.32);}
+.h-arch-sm svg{width:10px;height:10px;}
+.h-badge{background:rgba(255,54,33,.15);border:1px solid rgba(255,54,33,.3);color:var(--accent);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;}
 
 /* ── Main Content ────────────────────────────────────────────── */
 #main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
@@ -297,6 +300,54 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .resume-btn{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .15s;flex-shrink:0;}
 .resume-btn:hover{background:#26505f;}
 .resume-btn:disabled{background:#ccc;cursor:default;}
+
+/* ── Data Flow Modal ────────────────────────────────────── */
+.arch-ov{position:fixed;inset:0;background:rgba(5,8,15,.65);backdrop-filter:blur(6px);z-index:900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.arch-ov.open{opacity:1;pointer-events:all;}
+.arch-m{background:#0D1117;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.7);width:calc(100vw - 16px);max-width:none;height:calc(100vh - 16px);max-height:none;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.07);}
+.arch-mh{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 22px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.arch-mt{font-size:14px;font-weight:700;color:#F1F5F9;}
+.arch-ms{font-size:11px;color:#475569;margin-top:3px;}
+.arch-mx{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#94A3B8;font-family:inherit;transition:background .15s;}
+.arch-mx:hover{background:rgba(255,255,255,.14);color:#F1F5F9;}
+.arch-mb{padding:20px 22px 24px;overflow:auto;flex:1;}
+/* ── Diagram canvas ── */
+.dg{position:relative;width:1290px;height:590px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;}
+.dg-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
+/* Boxes */
+.db{position:absolute;border-radius:9px;border:1.5px solid;background:#0C1521;padding:11px 14px 10px;transition:box-shadow .18s,transform .18s;}
+.db:hover{box-shadow:0 6px 22px rgba(0,0,0,.55);transform:translateY(-1px);}
+.dbt{font-size:11px;font-weight:800;color:#F1F5F9;margin-bottom:3px;white-space:nowrap;}
+.dbs{font-size:9px;color:#475569;white-space:nowrap;}
+.dbsub{font-size:10px;font-weight:600;color:#64748B;margin-top:2px;white-space:nowrap;}
+/* Inner boxes (inside UC) */
+.dbi{position:absolute;border-radius:7px;border:1.5px solid;background:#0D1625;padding:8px 10px 7px;transition:box-shadow .15s;}
+.dbi:hover{box-shadow:0 4px 14px rgba(0,0,0,.4);}
+.dbit{font-size:10px;font-weight:700;color:#E2E8F0;margin-bottom:2px;white-space:nowrap;}
+.dbis{font-size:8px;color:#475569;white-space:nowrap;}
+/* Unity Catalog container */
+.duc{position:absolute;border-radius:11px;border:1.5px solid rgba(20,184,166,.4);background:rgba(20,184,166,.03);}
+.duc-lbl{position:absolute;font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(20,184,166,.6);text-transform:uppercase;}
+/* Color themes */
+.c-amber{border-color:rgba(245,158,11,.55);}
+.c-blue{border-color:rgba(59,130,246,.55);}
+.c-cyan{border-color:rgba(6,182,212,.55);}
+.c-green{border-color:rgba(34,197,94,.55);}
+.c-teal{border-color:rgba(20,184,166,.55);}
+.c-purple{border-color:rgba(139,92,246,.55);}
+.c-red{border-color:rgba(255,54,33,.6);}
+.c-slate{border-color:rgba(100,116,139,.45);}
+.m-vol{border-color:rgba(100,116,139,.45);}
+.m-bz{border-color:rgba(245,158,11,.45);}
+.m-sv{border-color:rgba(59,130,246,.45);}
+.m-gd{border-color:rgba(34,197,94,.45);}
+/* Animated dots */
+@keyframes fop2{0%{opacity:0}8%{opacity:1}92%{opacity:1}100%{opacity:0}}
+.fd{animation:fop2 linear infinite;}
+/* UC annotation bullets */
+.duc-bullets{position:absolute;display:flex;flex-direction:column;gap:4px;}
+.duc-bul{font-size:9px;color:#334155;font-weight:600;letter-spacing:.02em;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;}
+.duc-bul::before{content:'·';margin-right:5px;color:#14B8A6;}
 </style>
 </head>
 <body>
@@ -319,6 +370,10 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
     <button class="h-btn genie-btn" onclick="openPanel('genie')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
       Ask Genie
+    </button>
+    <button class="h-arch-sm" onclick="openArch()" title="Data Flow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Data Flow
     </button>
     <span class="h-badge">Databricks AI</span>
   </div>
@@ -418,6 +473,281 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
     </div>
     <div class="resume-modal-body">
       <iframe id="resume-iframe" src="" title="Resume"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ── Architecture Modal ────────────────────────────────────────── -->
+<div id="arch-ov" class="arch-ov" onclick="if(event.target===this)closeArch()">
+  <div class="arch-m">
+    <div class="arch-mh">
+      <div>
+        <div class="arch-mt">Data Flow</div>
+        <div class="arch-ms">Jackson &amp; Jackson HR Digital · End-to-end Data &amp; AI Architecture</div>
+      </div>
+      <button class="arch-mx" onclick="closeArch()">✕</button>
+    </div>
+    <div class="arch-mb">
+      <div class="dg">
+
+        <!-- ═══════════════════════════════════════════════
+             SVG: arrows + animated dots (slow, graceful)
+        ═══════════════════════════════════════════════ -->
+        <svg class="dg-svg" viewBox="0 0 1290 590" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="dma" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(245,158,11,.75)"/></marker>
+            <marker id="dmb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(59,130,246,.75)"/></marker>
+            <marker id="dmc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(6,182,212,.75)"/></marker>
+            <marker id="dmt" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(20,184,166,.75)"/></marker>
+            <marker id="dmr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(255,54,33,.8)"/></marker>
+            <marker id="dmp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(139,92,246,.75)"/></marker>
+            <marker id="dms" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(100,116,139,.65)"/></marker>
+            <marker id="dmg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(34,197,94,.75)"/></marker>
+
+            <!-- Named motion paths — all orthogonal elbows -->
+            <!-- q1: Load Resumes → Volumes -->
+            <path id="q1" d="M 130 183 H 148 V 315 H 170"/>
+            <!-- qV: Volumes → Vector Search (straight vertical) -->
+            <path id="qV" d="M 218 302 V 235"/>
+            <!-- q2: Load Candidates → Volumes -->
+            <path id="q2" d="M 130 427 H 148 V 327 H 170"/>
+            <!-- q3: VS right → up to y=185 channel → right to Agent top (offset left of q5) -->
+            <path id="q3" d="M 298 219 V 185 H 836 V 190"/>
+            <!-- q4: Gold right → exit UC → down to Genie y → Genie left -->
+            <path id="q4" d="M 568 321 H 600 V 426 H 660"/>
+            <!-- q5: AI Gateway bottom → Agent top (straight vertical) -->
+            <path id="q5" d="M 862 70 V 190"/>
+            <!-- q6: Agent left → x=640 col → up to y=165 channel → IT right → IT center -->
+            <path id="q6" d="M 768 230 H 640 V 165 H 464 V 124"/>
+            <!-- q8: Agent left → x=680 col → up to y=48 → MLflow right -->
+            <path id="q8" d="M 768 210 H 680 V 48 H 484"/>
+            <!-- q9: Agent right → App left (near-straight horizontal) -->
+            <path id="q9" d="M 956 228 H 990"/>
+            <!-- q10: Genie top → up to Agent bottom y → Agent bottom (offset left of qE) -->
+            <path id="q10" d="M 734 400 V 272 H 830"/>
+            <!-- q11: Genie right → slight elbow → Databricks One left -->
+            <path id="q11" d="M 808 426 H 899 V 412 H 990"/>
+            <!-- q12: Databricks One top → App bottom (straight vertical) -->
+            <path id="q12" d="M 1045 386 V 256"/>
+            <!-- q13: MR right → down to y=260 channel → Agent left (lower) -->
+            <path id="q13" d="M 508 219 V 260 H 768"/>
+            <!-- qB: Bronze top → up to MR bottom level → MR center -->
+            <path id="qB" d="M 324 302 V 240 H 434"/>
+            <!-- qE: Emailer top → Agent bottom (straight vertical) -->
+            <path id="qE" d="M 848 308 V 272"/>
+            <!-- qHR: App right → HR Manager left -->
+            <path id="qHR" d="M 1098 217 H 1132"/>
+          </defs>
+
+          <!-- Visible lines — elbow style -->
+          <!-- q1: Load Resumes → Volumes -->
+          <path d="M 130 183 H 148 V 315 H 170" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- q2: Load Candidates → Volumes -->
+          <path d="M 130 427 H 148 V 327 H 170" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- qV: Volumes → Vector Search (straight vertical) -->
+          <path d="M 218 302 V 235" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
+          <!-- q3: Vector Search → Agent (routes above inner boxes at y=185, lands left of q5) -->
+          <path d="M 298 219 V 185 H 836 V 190" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
+          <!-- q4: Gold → Genie Space (exits UC right, drops to Genie level) -->
+          <path d="M 568 321 H 600 V 426 H 660" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- q5: AI Gateway → Agent (straight vertical) -->
+          <path d="M 862 70 V 190" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- q6: Agent → Inference Tables (payload — routes via y=165 channel) -->
+          <path d="M 768 230 H 640 V 165 H 464 V 124" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- q8: Agent → MLflow (traces — routes via x=680 col to y=48) -->
+          <path d="M 768 210 H 680 V 48 H 484" fill="none" stroke="rgba(59,130,246,.45)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#dmb)"/>
+          <!-- q9: Agent → App -->
+          <path d="M 956 228 H 990" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <!-- q10: Genie → Agent (up then right to Agent bottom, offset left of qE) -->
+          <path d="M 734 400 V 272 H 830" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- q11: Genie → Databricks One -->
+          <path d="M 808 426 H 899 V 412 H 990" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
+          <!-- q12: Databricks One → App (straight vertical) -->
+          <path d="M 1045 386 V 256" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
+          <!-- q13: Model Registry → Agent (drops below inner boxes, routes right to Agent left) -->
+          <path d="M 508 219 V 260 H 768" fill="none" stroke="rgba(139,92,246,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- qB: Bronze → Model Registry (training data) -->
+          <path d="M 324 302 V 240 H 434" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- qE: Emailer → Agent (straight vertical) -->
+          <path d="M 848 308 V 272" fill="none" stroke="rgba(34,197,94,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmg)"/>
+          <!-- qHR: App → HR Manager -->
+          <path d="M 1098 217 H 1132" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+
+          <!-- Labels -->
+          <text x="500" y="160" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
+          <text x="560" y="43" fill="rgba(59,130,246,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">traces</text>
+          <text x="330" y="235" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">training data</text>
+
+          <!-- ── Animated dots ── -->
+          <!-- q1: Load Resumes → VS (6s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q1"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q1"/></animateMotion></circle>
+          <!-- q2: Load Candidates → Volumes (7s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q2"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q2"/></animateMotion></circle>
+          <!-- qV: Volumes → Vector Search (8s) -->
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#qV"/></animateMotion></circle>
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#qV"/></animateMotion></circle>
+          <!-- q3: Vector Search → Agent (10s) -->
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:10s"><animateMotion dur="10s" repeatCount="indefinite"><mpath href="#q3"/></animateMotion></circle>
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:10s;animation-delay:5s"><animateMotion dur="10s" repeatCount="indefinite" begin="5s"><mpath href="#q3"/></animateMotion></circle>
+          <!-- q4: Gold → Genie (8s) -->
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q4"/></animateMotion></circle>
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q4"/></animateMotion></circle>
+          <!-- q5: AI Gateway → Agent (9s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#q5"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#q5"/></animateMotion></circle>
+          <!-- q6: Agent → Inference Tables payload (8s) -->
+          <circle r="3.5" fill="#8B5CF6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q6"/></animateMotion></circle>
+          <circle r="3.5" fill="#8B5CF6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q6"/></animateMotion></circle>
+          <!-- q8: Agent → MLflow traces (12s) -->
+          <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:12s"><animateMotion dur="12s" repeatCount="indefinite"><mpath href="#q8"/></animateMotion></circle>
+          <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:12s;animation-delay:6s"><animateMotion dur="12s" repeatCount="indefinite" begin="6s"><mpath href="#q8"/></animateMotion></circle>
+          <!-- q9: Agent → App (6s) -->
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q9"/></animateMotion></circle>
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q9"/></animateMotion></circle>
+          <!-- q10: Genie → Agent (7s) -->
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q10"/></animateMotion></circle>
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q10"/></animateMotion></circle>
+          <!-- q11: Genie → Databricks One (7s) -->
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q11"/></animateMotion></circle>
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q11"/></animateMotion></circle>
+          <!-- q12: Databricks One → App (6s) -->
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q12"/></animateMotion></circle>
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q12"/></animateMotion></circle>
+          <!-- q13: Model Registry → Agent (8s) -->
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q13"/></animateMotion></circle>
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q13"/></animateMotion></circle>
+          <!-- qB: Bronze → Model Registry (9s) -->
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#qB"/></animateMotion></circle>
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#qB"/></animateMotion></circle>
+          <!-- qE: Emailer → Agent (5s) -->
+          <circle r="3.5" fill="#22C55E" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qE"/></animateMotion></circle>
+          <circle r="3.5" fill="#22C55E" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qE"/></animateMotion></circle>
+          <!-- qHR: App → HR Manager (5s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qHR"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qHR"/></animateMotion></circle>
+        </svg>
+
+        <!-- ═══════════════════════════════════════════════
+             HTML Boxes (scaled to 1100×590 canvas)
+        ═══════════════════════════════════════════════ -->
+
+        <!-- MLflow -->
+        <div class="db c-blue" style="left:332px;top:20px;width:152px;">
+          <div class="dbt">MLflow 3.0</div>
+          <div class="dbs">Tracing · Experiments</div>
+        </div>
+
+        <!-- Inference Tables -->
+        <div class="db c-purple" style="left:298px;top:98px;width:166px;">
+          <div class="dbt">Inference Tables</div>
+          <div class="dbs">Payload logging · drift</div>
+        </div>
+
+        <!-- AI Gateway — centered above Hire Right Agent -->
+        <div class="db c-amber" style="left:786px;top:18px;width:152px;">
+          <div class="dbt">AI Gateway</div>
+          <div class="dbsub">databricks-gpt-5-4</div>
+        </div>
+
+        <!-- Load Resumes -->
+        <div class="db c-amber" style="left:10px;top:158px;width:120px;">
+          <div class="dbt">Load Resumes</div>
+          <div class="dbs">PDF · UC Volumes</div>
+        </div>
+
+        <!-- Load Candidates -->
+        <div class="db c-amber" style="left:10px;top:402px;width:120px;">
+          <div class="dbt">Load Candidates</div>
+          <div class="dbs">CSV · candidates</div>
+        </div>
+
+        <!-- Unity Catalog container -->
+        <div class="duc" style="left:148px;top:85px;width:432px;height:373px;"></div>
+        <div class="duc-lbl" style="left:308px;top:468px;">Unity Catalog</div>
+
+        <!-- Inner boxes: top row -->
+        <div class="dbi c-cyan" style="left:170px;top:198px;width:128px;">
+          <div class="dbit">Vector Search</div>
+          <div class="dbis">Resume index · RAG</div>
+        </div>
+        <div class="dbi c-purple" style="left:360px;top:198px;width:148px;">
+          <div class="dbit">Model Registry</div>
+          <div class="dbis">XGBoost · sklearn</div>
+        </div>
+
+        <!-- Inner boxes: medallion row -->
+        <div class="dbi m-vol" style="left:170px;top:302px;width:96px;">
+          <div class="dbit">Volumes</div>
+          <div class="dbis">Raw files</div>
+        </div>
+        <div class="dbi m-bz" style="left:276px;top:302px;width:88px;">
+          <div class="dbit">Bronze</div>
+          <div class="dbis">Raw</div>
+        </div>
+        <div class="dbi m-sv" style="left:374px;top:302px;width:88px;">
+          <div class="dbit">Silver</div>
+          <div class="dbis">Clean</div>
+        </div>
+        <div class="dbi m-gd" style="left:472px;top:302px;width:88px;">
+          <div class="dbit">Gold</div>
+          <div class="dbis">Analytics</div>
+        </div>
+
+        <!-- Hire Right Agent -->
+        <div class="db c-red" style="left:768px;top:190px;width:188px;padding:15px 18px 14px;">
+          <div class="dbt" style="font-size:13px;">Hire Right Agent</div>
+          <div class="dbs" style="margin-top:5px;">ResponsesAgent</div>
+          <div class="dbs">MLflow 3.0</div>
+        </div>
+
+        <!-- Emailer -->
+        <div class="db c-green" style="left:778px;top:308px;width:140px;">
+          <div class="dbt">Emailer</div>
+          <div class="dbs">Mailgun · API</div>
+        </div>
+
+        <!-- Genie Space -->
+        <div class="db c-teal" style="left:660px;top:400px;width:148px;padding:14px 18px;">
+          <div class="dbt" style="font-size:13px;">Genie Space</div>
+          <div class="dbs" style="margin-top:4px;">HR Analytics · NL→SQL</div>
+        </div>
+
+        <!-- App -->
+        <div class="db c-slate" style="left:990px;top:178px;width:108px;padding:15px 14px 14px;">
+          <div class="dbt" style="font-size:13px;">App</div>
+          <div class="dbs" style="margin-top:5px;">Databricks Apps</div>
+          <div class="dbs">FastAPI + Chat UI</div>
+        </div>
+
+        <!-- Databricks One -->
+        <div class="db c-slate" style="left:990px;top:386px;width:108px;">
+          <div class="dbt">Databricks One</div>
+          <div class="dbs">Analytics portal</div>
+        </div>
+
+        <!-- HR Manager persona -->
+        <div style="position:absolute;left:1132px;top:172px;width:136px;border-radius:9px;border:1.5px solid rgba(245,158,11,.6);background:#0C1521;padding:12px 14px 11px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.45);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(245,158,11,.9)" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:#E2E8F0;line-height:1.25;">HR<br>Manager</div>
+          </div>
+          <div style="font-size:9px;color:#64748B;line-height:1.5;">End User<br>Accesses App</div>
+        </div>
+
+        <!-- Bullets -->
+        <div class="duc-bullets" style="left:148px;top:480px;">
+          <span class="duc-bul">Classify Data</span>
+          <span class="duc-bul">Assess Data Quality</span>
+          <span class="duc-bul">Mask PII</span>
+          <span class="duc-bul">Create Business Definitions</span>
+          <span class="duc-bul">Observability · inference tables</span>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
@@ -734,7 +1064,6 @@ function renderDetail() {
         <div class="rec-panel-head">
           <div>
             <div class="panel-title">DS Hire Recommendation</div>
-            <div class="panel-sub">${isHistorical?'Historical decision · Use query_genie for data':'ML prediction · Active pipeline candidate'}</div>
           </div>
           <button class="rec-btn" id="rec-btn" onclick="generateRec()">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -785,22 +1114,10 @@ async function generateRec() {
   const available = scoreMap.filter(([,,v]) => v != null);
   const missing   = scoreMap.filter(([,,v]) => v == null);
   const scoreStr  = available.map(([,api,v]) => `${api}=${v}`).join(', ');
-
-  let prompt;
-  const isHistorical = c.hired !== null;
-
-  if (isHistorical) {
-    prompt = `Tell me about candidate ${c.name} (${c.id}) who applied for ${c.job_title} (${c.job_id}). What are their qualifications and what was the hiring outcome?`;
-  } else if (missing.length === 0) {
-    prompt = `Run the ML hire prediction for ${c.name} (${c.id}) applying for ${c.job_title} (${c.job_id}). All 8 scores are available: ${scoreStr}. Provide the full DS recommendation with confidence and score breakdown.`;
-  } else {
-    const missingLabels = missing.map(([label]) => label).join(', ');
-    const missingParams = missing.map(([,api]) => api).join(', ');
-    prompt = `I'd like an ML hire prediction for ${c.name} (${c.id}) applying for ${c.job_title} (${c.job_id}). ` +
-      `Scores on file: ${scoreStr || 'none yet'}. ` +
-      `Missing scores: ${missingParams} (${missingLabels}). ` +
-      `Please let me know what values I need to provide for the missing scores (${missingLabels}) so you can run the prediction.`;
-  }
+  const prompt = `Run the ML hire prediction for ${c.name} (${c.id}) applying for ${c.job_title} (${c.job_id}). ` +
+    `Scores on file: ${scoreStr || 'none'}. ` +
+    `If any of the 8 scores are missing, tell me which ones you need. Otherwise run the prediction now and provide: ` +
+    `(1) the DS hire recommendation, and (2) a very concise candidate summary using the search_resumes tool to retrieve relevant resume context for ${c.name} (${c.id}).`;
 
   addRecMsg('user', `Generate DS Recommendation for ${c.name} (${c.id})`);
   const tp = addRecTyping();
@@ -1173,6 +1490,17 @@ function closeJD() {
   document.removeEventListener('keydown', _jdEsc);
 }
 function _jdEsc(e) { if (e.key === 'Escape') closeJD(); }
+
+// ── Architecture Modal ────────────────────────────────────────
+function openArch() {
+  document.getElementById('arch-ov').classList.add('open');
+  document.addEventListener('keydown', _archEsc);
+}
+function closeArch() {
+  document.getElementById('arch-ov').classList.remove('open');
+  document.removeEventListener('keydown', _archEsc);
+}
+function _archEsc(e) { if (e.key === 'Escape') closeArch(); }
 
 // ── Init ──────────────────────────────────────────────────────
 loadCandidates();

@@ -56,10 +56,9 @@ def search_resumes(query: str) -> str:
             name = f"{rec.get('first_name', '')} {rec.get('last_name', '')}".strip()
             cid = rec.get("candidate_id", "")
             title = rec.get("current_title", "")
-            # Truncate resume text to 800 chars for context efficiency
-            resume_snippet = str(rec.get("resume_text", ""))[:800]
+            resume_text = str(rec.get("resume_text", ""))
             output_parts.append(
-                f"**{name}** ({cid})\nTitle: {title}\n\nResume excerpt:\n{resume_snippet}..."
+                f"**{name}** ({cid})\nTitle: {title}\n\nResume:\n{resume_text}"
             )
 
         return "\n\n---\n\n".join(output_parts)

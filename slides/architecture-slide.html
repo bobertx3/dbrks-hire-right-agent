@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hire Right — Architecture</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0D1117;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Courier New', monospace;
+    color: #E2E8F0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    overflow: auto;
+  }
+
+  .slide { width: 1380px; min-width: 1380px; }
+
+  .slide-header {
+    margin-bottom: 36px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .slide-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    color: #334155; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .slide-title {
+    font-size: 28px; font-weight: 800; color: #F1F5F9; letter-spacing: -0.02em;
+  }
+  .slide-sub { font-size: 12px; color: #475569; margin-top: 5px; }
+  .slide-logo { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: #1E293B; }
+
+  /* ── Canvas ── */
+  .canvas {
+    position: relative;
+    width: 1360px;
+    height: 590px;
+  }
+
+  .canvas-svg {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; overflow: visible;
+  }
+
+  /* ── Boxes ── */
+  .b {
+    position: absolute;
+    border-radius: 9px;
+    border: 1.5px solid;
+    background: #0C1521;
+    padding: 12px 14px 11px;
+    transition: box-shadow .18s, transform .18s;
+  }
+  .b:hover { box-shadow: 0 6px 22px rgba(0,0,0,.5); transform: translateY(-1px); }
+
+  .bt { font-size: 12px; font-weight: 800; color: #F1F5F9; margin-bottom: 4px; white-space: nowrap; }
+  .bs { font-size: 9px; color: #475569; white-space: nowrap; }
+  .bsub { font-size: 11px; font-weight: 700; color: #94A3B8; margin-top: 2px; }
+
+  /* small inner boxes */
+  .bi {
+    position: absolute;
+    border-radius: 7px;
+    border: 1.5px solid;
+    background: #0D1625;
+    padding: 9px 11px 8px;
+    transition: box-shadow .15s;
+  }
+  .bi:hover { box-shadow: 0 4px 14px rgba(0,0,0,.4); }
+  .bit { font-size: 11px; font-weight: 700; color: #E2E8F0; margin-bottom: 2px; white-space: nowrap; }
+  .bis { font-size: 9px; color: #475569; white-space: nowrap; }
+
+  /* UC container */
+  .uc-box {
+    position: absolute;
+    border-radius: 12px;
+    border: 1.5px solid rgba(20,184,166,.45);
+    background: rgba(20,184,166,.04);
+  }
+  .uc-label {
+    position: absolute;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    color: rgba(20,184,166,.65); text-transform: uppercase;
+  }
+
+  /* Color themes */
+  .c-amber  { border-color: rgba(245,158,11,.55); }
+  .c-blue   { border-color: rgba(59,130,246,.55); }
+  .c-cyan   { border-color: rgba(6,182,212,.55); }
+  .c-green  { border-color: rgba(34,197,94,.55); }
+  .c-teal   { border-color: rgba(20,184,166,.55); }
+  .c-purple { border-color: rgba(139,92,246,.55); }
+  .c-red    { border-color: rgba(255,54,33,.6); }
+  .c-slate  { border-color: rgba(100,116,139,.45); }
+
+  /* Medallion mini boxes */
+  .m-vol  { border-color: rgba(100,116,139,.5); }
+  .m-bz   { border-color: rgba(245,158,11,.5); }
+  .m-sv   { border-color: rgba(59,130,246,.5); }
+  .m-gd   { border-color: rgba(34,197,94,.5); }
+
+  /* Bullet list */
+  .bullets {
+    position: absolute;
+    left: 205px; top: 498px;
+    display: flex;
+    gap: 24px;
+  }
+  .bul {
+    font-size: 10px; color: #475569; font-weight: 600;
+    letter-spacing: 0.03em; white-space: nowrap;
+  }
+  .bul::before { content: '·'; margin-right: 5px; color: #14B8A6; }
+
+  /* Animated dots */
+  @keyframes fop { 0%{opacity:0} 8%{opacity:1} 92%{opacity:1} 100%{opacity:0} }
+  .fd  { animation: fop linear infinite; }
+
+  /* Footer */
+  .slide-footer {
+    margin-top: 20px; font-size: 9px; color: #1E293B;
+    letter-spacing: 0.12em; text-transform: uppercase; text-align: center; width: 100%;
+  }
+</style>
+</head>
+<body>
+<div class="slide">
+
+  <!-- Header -->
+  <div class="slide-header">
+    <div>
+      <div class="slide-eyebrow">Jackson &amp; Jackson HR Digital</div>
+      <div class="slide-title">Hire Right — Platform Architecture</div>
+      <div class="slide-sub">Data ingestion &rarr; Unity Catalog &rarr; AI Agent &rarr; Application</div>
+    </div>
+    <div class="slide-logo">Powered by Databricks</div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas">
+
+    <!-- ══════════════════════════════════════════
+         SVG: all dashed arrows + animated dots
+    ══════════════════════════════════════════ -->
+    <svg class="canvas-svg" viewBox="0 0 1360 590" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Arrow markers -->
+        <marker id="m-w"  markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(255,255,255,.4)"/></marker>
+        <marker id="m-t"  markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(20,184,166,.7)"/></marker>
+        <marker id="m-r"  markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(255,54,33,.7)"/></marker>
+        <marker id="m-b"  markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(59,130,246,.7)"/></marker>
+        <marker id="m-a"  markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(245,158,11,.7)"/></marker>
+        <marker id="m-p"  markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(139,92,246,.7)"/></marker>
+        <marker id="m-c"  markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(6,182,212,.7)"/></marker>
+
+        <!-- Named paths for animateMotion -->
+        <!-- 1. Load Resumes → UC -->
+        <path id="pa" d="M 170 222 L 210 222"/>
+        <!-- 2. Load Candidates → UC -->
+        <path id="pb" d="M 175 462 C 196 462 196 370 210 370"/>
+        <!-- 3. UC → Hire Right Agent (upper) -->
+        <path id="pc" d="M 775 258 C 808 258 808 255 845 255"/>
+        <!-- 4. UC → Genie (lower) -->
+        <path id="pd" d="M 775 390 C 813 390 813 462 850 462"/>
+        <!-- 5. AI Gateway → Hire Right Agent -->
+        <path id="pe" d="M 478 133 C 662 133 662 210 888 210"/>
+        <!-- 6. AI Gateway → MLflow -->
+        <path id="pf" d="M 353 88 C 353 60 520 60 520 65"/>
+        <!-- 7. ML Model → MLflow -->
+        <path id="pg" d="M 845 108 C 725 108 725 42 608 42"/>
+        <!-- 8. ML Model → Hire Right Agent -->
+        <path id="ph" d="M 940 148 L 945 205"/>
+        <!-- 9. Hire Right Agent → App -->
+        <path id="pi" d="M 1050 258 C 1088 258 1088 232 1125 232"/>
+        <!-- 10. Genie → Databricks One -->
+        <path id="pj" d="M 1015 462 C 1070 462 1070 455 1125 455"/>
+        <!-- 11. Databricks One → App -->
+        <path id="pk" d="M 1213 415 L 1213 290"/>
+        <!-- 12. Inference Tables → MLflow (feedback / observability) -->
+        <path id="pl" d="M 635 232 C 635 170 520 170 520 65"/>
+      </defs>
+
+      <!-- ── Arrow lines ── -->
+      <!-- 1. Load Resumes → UC -->
+      <path d="M 170 222 L 210 222"
+        fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-a)"/>
+      <!-- 2. Load Candidates → UC -->
+      <path d="M 175 462 C 196 462 196 370 210 370"
+        fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-a)"/>
+      <!-- 3. UC → Hire Right Agent -->
+      <path d="M 775 258 C 808 258 808 255 845 255"
+        fill="none" stroke="rgba(20,184,166,.55)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-t)"/>
+      <!-- 4. UC → Genie -->
+      <path d="M 775 390 C 813 390 813 462 850 462"
+        fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-t)"/>
+      <!-- 5. AI Gateway → Hire Right Agent -->
+      <path d="M 478 133 C 662 133 662 210 888 210"
+        fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-a)"/>
+      <!-- 6. AI Gateway → MLflow -->
+      <path d="M 353 88 C 353 60 520 60 520 65"
+        fill="none" stroke="rgba(59,130,246,.5)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-b)"/>
+      <!-- 7. ML Model → MLflow -->
+      <path d="M 845 108 C 725 108 725 42 608 42"
+        fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-b)"/>
+      <!-- 8. ML Model → Hire Right Agent -->
+      <path d="M 940 148 L 945 205"
+        fill="none" stroke="rgba(139,92,246,.55)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-p)"/>
+      <!-- 9. Hire Right Agent → App -->
+      <path d="M 1050 258 C 1088 258 1088 232 1125 232"
+        fill="none" stroke="rgba(255,54,33,.6)" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#m-r)"/>
+      <!-- 10. Genie → Databricks One -->
+      <path d="M 1015 462 C 1070 462 1070 455 1125 455"
+        fill="none" stroke="rgba(20,184,166,.55)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-t)"/>
+      <!-- 11. Databricks One → App -->
+      <path d="M 1213 415 L 1213 290"
+        fill="none" stroke="rgba(100,116,139,.5)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#m-w)"/>
+      <!-- 12. Inference Tables → MLflow -->
+      <path d="M 635 232 C 635 170 520 170 520 65"
+        fill="none" stroke="rgba(59,130,246,.4)" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#m-b)"/>
+
+      <!-- ── Animated dots ── -->
+      <!-- pa: Load Resumes → UC -->
+      <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:0.8s">
+        <animateMotion dur="0.8s" repeatCount="indefinite"><mpath href="#pa"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:0.8s;animation-delay:0.27s">
+        <animateMotion dur="0.8s" repeatCount="indefinite" begin="0.27s"><mpath href="#pa"/></animateMotion>
+      </circle>
+
+      <!-- pb: Load Candidates → UC -->
+      <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:1.1s">
+        <animateMotion dur="1.1s" repeatCount="indefinite"><mpath href="#pb"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:1.1s;animation-delay:0.37s">
+        <animateMotion dur="1.1s" repeatCount="indefinite" begin="0.37s"><mpath href="#pb"/></animateMotion>
+      </circle>
+
+      <!-- pc: UC → Agent -->
+      <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:0.9s">
+        <animateMotion dur="0.9s" repeatCount="indefinite"><mpath href="#pc"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:0.9s;animation-delay:0.3s">
+        <animateMotion dur="0.9s" repeatCount="indefinite" begin="0.3s"><mpath href="#pc"/></animateMotion>
+      </circle>
+
+      <!-- pd: UC → Genie -->
+      <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:1.1s">
+        <animateMotion dur="1.1s" repeatCount="indefinite"><mpath href="#pd"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:1.1s;animation-delay:0.37s">
+        <animateMotion dur="1.1s" repeatCount="indefinite" begin="0.37s"><mpath href="#pd"/></animateMotion>
+      </circle>
+
+      <!-- pe: AI Gateway → Agent -->
+      <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:2.0s">
+        <animateMotion dur="2.0s" repeatCount="indefinite"><mpath href="#pe"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:2.0s;animation-delay:0.67s">
+        <animateMotion dur="2.0s" repeatCount="indefinite" begin="0.67s"><mpath href="#pe"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:2.0s;animation-delay:1.33s">
+        <animateMotion dur="2.0s" repeatCount="indefinite" begin="1.33s"><mpath href="#pe"/></animateMotion>
+      </circle>
+
+      <!-- pf: AI Gateway → MLflow -->
+      <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:1.3s">
+        <animateMotion dur="1.3s" repeatCount="indefinite"><mpath href="#pf"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:1.3s;animation-delay:0.43s">
+        <animateMotion dur="1.3s" repeatCount="indefinite" begin="0.43s"><mpath href="#pf"/></animateMotion>
+      </circle>
+
+      <!-- pg: ML Model → MLflow -->
+      <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:1.6s">
+        <animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#pg"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:1.6s;animation-delay:0.53s">
+        <animateMotion dur="1.6s" repeatCount="indefinite" begin="0.53s"><mpath href="#pg"/></animateMotion>
+      </circle>
+
+      <!-- ph: ML Model → Agent -->
+      <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:0.9s">
+        <animateMotion dur="0.9s" repeatCount="indefinite"><mpath href="#ph"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:0.9s;animation-delay:0.3s">
+        <animateMotion dur="0.9s" repeatCount="indefinite" begin="0.3s"><mpath href="#ph"/></animateMotion>
+      </circle>
+
+      <!-- pi: Agent → App -->
+      <circle r="3.5" fill="#FF3621" class="fd" style="animation-duration:1.1s">
+        <animateMotion dur="1.1s" repeatCount="indefinite"><mpath href="#pi"/></animateMotion>
+      </circle>
+      <circle r="3.5" fill="#FF3621" class="fd" style="animation-duration:1.1s;animation-delay:0.37s">
+        <animateMotion dur="1.1s" repeatCount="indefinite" begin="0.37s"><mpath href="#pi"/></animateMotion>
+      </circle>
+
+      <!-- pj: Genie → Databricks One -->
+      <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:1.0s">
+        <animateMotion dur="1.0s" repeatCount="indefinite"><mpath href="#pj"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:1.0s;animation-delay:0.33s">
+        <animateMotion dur="1.0s" repeatCount="indefinite" begin="0.33s"><mpath href="#pj"/></animateMotion>
+      </circle>
+
+      <!-- pk: Databricks One → App -->
+      <circle r="3" fill="#64748B" class="fd" style="animation-duration:1.0s">
+        <animateMotion dur="1.0s" repeatCount="indefinite"><mpath href="#pk"/></animateMotion>
+      </circle>
+      <circle r="3" fill="#64748B" class="fd" style="animation-duration:1.0s;animation-delay:0.33s">
+        <animateMotion dur="1.0s" repeatCount="indefinite" begin="0.33s"><mpath href="#pk"/></animateMotion>
+      </circle>
+
+      <!-- pl: Inference Tables → MLflow -->
+      <circle r="2.5" fill="#3B82F6" class="fd" style="animation-duration:1.8s">
+        <animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#pl"/></animateMotion>
+      </circle>
+      <circle r="2.5" fill="#3B82F6" class="fd" style="animation-duration:1.8s;animation-delay:0.6s">
+        <animateMotion dur="1.8s" repeatCount="indefinite" begin="0.6s"><mpath href="#pl"/></animateMotion>
+      </circle>
+    </svg>
+
+    <!-- ══════════════════════════════════════════
+         HTML Boxes
+    ══════════════════════════════════════════ -->
+
+    <!-- MLflow (top center) -->
+    <div class="b c-blue" style="left:440px; top:10px; width:175px;">
+      <div class="bt">MLflow 3.0</div>
+      <div class="bs">Experiments · Tracing · Registry</div>
+    </div>
+
+    <!-- AI Gateway (upper left, above UC) -->
+    <div class="b c-amber" style="left:232px; top:88px; width:246px;">
+      <div class="bt">AI Gateway</div>
+      <div class="bsub">databricks-gpt-5-4</div>
+    </div>
+
+    <!-- ML Prediction Model (upper right) -->
+    <div class="b c-purple" style="left:845px; top:80px; width:210px;">
+      <div class="bt">ML Prediction Model</div>
+      <div class="bs">HR Predictive Hiring · sklearn / XGBoost</div>
+    </div>
+
+    <!-- Load Resumes (far left, top) -->
+    <div class="b c-amber" style="left:20px; top:185px; width:150px;">
+      <div class="bt">Load Resumes</div>
+      <div class="bs">PDF files · UC Volumes</div>
+    </div>
+
+    <!-- Load Candidates (far left, bottom) -->
+    <div class="b c-amber" style="left:20px; top:425px; width:155px;">
+      <div class="bt">Load Candidates</div>
+      <div class="bs">CSV · candidates table</div>
+    </div>
+
+    <!-- Unity Catalog container -->
+    <div class="uc-box" style="left:210px; top:185px; width:565px; height:300px;"></div>
+    <div class="uc-label" style="left:356px; top:462px;">Unity Catalog</div>
+
+    <!-- Inner boxes: top row -->
+    <div class="bi c-cyan" style="left:228px; top:225px; width:145px;">
+      <div class="bit">Vector Search</div>
+      <div class="bis">Resume index · RAG</div>
+    </div>
+    <div class="bi c-blue" style="left:390px; top:225px; width:148px;">
+      <div class="bit">Model Registry</div>
+      <div class="bis">UC-native · versioned</div>
+    </div>
+    <div class="bi c-purple" style="left:555px; top:225px; width:158px;">
+      <div class="bit">Inference Tables</div>
+      <div class="bis">Payload logging · drift</div>
+    </div>
+
+    <!-- Inner boxes: bottom row (medallion) -->
+    <div class="bi m-vol" style="left:228px; top:330px; width:108px;">
+      <div class="bit">Volumes</div>
+      <div class="bis">Raw files</div>
+    </div>
+    <div class="bi m-bz" style="left:350px; top:330px; width:95px;">
+      <div class="bit">Bronze</div>
+      <div class="bis">Raw tables</div>
+    </div>
+    <div class="bi m-sv" style="left:460px; top:330px; width:95px;">
+      <div class="bit">Silver</div>
+      <div class="bis">Cleaned</div>
+    </div>
+    <div class="bi m-gd" style="left:570px; top:330px; width:95px;">
+      <div class="bit">Gold</div>
+      <div class="bis">Analytics</div>
+    </div>
+
+    <!-- Hire Right Agent (center-right, large) -->
+    <div class="b c-red" style="left:845px; top:205px; width:205px; padding:16px 18px 15px;">
+      <div class="bt" style="font-size:14px;">Hire Right Agent</div>
+      <div class="bs" style="margin-top:5px;">ResponsesAgent · MLflow 3.0</div>
+      <div class="bs" style="margin-top:2px;">4 tools · Credential Passthrough</div>
+    </div>
+
+    <!-- Genie (center-right, below agent) -->
+    <div class="b c-teal" style="left:850px; top:425px; width:165px;">
+      <div class="bt">Genie Space</div>
+      <div class="bs">HR Analytics · NL→SQL</div>
+    </div>
+
+    <!-- App (far right, top) -->
+    <div class="b c-slate" style="left:1125px; top:175px; width:200px; padding:16px 18px 15px;">
+      <div class="bt" style="font-size:14px;">App</div>
+      <div class="bs" style="margin-top:4px;">Databricks Apps</div>
+      <div class="bs" style="margin-top:2px;">FastAPI + HTML · Chat UI</div>
+    </div>
+
+    <!-- Databricks One (far right, bottom) -->
+    <div class="b c-slate" style="left:1125px; top:415px; width:200px;">
+      <div class="bt">Databricks One</div>
+      <div class="bs">Analytics portal · unified view</div>
+    </div>
+
+    <!-- Bullet annotations below UC -->
+    <div class="bullets">
+      <span class="bul">Classify Data</span>
+      <span class="bul">Assess Data Quality</span>
+      <span class="bul">Mask PII</span>
+      <span class="bul">Business Definitions</span>
+      <span class="bul">Observability · inference tables</span>
+    </div>
+
+  </div><!-- /canvas -->
+
+  <div class="slide-footer">Databricks Confidential &nbsp;·&nbsp; Jackson &amp; Jackson HR Digital &nbsp;·&nbsp; 2026</div>
+
+</div>
+</body>
+</html>

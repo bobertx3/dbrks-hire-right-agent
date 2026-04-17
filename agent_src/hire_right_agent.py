@@ -119,7 +119,7 @@ Use **query_genie** for data questions. **predict_hiring_score** can also be cal
 | C018 | Jonathan Reed    |
 
 ## Guidelines
-- For any question about data already stored (scores, rankings, comparisons), use **query_genie**
+- For any question about data already stored (scores, rankings, comparisons, contact details like phone number or email, certifications, years of experience), use **query_genie**
 - For resume narrative and qualifications, use **search_resumes**
 - To get an ML prediction, use **predict_hiring_score** — pass all known scores from context,
   and explicitly ask the user for any scores that are "pending". Never substitute a made-up number.

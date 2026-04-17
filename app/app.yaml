@@ -12,7 +12,7 @@ env:
   - name: DATABRICKS_WAREHOUSE_ID
     valueFrom: sql_warehouse
   - name: GENIE_SPACE_ID
-    value: "01f1388a821b1e42a9d579bb45510abf"
+    value: "01f13a0f6a081fabbea933cfb0db1d01"
   - name: TARGET_CATALOG
     value: "bx4"
   - name: TARGET_SCHEMA
@@ -30,5 +30,5 @@ resources:
   - name: genie_space
     genie_space:
       name: "Jackson and Jackson HR Digital — Hiring Analytics Genie"
-      space_id: "01f1388a821b1e42a9d579bb45510abf"
+      space_id: "01f13a0f6a081fabbea933cfb0db1d01"
       permission: CAN_RUN

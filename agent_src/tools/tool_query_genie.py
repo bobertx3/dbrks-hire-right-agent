@@ -34,11 +34,14 @@ def query_genie(question: str) -> str:
         genie  = _GenieTool(space_id=sid)
         result = genie._run(question)
         return str(result)
-    except Exception:
-        pass  # fall through to SDK REST fallback
+    except Exception as _genie_tool_err:
+        import logging
+        logging.getLogger(__name__).warning("GenieTool failed, using REST fallback: %s", _genie_tool_err)
 
     # ── Fallback: WorkspaceClient REST polling ───────────────────────────────
     # WorkspaceClient() automatically uses endpoint credentials — no token env var needed.
+    # When on_behalf_of_user=True is set in model resources, the SDK forwards the
+    # calling user's token so Genie runs SQL with the user's table permissions.
     try:
         from databricks.sdk import WorkspaceClient
         w = WorkspaceClient()

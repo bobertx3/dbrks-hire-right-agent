@@ -38,7 +38,7 @@ variables:
     default: hire_right
   genie_space_id:
     description: Genie Space ID for HR analytics (set after space is created in UI or notebook 04)
-    default: "01f1388a821b1e42a9d579bb45510abf"
+    default: "01f13a0f6a081fabbea933cfb0db1d01"
 
 resources:
   apps:
