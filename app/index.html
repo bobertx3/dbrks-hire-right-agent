@@ -518,7 +518,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
             <!-- q5: AI Gateway → Agent -->
             <path id="q5" d="M 1038 64 H 1000 V 195"/>
             <!-- q6: Agent → Inference Tables (payload) -->
-            <path id="q6" d="M 840 228 H 616 V 118"/>
+            <path id="q6" d="M 825 270 V 317"/>
             <!-- q8: Agent → MLflow (traces) -->
             <path id="q8" d="M 876 195 V 72"/>
             <!-- qHRD: HR Manager → Databricks One -->
@@ -542,9 +542,9 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
             <!-- qUCF: UC Functions → Tools -->
             <path id="qUCF" d="M 415 210 V 88"/>
             <!-- qTA: Agent → Tools (tool calls) -->
-            <path id="qTA" d="M 840 195 V 88 H 510"/>
+            <path id="qTA" d="M 780 195 V 88 H 510"/>
             <!-- qAR: Agent → Agents/MCP Registry -->
-            <path id="qAR" d="M 840 223 V 502 H 467 V 491"/>
+            <path id="qAR" d="M 1028 228 V 570 H 467 V 491"/>
           </defs>
 
           <!-- Visible lines — elbow style -->
@@ -561,7 +561,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <!-- q5: AI Gateway → Agent -->
           <path d="M 1038 64 H 1000 V 195" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
           <!-- q6: Agent → Inference Tables (payload) -->
-          <path d="M 840 228 H 616 V 118" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <path d="M 825 270 V 317" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
           <!-- q8: Agent → MLflow (traces) -->
           <path d="M 876 195 V 72" fill="none" stroke="rgba(59,130,246,.45)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#dmb)"/>
           <!-- qHRD: HR Manager → Databricks One -->
@@ -585,12 +585,12 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <!-- qUCF: UC Functions → Tools -->
           <path d="M 415 210 V 88" fill="none" stroke="rgba(20,184,166,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
           <!-- qTA: Agent → Tools (tool calls) -->
-          <path d="M 840 195 V 88 H 510" fill="none" stroke="rgba(255,54,33,.7)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <path d="M 780 195 V 88 H 510" fill="none" stroke="rgba(255,54,33,.7)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
           <!-- qAR: Agent → Agents/MCP Registry -->
-          <path d="M 840 223 V 502 H 467 V 491" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <path d="M 1028 228 V 570 H 467 V 491" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
 
           <!-- Labels -->
-          <text x="630" y="158" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
+          <text x="830" y="293" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
           <text x="882" y="128" fill="rgba(59,130,246,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">traces</text>
           <text x="537" y="297" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">train</text>
           <text x="640" y="82" fill="rgba(255,54,33,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">tool calls</text>
@@ -669,7 +669,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
         </div>
 
         <!-- Inference Tables -->
-        <div class="db c-purple" style="left:450px;top:98px;width:166px;">
+        <div class="db c-purple" style="left:660px;top:285px;width:165px;">
           <div class="dbt">Inference Tables</div>
           <div class="dbs">Payload logging · drift</div>
         </div>
@@ -731,7 +731,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
         </div>
 
         <!-- Hire Right Agent -->
-        <div class="db c-red" style="left:840px;top:195px;width:188px;padding:15px 18px 14px;">
+        <div class="db c-red" style="left:780px;top:195px;width:248px;padding:15px 18px 14px;">
           <div class="dbt" style="font-size:13px;">Hire Right Agent</div>
           <div class="dbs" style="margin-top:5px;">ResponsesAgent</div>
           <div class="dbs">MLflow 3.0</div>
