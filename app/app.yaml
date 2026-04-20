@@ -5,12 +5,14 @@ command:
   - 0.0.0.0
   - --port
   - "8000"
+  - --timeout-keep-alive
+  - "600"
 
 env:
   - name: DATABRICKS_AGENT_ENDPOINT
-    valueFrom: agent_endpoint
+    value: "hire-right-agent-endpoint"
   - name: DATABRICKS_WAREHOUSE_ID
-    valueFrom: sql_warehouse
+    value: "aa06644a4b0be047"
   - name: GENIE_SPACE_ID
     valueFrom: genie_space
   - name: TARGET_CATALOG

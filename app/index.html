@@ -42,6 +42,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .h-arch-sm:hover{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.32);}
 .h-arch-sm svg{width:10px;height:10px;}
 .h-badge{background:rgba(255,54,33,.15);border:1px solid rgba(255,54,33,.3);color:var(--accent);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;}
+.brand-pill{display:inline-block;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.38);font-size:9px;font-weight:500;padding:1px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;letter-spacing:.02em;}
 
 /* ── Main Content ────────────────────────────────────────────── */
 #main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
@@ -312,7 +313,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .arch-mx:hover{background:rgba(255,255,255,.14);color:#F1F5F9;}
 .arch-mb{padding:20px 22px 24px;overflow:auto;flex:1;}
 /* ── Diagram canvas ── */
-.dg{position:relative;width:1290px;height:590px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;}
+.dg{position:relative;width:1500px;height:660px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;}
 .dg-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
 /* Boxes */
 .db{position:absolute;border-radius:9px;border:1.5px solid;background:#0C1521;padding:11px 14px 10px;transition:box-shadow .18s,transform .18s;}
@@ -358,7 +359,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
     <div class="brand-logo">HR</div>
     <div>
       <div class="brand-name">Hire Right</div>
-      <div class="brand-sub">Jackson &amp; Jackson · AI-Powered Hiring</div>
+      <div class="brand-sub">Jackson &amp; Jackson · AI-Powered Hiring<span class="brand-pill">Powered by Databricks Data &amp; AI</span></div>
     </div>
   </div>
   <div class="h-spacer"></div>
@@ -375,7 +376,6 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Data Flow
     </button>
-    <span class="h-badge">Databricks AI</span>
   </div>
 </header>
 
@@ -493,7 +493,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
         <!-- ═══════════════════════════════════════════════
              SVG: arrows + animated dots (slow, graceful)
         ═══════════════════════════════════════════════ -->
-        <svg class="dg-svg" viewBox="0 0 1290 590" xmlns="http://www.w3.org/2000/svg">
+        <svg class="dg-svg" viewBox="0 0 1500 660" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <marker id="dma" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(245,158,11,.75)"/></marker>
             <marker id="dmb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(59,130,246,.75)"/></marker>
@@ -506,77 +506,90 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 
             <!-- Named motion paths — all orthogonal elbows -->
             <!-- q1: Load Resumes → Volumes -->
-            <path id="q1" d="M 130 183 H 148 V 315 H 170"/>
-            <!-- qV: Volumes → Vector Search (straight vertical) -->
-            <path id="qV" d="M 218 302 V 235"/>
+            <path id="q1" d="M 130 192 H 152 V 332 H 175"/>
+            <!-- qV: Volumes → Vector Search -->
+            <path id="qV" d="M 225 318 V 247"/>
             <!-- q2: Load Candidates → Volumes -->
-            <path id="q2" d="M 130 427 H 148 V 327 H 170"/>
-            <!-- q3: VS right → up to y=185 channel → right to Agent top (offset left of q5) -->
-            <path id="q3" d="M 298 219 V 185 H 836 V 190"/>
-            <!-- q4: Gold right → exit UC → down to Genie y → Genie left -->
-            <path id="q4" d="M 568 321 H 600 V 426 H 660"/>
-            <!-- q5: AI Gateway bottom → Agent top (straight vertical) -->
-            <path id="q5" d="M 862 70 V 190"/>
-            <!-- q6: Agent left → x=640 col → up to y=165 channel → IT right → IT center -->
-            <path id="q6" d="M 768 230 H 640 V 165 H 464 V 124"/>
-            <!-- q8: Agent left → x=680 col → up to y=48 → MLflow right -->
-            <path id="q8" d="M 768 210 H 680 V 48 H 484"/>
-            <!-- q9: Agent right → App left (near-straight horizontal) -->
-            <path id="q9" d="M 956 228 H 990"/>
-            <!-- q10: Genie top → up to Agent bottom y → Agent bottom (offset left of qE) -->
-            <path id="q10" d="M 734 400 V 272 H 830"/>
-            <!-- q11: Genie right → slight elbow → Databricks One left -->
-            <path id="q11" d="M 808 426 H 899 V 412 H 990"/>
-            <!-- q12: Databricks One top → App bottom (straight vertical) -->
-            <path id="q12" d="M 1045 386 V 256"/>
-            <!-- q13: MR right → down to y=260 channel → Agent left (lower) -->
-            <path id="q13" d="M 508 219 V 260 H 768"/>
-            <!-- qB: Bronze top → up to MR bottom level → MR center -->
-            <path id="qB" d="M 324 302 V 240 H 434"/>
-            <!-- qE: Emailer top → Agent bottom (straight vertical) -->
-            <path id="qE" d="M 848 308 V 272"/>
-            <!-- qHR: App right → HR Manager left -->
-            <path id="qHR" d="M 1098 217 H 1132"/>
+            <path id="q2" d="M 130 440 H 152 V 335 H 175"/>
+            <!-- q3: VS → Tools -->
+            <path id="q3" d="M 240 210 H 320 V 88"/>
+            <!-- q4: Gold → Genie Space -->
+            <path id="q4" d="M 575 337 H 618 V 452 H 660"/>
+            <!-- q5: AI Gateway → Agent -->
+            <path id="q5" d="M 1038 64 H 1000 V 195"/>
+            <!-- q6: Agent → Inference Tables (payload) -->
+            <path id="q6" d="M 840 228 H 616 V 118"/>
+            <!-- q8: Agent → MLflow (traces) -->
+            <path id="q8" d="M 876 195 V 72"/>
+            <!-- qHRD: HR Manager → Databricks One -->
+            <path id="qHRD" d="M 1273 268 V 421 H 1170"/>
+            <!-- q9: Agent → App -->
+            <path id="q9" d="M 1028 236 H 1062"/>
+            <!-- q11: Genie → App -->
+            <path id="q11" d="M 810 452 H 1045 V 228 H 1062"/>
+            <!-- q12: App → Databricks One -->
+            <path id="q12" d="M 1116 268 V 396"/>
+            <!-- q13: MR → Tools -->
+            <path id="q13" d="M 555 210 V 22 H 510"/>
+            <!-- qB: Gold → Model Registry (train) -->
+            <path id="qB" d="M 530 338 V 270"/>
+            <!-- qE: Tools → Emailer -->
+            <path id="qE" d="M 320 42 H 305"/>
+            <!-- qHR: App → HR Manager -->
+            <path id="qHR" d="M 1170 228 H 1205"/>
+            <!-- qGT: Genie → Tools -->
+            <path id="qGT" d="M 735 432 H 415 V 88"/>
+            <!-- qUCF: UC Functions → Tools -->
+            <path id="qUCF" d="M 415 210 V 88"/>
+            <!-- qTA: Agent → Tools (tool calls) -->
+            <path id="qTA" d="M 840 195 V 88 H 510"/>
           </defs>
 
           <!-- Visible lines — elbow style -->
           <!-- q1: Load Resumes → Volumes -->
-          <path d="M 130 183 H 148 V 315 H 170" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <path d="M 130 192 H 152 V 332 H 175" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
           <!-- q2: Load Candidates → Volumes -->
-          <path d="M 130 427 H 148 V 327 H 170" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- qV: Volumes → Vector Search (straight vertical) -->
-          <path d="M 218 302 V 235" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
-          <!-- q3: Vector Search → Agent (routes above inner boxes at y=185, lands left of q5) -->
-          <path d="M 298 219 V 185 H 836 V 190" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
-          <!-- q4: Gold → Genie Space (exits UC right, drops to Genie level) -->
-          <path d="M 568 321 H 600 V 426 H 660" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
-          <!-- q5: AI Gateway → Agent (straight vertical) -->
-          <path d="M 862 70 V 190" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- q6: Agent → Inference Tables (payload — routes via y=165 channel) -->
-          <path d="M 768 230 H 640 V 165 H 464 V 124" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
-          <!-- q8: Agent → MLflow (traces — routes via x=680 col to y=48) -->
-          <path d="M 768 210 H 680 V 48 H 484" fill="none" stroke="rgba(59,130,246,.45)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#dmb)"/>
+          <path d="M 130 440 H 152 V 335 H 175" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- qV: Volumes → Vector Search -->
+          <path d="M 225 318 V 247" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
+          <!-- q3: Vector Search → Tools -->
+          <path d="M 240 210 H 320 V 88" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
+          <!-- q4: Gold → Genie Space -->
+          <path d="M 575 337 H 618 V 452 H 660" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- q5: AI Gateway → Agent -->
+          <path d="M 1038 64 H 1000 V 195" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- q6: Agent → Inference Tables (payload) -->
+          <path d="M 840 228 H 616 V 118" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- q8: Agent → MLflow (traces) -->
+          <path d="M 876 195 V 72" fill="none" stroke="rgba(59,130,246,.45)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#dmb)"/>
+          <!-- qHRD: HR Manager → Databricks One -->
+          <path d="M 1273 268 V 421 H 1170" fill="none" stroke="rgba(245,158,11,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
           <!-- q9: Agent → App -->
-          <path d="M 956 228 H 990" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
-          <!-- q10: Genie → Agent (up then right to Agent bottom, offset left of qE) -->
-          <path d="M 734 400 V 272 H 830" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
-          <!-- q11: Genie → Databricks One -->
-          <path d="M 808 426 H 899 V 412 H 990" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
-          <!-- q12: Databricks One → App (straight vertical) -->
-          <path d="M 1045 386 V 256" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
-          <!-- q13: Model Registry → Agent (drops below inner boxes, routes right to Agent left) -->
-          <path d="M 508 219 V 260 H 768" fill="none" stroke="rgba(139,92,246,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
-          <!-- qB: Bronze → Model Registry (training data) -->
-          <path d="M 324 302 V 240 H 434" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
-          <!-- qE: Emailer → Agent (straight vertical) -->
-          <path d="M 848 308 V 272" fill="none" stroke="rgba(34,197,94,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmg)"/>
+          <path d="M 1028 236 H 1062" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <!-- q11: Genie → App -->
+          <path d="M 810 452 H 1045 V 228 H 1062" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
+          <!-- q12: App → Databricks One -->
+          <path d="M 1116 268 V 396" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
+          <!-- q13: Model Registry → Tools -->
+          <path d="M 555 210 V 22 H 510" fill="none" stroke="rgba(139,92,246,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- qB: Gold → Model Registry (train) -->
+          <path d="M 530 338 V 270" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- qE: Tools → Emailer -->
+          <path d="M 320 42 H 305" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
           <!-- qHR: App → HR Manager -->
-          <path d="M 1098 217 H 1132" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <path d="M 1170 228 H 1205" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- qGT: Genie → Tools -->
+          <path d="M 735 432 H 415 V 88" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- qUCF: UC Functions → Tools -->
+          <path d="M 415 210 V 88" fill="none" stroke="rgba(20,184,166,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- qTA: Agent → Tools (tool calls) -->
+          <path d="M 840 195 V 88 H 510" fill="none" stroke="rgba(255,54,33,.7)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
 
           <!-- Labels -->
-          <text x="500" y="160" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
-          <text x="560" y="43" fill="rgba(59,130,246,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">traces</text>
-          <text x="330" y="235" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">training data</text>
+          <text x="630" y="158" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
+          <text x="882" y="128" fill="rgba(59,130,246,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">traces</text>
+          <text x="537" y="297" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">train</text>
+          <text x="640" y="82" fill="rgba(255,54,33,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">tool calls</text>
 
           <!-- ── Animated dots ── -->
           <!-- q1: Load Resumes → VS (6s) -->
@@ -588,9 +601,9 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <!-- qV: Volumes → Vector Search (8s) -->
           <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#qV"/></animateMotion></circle>
           <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#qV"/></animateMotion></circle>
-          <!-- q3: Vector Search → Agent (10s) -->
-          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:10s"><animateMotion dur="10s" repeatCount="indefinite"><mpath href="#q3"/></animateMotion></circle>
-          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:10s;animation-delay:5s"><animateMotion dur="10s" repeatCount="indefinite" begin="5s"><mpath href="#q3"/></animateMotion></circle>
+          <!-- q3: Vector Search → Tools (9s) -->
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#q3"/></animateMotion></circle>
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#q3"/></animateMotion></circle>
           <!-- q4: Gold → Genie (8s) -->
           <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q4"/></animateMotion></circle>
           <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q4"/></animateMotion></circle>
@@ -606,27 +619,36 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <!-- q9: Agent → App (6s) -->
           <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q9"/></animateMotion></circle>
           <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q9"/></animateMotion></circle>
-          <!-- q10: Genie → Agent (7s) -->
-          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q10"/></animateMotion></circle>
-          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q10"/></animateMotion></circle>
-          <!-- q11: Genie → Databricks One (7s) -->
+          <!-- q11: Genie → App (7s) -->
           <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q11"/></animateMotion></circle>
           <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q11"/></animateMotion></circle>
-          <!-- q12: Databricks One → App (6s) -->
+          <!-- q12: App → Databricks One (6s) -->
           <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q12"/></animateMotion></circle>
           <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q12"/></animateMotion></circle>
-          <!-- q13: Model Registry → Agent (8s) -->
+          <!-- q13: Model Registry → Tools (8s) -->
           <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q13"/></animateMotion></circle>
           <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q13"/></animateMotion></circle>
           <!-- qB: Bronze → Model Registry (9s) -->
           <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#qB"/></animateMotion></circle>
           <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#qB"/></animateMotion></circle>
-          <!-- qE: Emailer → Agent (5s) -->
-          <circle r="3.5" fill="#22C55E" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qE"/></animateMotion></circle>
-          <circle r="3.5" fill="#22C55E" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qE"/></animateMotion></circle>
+          <!-- qE: Tools → Emailer (4s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:4s"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#qE"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:4s;animation-delay:2s"><animateMotion dur="4s" repeatCount="indefinite" begin="2s"><mpath href="#qE"/></animateMotion></circle>
           <!-- qHR: App → HR Manager (5s) -->
           <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qHR"/></animateMotion></circle>
           <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qHR"/></animateMotion></circle>
+          <!-- qHRD: HR Manager → Databricks One (7s) -->
+          <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qHRD"/></animateMotion></circle>
+          <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qHRD"/></animateMotion></circle>
+          <!-- qGT: Genie → Tools (6s) -->
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#qGT"/></animateMotion></circle>
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#qGT"/></animateMotion></circle>
+          <!-- qUCF: UC Functions → Tools (7s) -->
+          <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qUCF"/></animateMotion></circle>
+          <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qUCF"/></animateMotion></circle>
+          <!-- qTA: Tools → Agent (5s) -->
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qTA"/></animateMotion></circle>
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qTA"/></animateMotion></circle>
         </svg>
 
         <!-- ═══════════════════════════════════════════════
@@ -634,101 +656,114 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
         ═══════════════════════════════════════════════ -->
 
         <!-- MLflow -->
-        <div class="db c-blue" style="left:332px;top:20px;width:152px;">
+        <div class="db c-blue" style="left:800px;top:22px;width:152px;">
           <div class="dbt">MLflow 3.0</div>
           <div class="dbs">Tracing · Experiments</div>
         </div>
 
         <!-- Inference Tables -->
-        <div class="db c-purple" style="left:298px;top:98px;width:166px;">
+        <div class="db c-purple" style="left:450px;top:98px;width:166px;">
           <div class="dbt">Inference Tables</div>
           <div class="dbs">Payload logging · drift</div>
         </div>
 
         <!-- AI Gateway — centered above Hire Right Agent -->
-        <div class="db c-amber" style="left:786px;top:18px;width:152px;">
+        <div class="db c-amber" style="left:962px;top:22px;width:152px;">
           <div class="dbt">AI Gateway</div>
           <div class="dbsub">databricks-gpt-5-4</div>
         </div>
 
         <!-- Load Resumes -->
-        <div class="db c-amber" style="left:10px;top:158px;width:120px;">
+        <div class="db c-amber" style="left:10px;top:172px;width:120px;">
           <div class="dbt">Load Resumes</div>
           <div class="dbs">PDF · UC Volumes</div>
         </div>
 
         <!-- Load Candidates -->
-        <div class="db c-amber" style="left:10px;top:402px;width:120px;">
+        <div class="db c-amber" style="left:10px;top:420px;width:120px;">
           <div class="dbt">Load Candidates</div>
           <div class="dbs">CSV · candidates</div>
         </div>
 
         <!-- Unity Catalog container -->
-        <div class="duc" style="left:148px;top:85px;width:432px;height:373px;"></div>
-        <div class="duc-lbl" style="left:308px;top:468px;">Unity Catalog</div>
+        <div class="duc" style="left:150px;top:195px;width:490px;height:325px;"></div>
+        <div class="duc-lbl" style="left:350px;top:528px;">Unity Catalog</div>
 
         <!-- Inner boxes: top row -->
-        <div class="dbi c-cyan" style="left:170px;top:198px;width:128px;">
+        <div class="dbi c-cyan" style="left:175px;top:210px;width:130px;">
           <div class="dbit">Vector Search</div>
           <div class="dbis">Resume index · RAG</div>
         </div>
-        <div class="dbi c-purple" style="left:360px;top:198px;width:148px;">
+        <div class="dbi c-purple" style="left:495px;top:210px;width:120px;">
           <div class="dbit">Model Registry</div>
           <div class="dbis">XGBoost · sklearn</div>
         </div>
 
         <!-- Inner boxes: medallion row -->
-        <div class="dbi m-vol" style="left:170px;top:302px;width:96px;">
+        <div class="dbi m-vol" style="left:175px;top:318px;width:100px;">
           <div class="dbit">Volumes</div>
           <div class="dbis">Raw files</div>
         </div>
-        <div class="dbi m-bz" style="left:276px;top:302px;width:88px;">
+        <div class="dbi m-bz" style="left:285px;top:318px;width:90px;">
           <div class="dbit">Bronze</div>
           <div class="dbis">Raw</div>
         </div>
-        <div class="dbi m-sv" style="left:374px;top:302px;width:88px;">
+        <div class="dbi m-sv" style="left:385px;top:318px;width:90px;">
           <div class="dbit">Silver</div>
           <div class="dbis">Clean</div>
         </div>
-        <div class="dbi m-gd" style="left:472px;top:302px;width:88px;">
+        <div class="dbi m-gd" style="left:485px;top:318px;width:90px;">
           <div class="dbit">Gold</div>
           <div class="dbis">Analytics</div>
         </div>
 
+        <!-- UC Functions (inside UC) -->
+        <div class="dbi c-teal" style="left:315px;top:210px;width:165px;">
+          <div class="dbit">UC Functions</div>
+          <div class="dbis">Scoring · Analytics tools</div>
+        </div>
+
         <!-- Hire Right Agent -->
-        <div class="db c-red" style="left:768px;top:190px;width:188px;padding:15px 18px 14px;">
+        <div class="db c-red" style="left:840px;top:195px;width:188px;padding:15px 18px 14px;">
           <div class="dbt" style="font-size:13px;">Hire Right Agent</div>
           <div class="dbs" style="margin-top:5px;">ResponsesAgent</div>
           <div class="dbs">MLflow 3.0</div>
         </div>
 
+        <!-- Tools -->
+        <div class="db c-teal" style="left:320px;top:22px;width:190px;padding:11px 14px;">
+          <div class="dbt" style="font-size:12px;">Tools</div>
+          <div class="dbs" style="margin-top:3px;">Vector Search · Model Registry</div>
+          <div class="dbs">Genie Space · UC Functions</div>
+        </div>
+
         <!-- Emailer -->
-        <div class="db c-green" style="left:778px;top:308px;width:140px;">
+        <div class="db c-amber" style="left:165px;top:22px;width:140px;">
           <div class="dbt">Emailer</div>
           <div class="dbs">Mailgun · API</div>
         </div>
 
         <!-- Genie Space -->
-        <div class="db c-teal" style="left:660px;top:400px;width:148px;padding:14px 18px;">
+        <div class="db c-teal" style="left:660px;top:432px;width:150px;padding:14px 18px;">
           <div class="dbt" style="font-size:13px;">Genie Space</div>
-          <div class="dbs" style="margin-top:4px;">HR Analytics · NL→SQL</div>
+          <div class="dbs" style="margin-top:4px;">HR Analytics · NL&#x2192;SQL</div>
         </div>
 
         <!-- App -->
-        <div class="db c-slate" style="left:990px;top:178px;width:108px;padding:15px 14px 14px;">
+        <div class="db c-slate" style="left:1062px;top:188px;width:108px;padding:15px 14px 14px;">
           <div class="dbt" style="font-size:13px;">App</div>
           <div class="dbs" style="margin-top:5px;">Databricks Apps</div>
           <div class="dbs">FastAPI + Chat UI</div>
         </div>
 
         <!-- Databricks One -->
-        <div class="db c-slate" style="left:990px;top:386px;width:108px;">
+        <div class="db c-slate" style="left:1062px;top:396px;width:108px;">
           <div class="dbt">Databricks One</div>
           <div class="dbs">Analytics portal</div>
         </div>
 
         <!-- HR Manager persona -->
-        <div style="position:absolute;left:1132px;top:172px;width:136px;border-radius:9px;border:1.5px solid rgba(245,158,11,.6);background:#0C1521;padding:12px 14px 11px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;">
+        <div style="position:absolute;left:1205px;top:182px;width:136px;border-radius:9px;border:1.5px solid rgba(245,158,11,.6);background:#0C1521;padding:12px 14px 11px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
             <div style="width:30px;height:30px;border-radius:50%;background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.45);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(245,158,11,.9)" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -739,7 +774,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
         </div>
 
         <!-- Bullets -->
-        <div class="duc-bullets" style="left:148px;top:480px;">
+        <div class="duc-bullets" style="left:150px;top:548px;">
           <span class="duc-bul">Classify Data</span>
           <span class="duc-bul">Assess Data Quality</span>
           <span class="duc-bul">Mask PII</span>

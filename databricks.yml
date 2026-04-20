@@ -17,7 +17,7 @@ variables:
     default: "aa06644a4b0be047"
   app_name:
     description: Databricks App name
-    default: hire-right-agent
+    default: hire-right-agent-app
   vs_endpoint_name:
     description: Vector Search endpoint name
     default: bx4_hrd_vs_endpoint
@@ -32,35 +32,21 @@ variables:
     default: databricks-gpt-5-4
   mlflow_experiment:
     description: MLflow experiment name for the ML model (notebook 05)
-    default: ml-hr-predictive-hiring
+    default: ml-hr-predictive-hiring-evals
+  agent_mlflow_experiment:
+    description: MLflow experiment name for the agent evaluations (notebook 06)
+    default: agent-predictive-hiring-evals
   agent_name:
     description: Registered model name for the agent
-    default: hire_right
+    default: agent-hire_right
+  ml_model_name:
+    description: Registered model name for the ML hiring model
+    default: ml_hr_predictive_hiring
   genie_space_id:
     description: Genie Space ID for HR analytics (set after space is created in UI or notebook 04)
     default: "01f13a0f6a081fabbea933cfb0db1d01"
 
 resources:
-  apps:
-    hire_right_app:
-      name: ${var.app_name}
-      description: "HireRight AI Agent — Jackson and Jackson HR Digital"
-      source_code_path: ./app
-      resources:
-        - name: agent_endpoint
-          serving_endpoint:
-            name: ${var.agent_endpoint_name}
-            permission: CAN_QUERY
-        - name: sql_warehouse
-          sql_warehouse:
-            id: ${var.warehouse_id}
-            permission: CAN_USE
-        - name: genie_space
-          genie_space:
-            name: "Jackson and Jackson HR Digital — Hiring Analytics Genie"
-            space_id: ${var.genie_space_id}
-            permission: CAN_RUN
-
   dashboards:
     hiring_analytics:
       display_name: "Jackson and Jackson HR Digital — Hiring Analytics"
@@ -73,7 +59,7 @@ resources:
       name: jj-hr-digital-pipeline
       parameters:
         - name: train_model
-          default: "true"
+          default: "false"
         - name: deploy_agent
           default: "true"
       tasks:
@@ -124,6 +110,15 @@ resources:
               catalog: ${var.catalog}
               schema: ${var.schema}
 
+        - task_key: create_uc_functions
+          depends_on:
+            - task_key: build_gold
+          notebook_task:
+            notebook_path: ./notebooks/04b_create_uc_functions.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
         - task_key: apply_business_semantics
           depends_on:
             - task_key: build_gold
@@ -161,7 +156,7 @@ resources:
               catalog: ${var.catalog}
               schema: ${var.schema}
               mlflow_experiment: ${var.mlflow_experiment}
-              model_name: hr_predictive_hiring
+              model_name: ${var.ml_model_name}
               endpoint_name: ${var.model_endpoint_name}
 
         - task_key: deploy_app
@@ -180,6 +175,7 @@ resources:
         - task_key: drift_monitor
           depends_on:
             - task_key: deploy_app
+            - task_key: ml_model
           notebook_task:
             notebook_path: ./notebooks/05b_create_drift_monitor.ipynb
             base_parameters:
@@ -188,10 +184,24 @@ resources:
               endpoint_name: ${var.model_endpoint_name}
               warehouse_id: ${var.warehouse_id}
 
+        - task_key: grant_app_permissions
+          depends_on:
+            - task_key: deploy_app
+          notebook_task:
+            notebook_path: ./notebooks/09_grant_app_permissions.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              app_name: ${var.app_name}
+              genie_space_id: ${var.genie_space_id}
+              warehouse_id: ${var.warehouse_id}
+              agent_endpoint_name: ${var.agent_endpoint_name}
+
         - task_key: agent_condition
           depends_on:
             - task_key: genie_space
             - task_key: build_vector_index_rag
+            - task_key: create_uc_functions
           condition_task:
             op: EQUAL_TO
             left: "{{job.parameters.deploy_agent}}"
@@ -213,6 +223,7 @@ resources:
               agent_name: ${var.agent_name}
               agent_endpoint_name: ${var.agent_endpoint_name}
               llm_endpoint: ${var.llm_endpoint_name}
+              mlflow_experiment: ${var.agent_mlflow_experiment}
 
         - task_key: refresh_dashboard
           depends_on:

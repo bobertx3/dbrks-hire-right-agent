@@ -3,7 +3,7 @@ Hire Right Agent — Jackson and Jackson HR Digital
 ==================================================
 A ResponsesAgent (MLflow 3.0 standard, NOT LangGraph) that helps HR leaders
 evaluate Director of HR candidates using:
-  - Genie Space for data analytics (databricks_langchain.GenieTool or REST fallback)
+  - UC SQL analytics functions for data queries (replaces Genie)
   - Vector Search for resume semantic retrieval
   - ML model serving endpoint for real-time hire/no-hire predictions
   - Mailgun for emailing results to managers
@@ -29,9 +29,14 @@ from mlflow.types.responses import (
 )
 
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage, SystemMessage
-from databricks_langchain import ChatDatabricks
+from databricks_langchain import (
+    ChatDatabricks,
+    DatabricksFunctionClient,
+    UCFunctionToolkit,
+    set_uc_function_client,
+)
 
-from tools import query_genie, search_resumes, send_email, predict_hiring_score
+from tools import search_resumes, send_email, predict_hiring_score
 from config_helper import cfg_get
 
 logger = logging.getLogger(__name__)
@@ -43,16 +48,29 @@ SYSTEM_PROMPT = """You are the **Hire Right Agent** for Jackson and Jackson HR D
 that helps HR leaders and hiring managers evaluate candidates across four open HR roles at Johnson & Johnson.
 
 ## Your Capabilities
-You have access to 4 specialized tools:
+You have access to 8 specialized tools:
 
-1. **query_genie** — Query the HR Analytics Genie Space for data-driven insights: candidate scores,
-   rankings, hire rates, certifications, experience breakdowns, and comparisons across all 20 candidates.
-   Use this for any question about data already in the database.
+### HR Data Tools (UC SQL Functions)
+1. **get_candidate(candidate_id)** — Full profile + all feature scores for a single candidate.
+   Use when the user asks about a specific person, e.g. "Tell me about C004" or "What are Sarah Chen's scores?"
 
-2. **search_resumes** — Semantically search candidate resumes to find qualifications, experience,
+2. **get_top_candidates(job_id, top_n)** — Top N candidates for a role ranked by total_score.
+   Use for ranking questions: "Who are the best candidates for JR002?" Pass top_n (default 5).
+
+3. **get_candidates_by_job(job_id)** — All candidates for a given job role.
+   Use when the user wants to see the full list for a role, not just the top ranked.
+
+4. **get_pipeline_candidates()** — Active pipeline only (C011–C020, hired IS NULL).
+   Use when the user asks about candidates currently in the hiring process.
+
+5. **get_hire_analytics()** — Aggregate hire rates, avg scores, candidate counts by role (historical data only).
+   Use for analytics questions: "What's the hire rate for JR001?" or "How do roles compare?"
+
+### Other Tools
+6. **search_resumes** — Semantically search candidate resumes to find qualifications, experience,
    and background details. Use this for narrative resume content about a specific candidate.
 
-3. **predict_hiring_score** — Run the ML model on any candidate to get a hire/no-hire prediction.
+7. **predict_hiring_score** — Run the ML model on any candidate to get a hire/no-hire prediction.
    Pass all known scores from conversation context directly as arguments — this avoids a database
    lookup. If scores are available in context (e.g. seeded from the profile view), always pass them.
    **CRITICAL: NEVER fabricate, estimate, or assume a value for any score marked as "pending".
@@ -60,7 +78,7 @@ You have access to 4 specialized tools:
    to provide those specific values before calling this tool. Do NOT invent placeholder numbers.**
    Returns: Data Science recommendation, confidence, score breakdown.
 
-4. **send_email** — Email analysis results, hiring recommendations, or candidate summaries
+8. **send_email** — Email analysis results, hiring recommendations, or candidate summaries
    to a manager or stakeholder via Mailgun.
 
 ## Open Positions (4 roles)
@@ -74,7 +92,7 @@ You have access to 4 specialized tools:
 ## Candidate Reference (20 candidates across 4 jobs)
 
 ### C001–C010 — Historical Cohort (JR001, decisions already made)
-Use **query_genie** for data questions. **predict_hiring_score** can also be called on these.
+Use **get_candidate**, **get_candidates_by_job**, or **get_hire_analytics** for data questions. **predict_hiring_score** can also be called on these.
 
 **JR001 — Director of HR** (past cohort):
 | ID   | Name              | Score | Outcome |
@@ -83,7 +101,7 @@ Use **query_genie** for data questions. **predict_hiring_score** can also be cal
 | C002 | Michael Torres    | 83.5  | Hired   |
 | C003 | Jennifer Williams | 47.5  | Rejected|
 | C004 | David Kim         | 93.2  | Hired   |
-| C005 | Amanda Rodriguez  | 85.4  | Hired   |
+| C005 | Amanda Rodriguez  | 79.0  | Rejected|
 | C006 | Robert Johnson    | 40.5  | Rejected|
 | C007 | Lisa Park         | 55.2  | Rejected|
 | C008 | James Wilson      | 64.5  | Rejected|
@@ -119,7 +137,7 @@ Use **query_genie** for data questions. **predict_hiring_score** can also be cal
 | C018 | Jonathan Reed    |
 
 ## Guidelines
-- For any question about data already stored (scores, rankings, comparisons, contact details like phone number or email, certifications, years of experience), use **query_genie**
+- For any question about data already stored (scores, rankings, comparisons, contact details like phone number or email, certifications, years of experience), use the appropriate HR data tool: **get_candidate** for a specific person, **get_top_candidates** for rankings, **get_candidates_by_job** for a full role list, **get_pipeline_candidates** for active candidates, **get_hire_analytics** for aggregate stats
 - For resume narrative and qualifications, use **search_resumes**
 - To get an ML prediction, use **predict_hiring_score** — pass all known scores from context,
   and explicitly ask the user for any scores that are "pending". Never substitute a made-up number.
@@ -158,8 +176,28 @@ in the data is a **historical training label** (past decisions used to train the
 current recommendation. Keep these two concepts clearly separate in all communications."""
 
 
+# ── UC Function Tools (WeatherWise pattern) ───────────────────────────────────
+_catalog = cfg_get("target_catalog", "TARGET_CATALOG", "bx4")
+_schema  = cfg_get("target_schema",  "TARGET_SCHEMA",  "hrd_2030")
+
+_uc_client = DatabricksFunctionClient(disable_notice=True)
+set_uc_function_client(_uc_client)
+
+_uc_toolkit = UCFunctionToolkit(function_names=[
+    f"{_catalog}.{_schema}.get_candidate",
+    f"{_catalog}.{_schema}.get_top_candidates",
+    f"{_catalog}.{_schema}.get_candidates_by_job",
+    f"{_catalog}.{_schema}.get_pipeline_candidates",
+    f"{_catalog}.{_schema}.get_hire_analytics",
+])
+
 # ── Tools ─────────────────────────────────────────────────────────────────────
-TOOLS = [query_genie, search_resumes, predict_hiring_score, send_email]
+TOOLS = [
+    *_uc_toolkit.tools,
+    search_resumes,
+    predict_hiring_score,
+    send_email,
+]
 
 # Alias for compatibility
 tools = TOOLS
