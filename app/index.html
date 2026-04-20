@@ -543,6 +543,8 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
             <path id="qUCF" d="M 415 210 V 88"/>
             <!-- qTA: Agent → Tools (tool calls) -->
             <path id="qTA" d="M 840 195 V 88 H 510"/>
+            <!-- qAR: Agent → Agents/MCP Registry -->
+            <path id="qAR" d="M 840 223 V 502 H 467 V 491"/>
           </defs>
 
           <!-- Visible lines — elbow style -->
@@ -584,6 +586,8 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <path d="M 415 210 V 88" fill="none" stroke="rgba(20,184,166,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
           <!-- qTA: Agent → Tools (tool calls) -->
           <path d="M 840 195 V 88 H 510" fill="none" stroke="rgba(255,54,33,.7)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <!-- qAR: Agent → Agents/MCP Registry -->
+          <path d="M 840 223 V 502 H 467 V 491" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
 
           <!-- Labels -->
           <text x="630" y="158" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
@@ -646,9 +650,12 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <!-- qUCF: UC Functions → Tools (7s) -->
           <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qUCF"/></animateMotion></circle>
           <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qUCF"/></animateMotion></circle>
-          <!-- qTA: Tools → Agent (5s) -->
+          <!-- qTA: Agent → Tools (5s) -->
           <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qTA"/></animateMotion></circle>
           <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qTA"/></animateMotion></circle>
+          <!-- qAR: Agent → Agents/MCP Registry (10s) -->
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:10s"><animateMotion dur="10s" repeatCount="indefinite"><mpath href="#qAR"/></animateMotion></circle>
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:10s;animation-delay:5s"><animateMotion dur="10s" repeatCount="indefinite" begin="5s"><mpath href="#qAR"/></animateMotion></circle>
         </svg>
 
         <!-- ═══════════════════════════════════════════════
@@ -686,8 +693,8 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
         </div>
 
         <!-- Unity Catalog container -->
-        <div class="duc" style="left:150px;top:195px;width:490px;height:325px;"></div>
-        <div class="duc-lbl" style="left:350px;top:528px;">Unity Catalog</div>
+        <div class="duc" style="left:150px;top:195px;width:490px;height:345px;"></div>
+        <div class="duc-lbl" style="left:350px;top:548px;">Unity Catalog</div>
 
         <!-- Inner boxes: top row -->
         <div class="dbi c-cyan" style="left:175px;top:210px;width:130px;">
@@ -741,6 +748,12 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
         <div class="db c-amber" style="left:165px;top:22px;width:140px;">
           <div class="dbt">Emailer</div>
           <div class="dbs">Mailgun · API</div>
+        </div>
+
+        <!-- Agents / MCP Registry -->
+        <div class="db c-purple" style="left:385px;top:435px;width:165px;">
+          <div class="dbt">Agents / MCP Registry</div>
+          <div class="dbs">Registered agents &amp; MCP</div>
         </div>
 
         <!-- Genie Space -->
