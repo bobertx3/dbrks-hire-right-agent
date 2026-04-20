@@ -1,0 +1,23 @@
+command:
+  - uvicorn
+  - app:app
+  - --host
+  - 0.0.0.0
+  - --port
+  - "8000"
+
+env:
+  - name: DATABRICKS_AGENT_ENDPOINT
+    value: "hire-right-agent-endpoint"
+  - name: GENIE_SPACE_ID
+    value: "01f13a0f6a081fabbea933cfb0db1d01"
+
+oauth_config:
+  scopes:
+    - model-serving
+
+resources:
+  - name: agent_endpoint
+    serving_endpoint:
+      name: hire-right-agent-endpoint
+      permission: CAN_QUERY

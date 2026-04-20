@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lakebase · Genie · Databricks Apps — The New Stack</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --db-lava:       #FF3621;
+      --db-lava-light: #FF5F46;
+      --db-navy:       #1B3139;
+      --db-ink:        #0B2026;
+      --db-teal:       #1B5162;
+      --db-green:      #00A972;
+      --db-oat:        #F9F7F4;
+      --db-oat-medium: #EEEDE9;
+      --db-oat-dark:   #DBD7CE;
+      --db-white:      #FFFFFF;
+      --db-amber:      #FEAB03;
+      --db-burgundy:   #970F29;
+      --db-indigo:     #4259FE;
+      --db-muted-teal: #618693;
+      --font-display:  'DM Sans', sans-serif;
+      --font-body:     'DM Sans', sans-serif;
+      --font-mono:     'DM Mono', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-y: scroll; scroll-snap-type: y mandatory; }
+    body { font-family: var(--font-body); background: var(--db-ink); overflow-x: hidden; }
+
+    .slide {
+      height: 100vh; height: 100dvh;
+      scroll-snap-align: start;
+      padding: clamp(1.5rem, 3.5vw, 3rem) clamp(2rem, 5vw, 5rem);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .slide-ink   { background: var(--db-ink); }
+    .slide-navy  { background: var(--db-navy); }
+    .slide-oat   { background: var(--db-oat); }
+    .slide-white { background: var(--db-white); }
+    .slide-teal  { background: var(--db-teal); }
+    .slide-lava  { background: var(--db-lava); }
+
+    .slide-content { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+    /* Progress bar */
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--db-lava); z-index: 100; transition: width 0.3s ease; }
+
+    /* Nav dots */
+    .nav-dots { position: fixed; right: 1.2rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 7px; z-index: 100; }
+    .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; cursor: pointer; transition: all 0.3s ease; padding: 0; }
+    .nav-dot.active { background: var(--db-lava); transform: scale(1.4); }
+    @media (max-width: 768px) { .nav-dots { display: none; } .slide { padding: 1.5rem; } }
+
+    /* Slide number */
+    .slide-num { position: absolute; bottom: 1.4rem; right: 2rem; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.07em; color: rgba(255,255,255,0.2); }
+    .slide-oat .slide-num, .slide-white .slide-num { color: var(--db-oat-dark); }
+
+    /* Typography — dark */
+    .slide-ink h1, .slide-navy h1, .slide-teal h1 { font-weight: 700; font-size: clamp(2rem, 4vw, 3.5rem); color: #fff; letter-spacing: -0.02em; line-height: 1.15; }
+    .slide-ink h2, .slide-navy h2, .slide-teal h2 { font-weight: 700; font-size: clamp(1.4rem, 2.5vw, 2.2rem); color: #fff; letter-spacing: -0.01em; line-height: 1.2; }
+    .slide-ink h3, .slide-navy h3, .slide-teal h3 { font-weight: 600; font-size: clamp(0.9rem, 1.4vw, 1.1rem); color: #fff; line-height: 1.3; }
+    .slide-ink p,  .slide-navy p,  .slide-teal p  { color: rgba(255,255,255,0.65); font-size: clamp(0.88rem, 1.25vw, 1.05rem); line-height: 1.65; }
+
+    /* Typography — light */
+    .slide-oat h1, .slide-white h1 { font-weight: 700; font-size: clamp(1.8rem, 3.5vw, 3rem); color: var(--db-ink); letter-spacing: -0.02em; line-height: 1.15; }
+    .slide-oat h2, .slide-white h2 { font-weight: 700; font-size: clamp(1.3rem, 2.2vw, 1.9rem); color: var(--db-ink); letter-spacing: -0.01em; line-height: 1.2; }
+    .slide-oat h3, .slide-white h3 { font-weight: 600; font-size: clamp(0.9rem, 1.3vw, 1.05rem); color: var(--db-ink); line-height: 1.3; }
+    .slide-oat p,  .slide-white p  { color: #4A5E68; font-size: clamp(0.88rem, 1.25vw, 1.05rem); line-height: 1.65; }
+
+    .accent-bar { display: block; width: 2.5rem; height: 3px; background: var(--db-lava); border-radius: 2px; margin: 0.65rem 0 1.2rem; }
+    .mono-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .mono-label.on-light { color: var(--db-muted-teal); }
+
+    /* ── SLIDE 1: TITLE ── */
+    .title-eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 1rem; }
+    .title-main { font-weight: 700; font-size: clamp(2.8rem, 6.5vw, 5.5rem); color: #fff; letter-spacing: -0.03em; line-height: 1.05; }
+    .title-accent { color: var(--db-lava); }
+    .title-sub { color: rgba(255,255,255,0.55); font-size: clamp(1rem, 1.7vw, 1.3rem); margin-top: 1.1rem; line-height: 1.55; max-width: 640px; }
+    .title-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.6rem; }
+    .title-tag { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13); border-radius: 4px; padding: 0.25rem 0.65rem; color: rgba(255,255,255,0.5); }
+    .title-tag.lava { background: rgba(255,54,33,0.12); border-color: rgba(255,54,33,0.35); color: #ff9d8e; }
+    .title-tag.amber { background: rgba(254,171,3,0.1); border-color: rgba(254,171,3,0.35); color: #ffc940; }
+    .title-tag.green { background: rgba(0,169,114,0.1); border-color: rgba(0,169,114,0.35); color: #5cd6a8; }
+
+    /* BG grid pattern */
+    .bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; }
+    .bg-glow  { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(255,54,33,0.08) 0%, transparent 70%); pointer-events: none; }
+
+    /* ── SLIDE 2: PROBLEM ── */
+    .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 1.8rem; }
+    .prob-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1.4rem 1.2rem; }
+    .prob-icon { font-size: 1.8rem; margin-bottom: 0.8rem; display: block; }
+    .prob-card h3 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .prob-card p { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .prob-card .prob-pain { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.8rem; padding: 0.25rem 0.55rem; border-radius: 3px; display: inline-block; }
+    .pain-red  { background: rgba(255,54,33,0.12); border: 1px solid rgba(255,54,33,0.3); color: #ff8878; }
+    .pain-amb  { background: rgba(254,171,3,0.1); border: 1px solid rgba(254,171,3,0.3); color: #ffc940; }
+    .pain-ind  { background: rgba(66,89,254,0.12); border: 1px solid rgba(66,89,254,0.3); color: #8fa3ff; }
+
+    /* ── SLIDE 3: THREE PILLARS ── */
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; margin-top: 1.8rem; }
+    .pillar { border-radius: 14px; padding: 1.6rem 1.4rem; position: relative; overflow: hidden; }
+    .pillar-lakebase { background: linear-gradient(135deg, rgba(0,169,114,0.15) 0%, rgba(0,169,114,0.05) 100%); border: 1.5px solid rgba(0,169,114,0.35); }
+    .pillar-genie    { background: linear-gradient(135deg, rgba(254,171,3,0.12) 0%, rgba(254,171,3,0.04) 100%); border: 1.5px solid rgba(254,171,3,0.35); }
+    .pillar-apps     { background: linear-gradient(135deg, rgba(255,54,33,0.14) 0%, rgba(255,54,33,0.04) 100%); border: 1.5px solid rgba(255,54,33,0.35); }
+    .pillar-num { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.7rem; }
+    .p-green { color: #5cd6a8; }
+    .p-amber { color: #ffc940; }
+    .p-lava  { color: #ff8878; }
+    .pillar h3 { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.6rem; }
+    .pillar p  { font-size: 0.82rem; color: rgba(255,255,255,0.58); line-height: 1.6; }
+    .pillar-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.04em; text-transform: uppercase; border-radius: 3px; padding: 0.2rem 0.5rem; margin-top: 1rem; }
+    .pt-green { background: rgba(0,169,114,0.15); border: 1px solid rgba(0,169,114,0.35); color: #5cd6a8; }
+    .pt-amber { background: rgba(254,171,3,0.12); border: 1px solid rgba(254,171,3,0.35); color: #ffc940; }
+    .pt-lava  { background: rgba(255,54,33,0.14); border: 1px solid rgba(255,54,33,0.35); color: #ff8878; }
+
+    /* ── SLIDE 4/5/6: PRODUCT DEEP DIVES ── */
+    .deep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+    .deep-bullets { list-style: none; margin-top: 1rem; }
+    .deep-bullets li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: clamp(0.82rem, 1.1vw, 0.92rem); color: rgba(255,255,255,0.68); line-height: 1.6; margin-bottom: 0.65rem; }
+    .deep-bullets li::before { content: ''; display: block; flex-shrink: 0; width: 5px; height: 5px; border-radius: 50%; margin-top: 0.5rem; }
+    .bullet-green::before { background: #5cd6a8; }
+    .bullet-amber::before { background: #ffc940; }
+    .bullet-lava::before  { background: var(--db-lava); }
+    .slide-oat .deep-bullets li { color: #4A5E68; }
+    .slide-oat .deep-bullets li::before { background: var(--db-lava); }
+
+    .feature-cards { display: flex; flex-direction: column; gap: 0.8rem; }
+    .feat-card { border-radius: 10px; padding: 1rem 1.2rem; }
+    .feat-green { background: rgba(0,169,114,0.08); border: 1px solid rgba(0,169,114,0.25); }
+    .feat-amber { background: rgba(254,171,3,0.08); border: 1px solid rgba(254,171,3,0.25); }
+    .feat-lava  { background: rgba(255,54,33,0.08); border: 1px solid rgba(255,54,33,0.22); }
+    .feat-indigo{ background: rgba(66,89,254,0.08); border: 1px solid rgba(66,89,254,0.25); }
+    .feat-card h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .feat-card p  { font-size: 0.76rem; color: rgba(255,255,255,0.52); line-height: 1.55; }
+    .fh-green { color: #5cd6a8; }
+    .fh-amber { color: #ffc940; }
+    .fh-lava  { color: #ff8878; }
+    .fh-indigo{ color: #8fa3ff; }
+
+    .product-eyebrow { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .ey-green { color: #5cd6a8; }
+    .ey-amber { color: #ffc940; }
+    .ey-lava  { color: #ff8878; }
+
+    /* ── SLIDE 7: HOW THEY WORK TOGETHER ── */
+    .flow-row { display: flex; align-items: center; gap: 0; justify-content: center; max-width: 1000px; margin: 1.8rem auto 0; }
+    .flow-node { border-radius: 12px; padding: 1.2rem 1.4rem; text-align: center; flex: 1; max-width: 220px; }
+    .fn-green { background: rgba(0,169,114,0.12); border: 1.5px solid rgba(0,169,114,0.35); }
+    .fn-amber { background: rgba(254,171,3,0.1);  border: 1.5px solid rgba(254,171,3,0.35); }
+    .fn-lava  { background: rgba(255,54,33,0.12); border: 1.5px solid rgba(255,54,33,0.35); }
+    .fn-teal  { background: rgba(27,81,98,0.6);   border: 1.5px solid rgba(97,134,147,0.4); }
+    .flow-node h4 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+    .flow-node p  { font-size: 0.72rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    .flow-arr { color: rgba(255,255,255,0.2); font-size: 1.5rem; flex-shrink: 0; padding: 0 0.3rem; }
+    .flow-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-top: 0.4rem; }
+
+    .usecase-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 1.5rem; max-width: 1000px; margin-left: auto; margin-right: auto; }
+    .uc-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1rem 1.1rem; }
+    .uc-card .uc-icon { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .uc-card h4 { font-size: 0.8rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+    .uc-card p  { font-size: 0.72rem; color: rgba(255,255,255,0.48); line-height: 1.5; }
+
+    /* ── SLIDE 8: CTA ── */
+    .cta-lava { background: var(--db-lava); }
+    .cta-lava h1 { font-size: clamp(2.5rem, 5.5vw, 4.5rem); font-weight: 700; letter-spacing: -0.03em; color: #fff; line-height: 1.05; }
+    .cta-lava p { color: rgba(255,255,255,0.78); font-size: clamp(1rem, 1.7vw, 1.25rem); margin-top: 1rem; line-height: 1.6; }
+    .cta-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.2rem; margin-top: 1.8rem; }
+    .cta-step { background: rgba(255,255,255,0.12); border-radius: 12px; padding: 1.2rem 1.3rem; }
+    .cta-step-num { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+    .cta-step h4 { font-size: 0.88rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem; }
+    .cta-step p  { font-size: 0.76rem; color: rgba(255,255,255,0.65); line-height: 1.55; }
+
+    /* ── SCREENSHOT GALLERIES (slides 4/5/6) ── */
+    .screenshot-gallery { display: flex; flex-direction: column; gap: 0.55rem; }
+    .screenshot-gallery img { width: 100%; border-radius: 8px; box-shadow: 0 6px 28px rgba(0,0,0,0.55); display: block; object-fit: cover; }
+    .ss-row { display: flex; gap: 0.55rem; }
+    .ss-row img { flex: 1; width: 0; min-width: 0; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); object-fit: cover; }
+    .ss-caption { font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.28); text-align: center; margin-top: 0.1rem; }
+
+    /* Divider */
+    .div-line { width: 100%; height: 1px; background: rgba(255,255,255,0.08); margin: 1.2rem 0; }
+    .slide-oat .div-line { background: var(--db-oat-dark); }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 1: TITLE -->
+<section class="slide slide-ink" id="s1">
+  <div class="bg-grid"></div>
+  <div class="bg-glow" style="top:-100px;right:-100px;"></div>
+  <div class="slide-content">
+    <p class="title-eyebrow">Databricks — The New Stack</p>
+    <h1 class="title-main">One Platform.<br><span class="title-accent">Data, AI,</span><br>and Apps.</h1>
+    <p class="title-sub">How Lakebase, Genie, and Databricks Apps are collapsing the gap between your data and the people who need it.</p>
+    <div class="title-tags">
+      <span class="title-tag lava">Lakebase</span>
+      <span class="title-tag amber">AI/BI Genie</span>
+      <span class="title-tag green">Databricks Apps</span>
+    </div>
+  </div>
+  <span class="slide-num">01 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 2: PROBLEM -->
+<section class="slide slide-navy" id="s2">
+  <div class="slide-content">
+    <p class="mono-label">The challenge</p>
+    <span class="accent-bar"></span>
+    <h2>Your data is valuable.<br>Accessing it shouldn't require an army.</h2>
+    <div class="problem-grid">
+      <div class="prob-card">
+        <span class="prob-icon">🗄️</span>
+        <h3>Data Lives Everywhere</h3>
+        <p>Operational data in transactional databases, analytical data in the lakehouse — two separate systems, two separate teams, constant sync headaches.</p>
+        <span class="prob-pain pain-red">Fragmented & Slow</span>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">📊</span>
+        <h3>Analytics Requires Experts</h3>
+        <p>Business stakeholders have questions. Data engineers write the SQL. The queue is always full, the dashboards are always stale.</p>
+        <span class="prob-pain pain-amb">Bottlenecked</span>
+      </div>
+      <div class="prob-card">
+        <span class="prob-icon">🚧</span>
+        <h3>AI Apps Take Forever</h3>
+        <p>Building a production AI application means managing infra, auth, model serving, and data access separately. Most teams never ship.</p>
+        <span class="prob-pain pain-ind">Too Complex</span>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">02 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 3: THREE PILLARS -->
+<section class="slide slide-ink" id="s3">
+  <div class="bg-grid"></div>
+  <div class="slide-content">
+    <p class="mono-label">The answer</p>
+    <span class="accent-bar"></span>
+    <h2>Three new capabilities.<br>One unified platform.</h2>
+    <div class="pillars">
+      <div class="pillar pillar-lakebase">
+        <p class="pillar-num p-green">01 — Data Layer</p>
+        <h3>Lakebase</h3>
+        <p>A fully managed operational database built on open formats — right inside your lakehouse. No data movement. ACID transactions at scale.</p>
+        <span class="pillar-tag pt-green">Transactional + Analytical</span>
+      </div>
+      <div class="pillar pillar-genie">
+        <p class="pillar-num p-amber">02 — Intelligence Layer</p>
+        <h3>AI/BI Genie</h3>
+        <p>Ask your data questions in plain English. Genie generates verified SQL, explains its reasoning, and learns from corrections over time.</p>
+        <span class="pillar-tag pt-amber">Self-Serve Analytics</span>
+      </div>
+      <div class="pillar pillar-apps">
+        <p class="pillar-num p-lava">03 — Application Layer</p>
+        <h3>Databricks Apps</h3>
+        <p>Deploy AI-powered web applications directly on Databricks. No separate infra, no auth plumbing — your app inherits the platform's identity model.</p>
+        <span class="pillar-tag pt-lava">Ship in Hours</span>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">03 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 4: LAKEBASE -->
+<section class="slide slide-teal" id="s4">
+  <div class="slide-content">
+    <p class="product-eyebrow ey-green">Lakebase — Data Layer</p>
+    <span class="accent-bar"></span>
+    <div class="deep-grid">
+      <div>
+        <h2>Operational data.<br>On your lakehouse.</h2>
+        <p style="margin-top:0.8rem;">Lakebase brings full transactional database capabilities — row-level operations, low-latency reads/writes, ACID guarantees — to the same open Delta Lake format your analytical workloads already use.</p>
+        <ul class="deep-bullets" style="margin-top:1.2rem;">
+          <li class="bullet-green">No ETL pipelines moving data between OLTP and OLAP systems</li>
+          <li class="bullet-green">Open formats — no proprietary lock-in, works with Spark, dbt, and your BI tools</li>
+          <li class="bullet-green">Governed by Unity Catalog — one permission model for all data</li>
+          <li class="bullet-green">Scales from millisecond lookups to petabyte analytics on the same table</li>
+        </ul>
+      </div>
+      <div class="screenshot-gallery">
+        <img src="https://www.databricks.com/sites/default/files/2026-01/01-2026-product-page-lakebase-feature1-712x500.gif" alt="Lakebase project dashboard with branches" style="max-height:210px;">
+        <div class="ss-row">
+          <img src="https://www.databricks.com/sites/default/files/2026-01/01-2026-product-page-lakebase-feature2-712x434-2x.png" alt="Lakebase branch management" style="max-height:150px;">
+          <img src="https://www.databricks.com/sites/default/files/2026-01/01-2026-product-page-lakebase-feature3-712x434-2x.png" alt="Lakebase point-in-time restore" style="max-height:150px;">
+        </div>
+        <p class="ss-caption">Lakebase — project dashboard · branch management · point-in-time restore</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">04 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 5: GENIE -->
+<section class="slide slide-navy" id="s5">
+  <div class="slide-content">
+    <p class="product-eyebrow ey-amber">AI/BI Genie — Intelligence Layer</p>
+    <span class="accent-bar"></span>
+    <div class="deep-grid">
+      <div>
+        <h2>Ask a question.<br>Get a real answer.</h2>
+        <p style="margin-top:0.8rem;">Genie is a natural language interface to your structured data. Business users ask questions in plain English — Genie writes the SQL, executes it against your Unity Catalog tables, and explains what it found.</p>
+        <ul class="deep-bullets" style="margin-top:1.2rem;">
+          <li class="bullet-amber">Works on any Unity Catalog table — no data movement or preparation</li>
+          <li class="bullet-amber">Verified SQL: admins curate trusted answers that override LLM guesses</li>
+          <li class="bullet-amber">Learns from follow-up — multi-turn conversations refine results</li>
+          <li class="bullet-amber">Embeddable via REST API — Genie becomes a tool inside any agent or application</li>
+          <li class="bullet-amber">Governed access — users only see data their permissions allow</li>
+        </ul>
+      </div>
+      <div class="screenshot-gallery">
+        <img src="https://assets.docs.databricks.com/_static/images/genie/genie-space.gif" alt="Genie Space — ask a question, get a SQL-powered answer with auto-visualization" style="max-height:360px;object-fit:contain;background:rgba(0,0,0,0.25);border-radius:8px;">
+        <p class="ss-caption">Genie Space — natural language → verified SQL → visualization</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">05 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 6: APPS -->
+<section class="slide slide-ink" id="s6">
+  <div class="bg-grid"></div>
+  <div class="slide-content">
+    <p class="product-eyebrow ey-lava">Databricks Apps — Application Layer</p>
+    <span class="accent-bar"></span>
+    <div class="deep-grid">
+      <div>
+        <h2>Ship AI apps.<br>Without the plumbing.</h2>
+        <p style="margin-top:0.8rem;">Databricks Apps lets you deploy a web application directly onto the platform — co-located with your data, models, and agents. The platform handles hosting, scaling, and identity so you focus on the application logic.</p>
+        <ul class="deep-bullets" style="margin-top:1.2rem;">
+          <li class="bullet-lava">Deploy FastAPI, Streamlit, or any Python/Node app with a single command</li>
+          <li class="bullet-lava">Credential passthrough — the app runs with the user's identity, not a service account</li>
+          <li class="bullet-lava">Direct access to SQL Warehouses, Vector Search, Model Serving, and Genie</li>
+          <li class="bullet-lava">Governed by Unity Catalog — the app only surfaces data the user is allowed to see</li>
+          <li class="bullet-lava">Scale to zero when idle, auto-scale under load — no infra team needed</li>
+        </ul>
+      </div>
+      <div class="screenshot-gallery">
+        <img src="https://docs.databricks.com/aws/en/assets/images/hello-world-67695a1f0ee3f58f577fd9b7354ea14e.png" alt="Databricks Apps — template selection in workspace" style="max-height:185px;">
+        <img src="https://docs.databricks.com/aws/en/assets/images/hello-world-app-details-after-deploy-e52209e570f4216e3e2cfb0117336621.png" alt="Databricks Apps — deployed app details page" style="max-height:185px;">
+        <p class="ss-caption">Databricks Apps — template selection · deployed app details</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">06 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 7: TOGETHER -->
+<section class="slide slide-navy" id="s7">
+  <div class="slide-content">
+    <p class="mono-label">The unified story</p>
+    <span class="accent-bar"></span>
+    <h2>Together, they close the loop.</h2>
+    <div class="flow-row">
+      <div class="flow-node fn-green">
+        <h4>Lakebase</h4>
+        <p>Operational + analytical data in one place. No movement. Open formats.</p>
+        <p class="flow-label">Data Layer</p>
+      </div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node fn-amber">
+        <h4>Genie</h4>
+        <p>Business users ask questions. ML agents query structured data as a tool.</p>
+        <p class="flow-label">Intelligence Layer</p>
+      </div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node fn-lava">
+        <h4>Databricks Apps</h4>
+        <p>AI-powered apps deployed on the platform. Users interact. Results flow back.</p>
+        <p class="flow-label">Application Layer</p>
+      </div>
+      <div class="flow-arr">→</div>
+      <div class="flow-node fn-teal">
+        <h4>Stakeholders</h4>
+        <p>Self-serve insights and AI recommendations — governed, secure, real-time.</p>
+        <p class="flow-label">End User</p>
+      </div>
+    </div>
+    <div class="usecase-row">
+      <div class="uc-card">
+        <div class="uc-icon">🏥</div>
+        <h4>Healthcare</h4>
+        <p>Clinical ops teams query patient cohorts in Genie, surface insights via Apps — all governed by UC row-level security.</p>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">💼</div>
+        <h4>HR & Talent</h4>
+        <p>Hiring managers use an AI agent that reads live candidate data from Lakebase, answers questions via Genie, and runs ML scoring.</p>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">🏭</div>
+        <h4>Manufacturing</h4>
+        <p>Sensor data lands in Lakebase, predictive maintenance agents query it, and floor managers get recommendations in an App.</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">07 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 8: CTA -->
+<section class="slide cta-lava" id="s8">
+  <div class="slide-content">
+    <p class="mono-label" style="color:rgba(255,255,255,0.5);">Getting started</p>
+    <h1 class="title-main" style="font-size:clamp(2.4rem,5vw,4rem);margin-top:0.5rem;">Your data should work<br>for your people.</h1>
+    <p style="color:rgba(255,255,255,0.75);font-size:clamp(0.95rem,1.5vw,1.15rem);margin-top:0.9rem;max-width:700px;line-height:1.6;">Lakebase, Genie, and Databricks Apps aren't three separate products — they're one platform story. Data that's always current, insights that anyone can access, and AI applications that ship in days.</p>
+    <div class="cta-steps">
+      <div class="cta-step">
+        <p class="cta-step-num">Step 01 — Data</p>
+        <h4>Identify a Lakebase candidate</h4>
+        <p>Pick one operational data source — CRM, ERP, HRMS — and move it to open format on the lakehouse. Eliminate one pipeline.</p>
+      </div>
+      <div class="cta-step">
+        <p class="cta-step-num">Step 02 — Analytics</p>
+        <h4>Create a Genie Space</h4>
+        <p>Point Genie at your highest-value UC table. Seed 5 sample questions. Let stakeholders try it this week — no dashboard needed.</p>
+      </div>
+      <div class="cta-step">
+        <p class="cta-step-num">Step 03 — Application</p>
+        <h4>Ship one AI app</h4>
+        <p>Take your most-requested internal tool. Wire it to a Genie Space or agent endpoint. Deploy it as a Databricks App.</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num" style="color:rgba(255,255,255,0.35);">08 / 09</span>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 9: RESOURCES -->
+<section class="slide slide-navy" id="s9">
+  <style>
+    .res-section { margin-bottom: 1.4rem; }
+    .res-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 0.55rem; }
+    .res-list { list-style: none; }
+    .res-list li { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.45rem; font-size: 0.88rem; line-height: 1.5; }
+    .res-list li::before { content: '—'; flex-shrink: 0; opacity: 0.35; font-family: var(--font-mono); font-size: 0.7rem; }
+    .res-list a { color: rgba(255,255,255,0.75); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.2); text-underline-offset: 3px; }
+    .res-list a:hover { color: #fff; text-decoration-color: rgba(255,255,255,0.6); }
+    .res-list .res-note { color: rgba(255,255,255,0.38); font-size: 0.78rem; }
+  </style>
+  <div class="slide-content">
+    <p class="mono-label">Further reading</p>
+    <span class="accent-bar"></span>
+    <h2>Resources &amp; Documentation</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:1.6rem;align-items:start;">
+
+      <div>
+        <p class="res-label" style="color:#5cd6a8;">Lakebase</p>
+        <ul class="res-list">
+          <li>
+            <span><a href="https://docs.databricks.com/aws/en/oltp" target="_blank">Lakebase / OLTP Documentation</a> <span class="res-note">— getting started, architecture, SQL reference</span></span>
+          </li>
+          <li>
+            <span><a href="https://www.databricks.com/product/lakebase" target="_blank">Lakebase Product Page</a> <span class="res-note">— overview, use cases, and how to get started</span></span>
+          </li>
+          <li>
+            <span><a href="https://docs.delta.io/latest/index.html" target="_blank">Delta Lake Docs</a> <span class="res-note">— the open format underpinning Lakebase</span></span>
+          </li>
+          <li>
+            <span><a href="https://www.databricks.com/blog/database-branching-postgres-git-style-workflows-databricks-lakebase" target="_blank">Lakebase: Git-Style DB Branching</a> <span class="res-note">— blog: branch, merge, and roll back your database</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="res-label" style="color:#ffc940;">AI/BI Genie</p>
+        <ul class="res-list">
+          <li>
+            <span><a href="https://docs.databricks.com/en/genie/index.html" target="_blank">Genie Documentation</a> <span class="res-note">— spaces, certified queries, Conversation API</span></span>
+          </li>
+          <li>
+            <span><a href="https://docs.databricks.com/en/ai-bi/index.html" target="_blank">AI/BI Overview</a> <span class="res-note">— Genie + AI/BI Dashboards together</span></span>
+          </li>
+          <li>
+            <span><a href="https://docs.databricks.com/en/genie/conversation-api.html" target="_blank">Genie Conversation API</a> <span class="res-note">— embed Genie in agents and apps</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="res-label" style="color:#ff8878;">Databricks Apps</p>
+        <ul class="res-list">
+          <li>
+            <span><a href="https://docs.databricks.com/en/dev-tools/databricks-apps/index.html" target="_blank">Databricks Apps Docs</a> <span class="res-note">— deployment, app.yaml, resource access</span></span>
+          </li>
+          <li>
+            <span><a href="https://docs.databricks.com/en/dev-tools/databricks-apps/app-development.html" target="_blank">App Development Guide</a> <span class="res-note">— FastAPI, Streamlit, credential passthrough</span></span>
+          </li>
+          <li>
+            <span><a href="https://docs.databricks.com/en/dev-tools/cli/bundle-commands.html" target="_blank">Asset Bundle CLI</a> <span class="res-note">— deploy apps and jobs via databricks bundle</span></span>
+          </li>
+          <li>
+            <span><a href="https://www.databricks.com/product/databricks-apps" target="_blank">Databricks Apps Product Page</a> <span class="res-note">— ship AI apps without managing infrastructure</span></span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <span class="slide-num">09 / 09</span>
+</section>
+
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const navDots = document.getElementById('navDots');
+  const total = slides.length;
+
+  // Build nav dots
+  slides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('aria-label', `Slide ${i + 1}`);
+    btn.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth' });
+    navDots.appendChild(btn);
+  });
+
+  const dots = document.querySelectorAll('.nav-dot');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(slides).indexOf(entry.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        progress.style.width = `${((idx + 1) / total) * 100}%`;
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    const current = Array.from(slides).findIndex(s => {
+      const r = s.getBoundingClientRect();
+      return r.top >= -10 && r.top < window.innerHeight / 2;
+    });
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') && current < total - 1) {
+      e.preventDefault();
+      slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+    }
+    if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && current > 0) {
+      e.preventDefault();
+      slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+</body>
+</html>

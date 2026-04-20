@@ -5,12 +5,16 @@ command:
   - 0.0.0.0
   - --port
   - "8000"
+  - --timeout-keep-alive
+  - "600"
 
 env:
   - name: DATABRICKS_AGENT_ENDPOINT
     value: "hire-right-agent-endpoint"
   - name: DATABRICKS_WAREHOUSE_ID
-    valueFrom: sql_warehouse
+    value: "aa06644a4b0be047"
+  - name: GENIE_SPACE_ID
+    valueFrom: genie_space
   - name: TARGET_CATALOG
     value: "bx4"
   - name: TARGET_SCHEMA
@@ -23,5 +27,10 @@ resources:
       permission: CAN_QUERY
   - name: sql_warehouse
     sql_warehouse:
-      id: "0d3bda4f46281ab5"
+      id: "aa06644a4b0be047"
       permission: CAN_USE
+  - name: genie_space
+    genie_space:
+      name: "Jackson and Jackson HR Digital — Hiring Analytics Genie"
+      space_id: "01f13a0f6a081fabbea933cfb0db1d01"
+      permission: CAN_RUN

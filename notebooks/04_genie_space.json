@@ -1,0 +1,164 @@
+{
+  "title": "Jackson and Jackson HR Digital — Hiring Analytics Genie",
+  "description": "AI-powered HR analytics for Jackson and Jackson 4-role HR candidate evaluation. Covers 20 candidates across Director of HR, VP Talent Acquisition, Director Comp & Benefits, and Chief People Officer roles. Use candidate_scoring_summary for all analytical questions about scores, rankings, and hiring outcomes.",
+  "table_identifiers": [
+    "__CATALOG__.__SCHEMA__.candidate_scoring_summary",
+    "__CATALOG__.__SCHEMA__.candidates",
+    "__CATALOG__.__SCHEMA__.job_requirements"
+  ],
+  "sample_questions": [
+    "Who are the top 5 candidates by total score?",
+    "What is the average total score by job role?",
+    "Which certifications are most common among hired candidates?",
+    "How many candidates have an MBA and over 10 years of HR experience?",
+    "What is the hire rate by education level?"
+  ],
+  "serialized_space": {
+    "version": 2,
+    "config": {
+      "sample_questions": [
+        {"id": "00000000000000000000000000000001", "question": ["Who are the top 5 candidates by total score?"]},
+        {"id": "00000000000000000000000000000002", "question": ["What is the average total score by job role?"]},
+        {"id": "00000000000000000000000000000003", "question": ["Which certifications are most common among hired candidates?"]},
+        {"id": "00000000000000000000000000000004", "question": ["How many candidates have an MBA and over 10 years of HR experience?"]},
+        {"id": "00000000000000000000000000000005", "question": ["What is the hire rate by education level?"]}
+      ]
+    },
+    "data_sources": {
+      "tables": [
+        {"identifier": "__CATALOG__.__SCHEMA__.candidate_scoring_summary"},
+        {"identifier": "__CATALOG__.__SCHEMA__.candidates"},
+        {"identifier": "__CATALOG__.__SCHEMA__.job_requirements"}
+      ]
+    },
+    "instructions": {
+      "text_instructions": [
+        {
+          "id": "000000000000000000000000000000c8",
+          "content": [
+            "## Jackson and Jackson HR Digital — Hiring Analytics\n",
+            "This Genie space covers 20 candidates evaluated across 4 open HR roles at Johnson & Johnson.\n",
+            "\n",
+            "## Key Tables\n",
+            "- **__CATALOG__.__SCHEMA__.candidate_scoring_summary** (Gold — best for analysis): Pre-joined candidates + job requirements. ",
+            "Contains all 20 candidates. `total_score` is NULL for new candidates (C011–C020) awaiting interview scoring.\n",
+            "- **__CATALOG__.__SCHEMA__.candidates**: 20 candidate profiles with 8 feature scores. ",
+            "C001–C010 are training candidates (complete scores + hired label). ",
+            "C011–C020 are new candidates (interview_score, skills_match_score, culture_fit, hired are NULL).\n",
+            "- **__CATALOG__.__SCHEMA__.job_requirements**: 4 open HR roles with salary ranges and requirements.\n",
+            "\n",
+            "## Open Positions\n",
+            "- JR001 = Director of Human Resources ($175K–$225K)\n",
+            "- JR002 = VP of Talent Acquisition ($160K–$200K)\n",
+            "- JR003 = Director of Compensation & Benefits ($165K–$210K)\n",
+            "- JR004 = Chief People Officer ($250K–$350K)\n",
+            "\n",
+            "## Scoring Model (8 features → total_score)\n",
+            "total_score = education_score×10% + experience_score×20% + leadership_score×20% + ",
+            "certification_score×10% + skills_match_score×10% + industry_relevance_score×10% + ",
+            "interview_score×10% + culture_fit×10%. All scores 0–100. Candidates with total_score ≥ 84 were hired.\n",
+            "\n",
+            "## Hired Candidates (training set C001–C010, hired=1)\n",
+            "C001 Sarah Chen (90.1), C002 Michael Torres (83.5), C004 David Kim (93.2), C005 Amanda Rodriguez (85.4).\n",
+            "Not hired: C003 Jennifer Williams (47.5), C006 Robert Johnson (40.5), C007 Lisa Park (55.2), ",
+            "C008 James Wilson (64.5), C009 Maria Gonzalez (56.7), C010 Thomas Brown (66.5).\n",
+            "\n",
+            "## Query Conventions\n",
+            "- Use candidate_scoring_summary for most questions (it has everything).\n",
+            "- Filter to scored candidates: WHERE total_score IS NOT NULL\n",
+            "- Filter to training set only: WHERE hired IS NOT NULL\n",
+            "- Rank candidates: ORDER BY total_score DESC NULLS LAST\n",
+            "- Preferred certifications among hired: SPHR or SHRM-SCP\n"
+          ]
+        }
+      ],
+      "example_question_sqls": [
+        {
+          "id": "00000000000000000000000000000064",
+          "question": ["Who are the top 5 candidates by total score?"],
+          "sql": [
+            "SELECT candidate_id, first_name, last_name, job_id, total_score, hired\n",
+            "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+            "WHERE total_score IS NOT NULL\n",
+            "ORDER BY total_score DESC\n",
+            "LIMIT 5"
+          ]
+        },
+        {
+          "id": "00000000000000000000000000000065",
+          "question": ["What is the hire rate by education level?"],
+          "sql": [
+            "SELECT education_level,\n",
+            "       COUNT(*) AS total_candidates,\n",
+            "       SUM(hired) AS hired_count,\n",
+            "       ROUND(AVG(hired) * 100, 1) AS hire_rate_pct\n",
+            "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+            "WHERE hired IS NOT NULL\n",
+            "GROUP BY education_level\n",
+            "ORDER BY hire_rate_pct DESC"
+          ]
+        }
+      ]
+    },
+    "benchmarks": {
+      "questions": [
+        {
+          "id": "0000000000000000000000000000012c",
+          "question": ["Who are the top 5 candidates by total score?"],
+          "answer": [{"format": "SQL", "content": [
+            "SELECT candidate_id, first_name, last_name, job_id, total_score, hired\n",
+            "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+            "WHERE total_score IS NOT NULL\n",
+            "ORDER BY total_score DESC\n",
+            "LIMIT 5"
+          ]}]
+        },
+        {
+          "id": "0000000000000000000000000000012d",
+          "question": ["What is the average total score by job role?"],
+          "answer": [{"format": "SQL", "content": [
+            "SELECT job_id, job_title, ROUND(AVG(total_score), 1) AS avg_score\n",
+            "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+            "WHERE total_score IS NOT NULL\n",
+            "GROUP BY job_id, job_title\n",
+            "ORDER BY job_id"
+          ]}]
+        },
+        {
+          "id": "0000000000000000000000000000012e",
+          "question": ["Which certifications are most common among hired candidates?"],
+          "answer": [{"format": "SQL", "content": [
+            "SELECT certifications, COUNT(*) AS hired_count\n",
+            "FROM __CATALOG__.__SCHEMA__.candidates\n",
+            "WHERE hired = 1\n",
+            "GROUP BY certifications\n",
+            "ORDER BY hired_count DESC"
+          ]}]
+        },
+        {
+          "id": "0000000000000000000000000000012f",
+          "question": ["How many candidates have an MBA and over 10 years of HR experience?"],
+          "answer": [{"format": "SQL", "content": [
+            "SELECT COUNT(*) AS candidate_count\n",
+            "FROM __CATALOG__.__SCHEMA__.candidates\n",
+            "WHERE education_level = 'MBA' AND years_hr_experience > 10"
+          ]}]
+        },
+        {
+          "id": "00000000000000000000000000000130",
+          "question": ["What is the hire rate by education level?"],
+          "answer": [{"format": "SQL", "content": [
+            "SELECT education_level,\n",
+            "       COUNT(*) AS total_candidates,\n",
+            "       SUM(hired) AS hired_count,\n",
+            "       ROUND(AVG(hired) * 100, 1) AS hire_rate_pct\n",
+            "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
+            "WHERE hired IS NOT NULL\n",
+            "GROUP BY education_level\n",
+            "ORDER BY hire_rate_pct DESC"
+          ]}]
+        }
+      ]
+    }
+  }
+}

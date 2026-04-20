@@ -1,0 +1,25 @@
+{
+  "name": "dbrks-hire-right-agent",
+  "version": "1.0.0",
+  "description": "An AI-powered hiring assistant built on the Databricks platform for Jackson & Jackson HR Digital. This reference implementation demonstrates how to combine generative AI agents, vector search, ML models, and data analytics into a production-ready hiring evaluation application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobertx3/dbrks-hire-right-agent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bobertx3/dbrks-hire-right-agent/issues"
+  },
+  "homepage": "https://github.com/bobertx3/dbrks-hire-right-agent#readme",
+  "dependencies": {
+    "pdf-lib": "^1.17.1",
+    "puppeteer": "^24.40.0"
+  }
+}

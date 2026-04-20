@@ -1,30 +1,42 @@
 """
-Hire Right Agent — J&J HRD 2030 Predictive Hiring
+Hire Right Agent — Jackson and Jackson HR Digital
 ==================================================
-A Response Agent (ChatAgent pattern, NOT LangGraph) that helps HR leaders
+A ResponsesAgent (MLflow 3.0 standard, NOT LangGraph) that helps HR leaders
 evaluate Director of HR candidates using:
-  - Genie Space for data analytics (databricks_langchain.GenieTool or REST fallback)
+  - UC SQL analytics functions for data queries (replaces Genie)
   - Vector Search for resume semantic retrieval
   - ML model serving endpoint for real-time hire/no-hire predictions
   - Mailgun for emailing results to managers
 
 Usage:
-    from hire_right_agent import AGENT, tools
-    response = AGENT.predict([{"role": "user", "content": "Tell me about Sarah Chen"}])
+    from hire_right_agent import AGENT
+    from mlflow.types.responses import ResponsesAgentRequest
+    request = ResponsesAgentRequest(input=[{"role": "user", "content": "Tell me about Sarah Chen"}])
+    response = AGENT.predict(request)
 """
 import os
+import json
 import uuid
 import logging
-from typing import Optional
+from typing import Generator
 
 import mlflow
-from mlflow.pyfunc import ChatAgent
-from mlflow.types.agent import ChatAgentMessage, ChatAgentResponse
+from mlflow.pyfunc import ResponsesAgent
+from mlflow.types.responses import (
+    ResponsesAgentRequest,
+    ResponsesAgentResponse,
+    ResponsesAgentStreamEvent,
+)
 
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage, SystemMessage
-from databricks_langchain import ChatDatabricks
+from databricks_langchain import (
+    ChatDatabricks,
+    DatabricksFunctionClient,
+    UCFunctionToolkit,
+    set_uc_function_client,
+)
 
-from tools import query_genie, search_resumes, send_email, predict_hiring_score
+from tools import search_resumes, send_email, predict_hiring_score
 from config_helper import cfg_get
 
 logger = logging.getLogger(__name__)
@@ -32,26 +44,41 @@ logger = logging.getLogger(__name__)
 # ── Configuration ─────────────────────────────────────────────────────────────
 LLM_ENDPOINT = cfg_get("llm_endpoint", "LLM_ENDPOINT_NAME", "databricks-gpt-5-4")
 
-SYSTEM_PROMPT = """You are the **Hire Right Agent** for J&J HRD 2030 — an AI-powered hiring assistant
+SYSTEM_PROMPT = """You are the **Hire Right Agent** for Jackson and Jackson HR Digital — an AI-powered hiring assistant
 that helps HR leaders and hiring managers evaluate candidates across four open HR roles at Johnson & Johnson.
 
 ## Your Capabilities
-You have access to 4 specialized tools:
+You have access to 8 specialized tools:
 
-1. **query_genie** — Query the HR Analytics Genie Space for data-driven insights: candidate scores,
-   rankings, hire rates, certifications, experience breakdowns, and comparisons across all 20 candidates.
-   Use this for any question about data already in the database.
+### HR Data Tools (UC SQL Functions)
+1. **get_candidate(candidate_id)** — Full profile + all feature scores for a single candidate.
+   Use when the user asks about a specific person, e.g. "Tell me about C004" or "What are Sarah Chen's scores?"
 
-2. **search_resumes** — Semantically search candidate resumes to find qualifications, experience,
+2. **get_top_candidates(job_id, top_n)** — Top N candidates for a role ranked by total_score.
+   Use for ranking questions: "Who are the best candidates for JR002?" Pass top_n (default 5).
+
+3. **get_candidates_by_job(job_id)** — All candidates for a given job role.
+   Use when the user wants to see the full list for a role, not just the top ranked.
+
+4. **get_pipeline_candidates()** — Active pipeline only (C011–C020, hired IS NULL).
+   Use when the user asks about candidates currently in the hiring process.
+
+5. **get_hire_analytics()** — Aggregate hire rates, avg scores, candidate counts by role (historical data only).
+   Use for analytics questions: "What's the hire rate for JR001?" or "How do roles compare?"
+
+### Other Tools
+6. **search_resumes** — Semantically search candidate resumes to find qualifications, experience,
    and background details. Use this for narrative resume content about a specific candidate.
 
-3. **predict_hiring_score** — Run the ML model on an **active pipeline candidate** (`hired IS NULL`).
-   Only works for candidates still in the hiring process (C011–C020 plus C019–C020 for JR001).
-   Historical candidates (C001–C010) are training data — use query_genie for their data instead.
-   For candidates who have completed interviews, supply `interview_score`, `skills_match_score`,
-   and `culture_fit` (0–100 each). Returns: Data Science recommendation, confidence, score breakdown.
+7. **predict_hiring_score** — Run the ML model on any candidate to get a hire/no-hire prediction.
+   Pass all known scores from conversation context directly as arguments — this avoids a database
+   lookup. If scores are available in context (e.g. seeded from the profile view), always pass them.
+   **CRITICAL: NEVER fabricate, estimate, or assume a value for any score marked as "pending".
+   If interview_score or culture_fit (or any score) is "pending" in context, you MUST ask the user
+   to provide those specific values before calling this tool. Do NOT invent placeholder numbers.**
+   Returns: Data Science recommendation, confidence, score breakdown.
 
-4. **send_email** — Email analysis results, hiring recommendations, or candidate summaries
+8. **send_email** — Email analysis results, hiring recommendations, or candidate summaries
    to a manager or stakeholder via Mailgun.
 
 ## Open Positions (4 roles)
@@ -64,9 +91,8 @@ You have access to 4 specialized tools:
 
 ## Candidate Reference (20 candidates across 4 jobs)
 
-### 🔴 Historical Training Data — C001–C010 (hired IS NOT NULL)
-These candidates have already been decided. Use **query_genie** for their data.
-Do NOT call predict_hiring_score for these candidates.
+### C001–C010 — Historical Cohort (JR001, decisions already made)
+Use **get_candidate**, **get_candidates_by_job**, or **get_hire_analytics** for data questions. **predict_hiring_score** can also be called on these.
 
 **JR001 — Director of HR** (past cohort):
 | ID   | Name              | Score | Outcome |
@@ -75,15 +101,14 @@ Do NOT call predict_hiring_score for these candidates.
 | C002 | Michael Torres    | 83.5  | Hired   |
 | C003 | Jennifer Williams | 47.5  | Rejected|
 | C004 | David Kim         | 93.2  | Hired   |
-| C005 | Amanda Rodriguez  | 85.4  | Hired   |
+| C005 | Amanda Rodriguez  | 79.0  | Rejected|
 | C006 | Robert Johnson    | 40.5  | Rejected|
 | C007 | Lisa Park         | 55.2  | Rejected|
 | C008 | James Wilson      | 64.5  | Rejected|
 | C009 | Maria Gonzalez    | 56.7  | Rejected|
 | C010 | Thomas Brown      | 66.5  | Rejected|
 
-### 🟢 Active Pipeline — C011–C020 (hired IS NULL — in hiring process)
-Use **predict_hiring_score** for these candidates.
+### C011–C020 — Active Pipeline (in hiring process, some scores pending)
 
 **JR001 — Director of HR** (active, scores partially complete):
 | ID   | Name           | Status           |
@@ -111,17 +136,35 @@ Use **predict_hiring_score** for these candidates.
 | C017 | Victoria Santos  |
 | C018 | Jonathan Reed    |
 
-## Scoring Weights (8 features)
-Education 10% | Experience 20% | Leadership 20% | Certifications 10% |
-Skills Match 10% | Industry Relevance 10% | Interview 10% | Culture Fit 10%
-
 ## Guidelines
-- For any question about data already stored (scores, rankings, comparisons), use **query_genie**
+- For any question about data already stored (scores, rankings, comparisons, contact details like phone number or email, certifications, years of experience), use the appropriate HR data tool: **get_candidate** for a specific person, **get_top_candidates** for rankings, **get_candidates_by_job** for a full role list, **get_pipeline_candidates** for active candidates, **get_hire_analytics** for aggregate stats
 - For resume narrative and qualifications, use **search_resumes**
-- To get an ML prediction for a new candidate after their interview, use **predict_hiring_score**
-  and ask the user for interview_score, skills_match_score, and culture_fit if not provided
-- When composing email summaries, be professional and lead with the recommendation
+- To get an ML prediction, use **predict_hiring_score** — pass all known scores from context,
+  and explicitly ask the user for any scores that are "pending". Never substitute a made-up number.
+- If a user asks a hypothetical ("what if culture_fit were X"), only run it if you have a real
+  baseline to compare against — do not invent the baseline
 - Always be data-driven and concise
+
+## CRITICAL — Never Compute Scores Manually
+**NEVER calculate a hiring prediction or composite score yourself using any formula or weighted sum.**
+The only valid way to produce a hiring recommendation is to call the **predict_hiring_score** tool.
+The ML model is a trained classifier — it does not use a simple weighted average.
+Any manual calculation you perform will be wrong and misleading. Always call the tool.
+
+## Email Composition Guidelines
+When sending a candidate summary email, use this structure:
+
+**Opening line:** "For Job ID [JR00X] — [Role Title] — the following candidates are predicted to be the best fit:"
+
+**Per candidate, write a 2–3 sentence narrative** (do NOT show raw total scores). Cover:
+  1. Qualifications strength — reference their experience and/or skills match score in plain language
+  2. Interview and culture fit — describe their interview performance and cultural alignment
+  3. Data Science verdict — close with "Based on our Data Science prediction, [First Name] is a **Data Science — Recommend Hire**."
+
+**Example narrative format:**
+> "1. **David Kim (C004)** — David brings exceptional HR leadership experience with a strong skills match for this role. His interview performance was outstanding and he demonstrated excellent cultural alignment with the organization. Based on our Data Science prediction, David is a **Data Science — Recommend Hire**."
+
+Do NOT include a "Total Score" line. Do NOT include the disclaimer about historical training labels in the email body.
 
 ## Recommendation Language — ALWAYS USE THESE EXACT TERMS
 When communicating ML predictions in emails, summaries, or any output, always use:
@@ -133,56 +176,100 @@ in the data is a **historical training label** (past decisions used to train the
 current recommendation. Keep these two concepts clearly separate in all communications."""
 
 
-# ── Tools ─────────────────────────────────────────────────────────────────────
-TOOLS = [query_genie, search_resumes, predict_hiring_score, send_email]
+# ── UC Function Tools (WeatherWise pattern) ───────────────────────────────────
+_catalog = cfg_get("target_catalog", "TARGET_CATALOG", "bx4")
+_schema  = cfg_get("target_schema",  "TARGET_SCHEMA",  "hrd_2030")
 
-# Alias for WeatherWise pattern compatibility
+_uc_client = DatabricksFunctionClient(disable_notice=True)
+set_uc_function_client(_uc_client)
+
+_uc_toolkit = UCFunctionToolkit(function_names=[
+    f"{_catalog}.{_schema}.get_candidate",
+    f"{_catalog}.{_schema}.get_top_candidates",
+    f"{_catalog}.{_schema}.get_candidates_by_job",
+    f"{_catalog}.{_schema}.get_pipeline_candidates",
+    f"{_catalog}.{_schema}.get_hire_analytics",
+])
+
+# ── Tools ─────────────────────────────────────────────────────────────────────
+TOOLS = [
+    *_uc_toolkit.tools,
+    search_resumes,
+    predict_hiring_score,
+    send_email,
+]
+
+# Alias for compatibility
 tools = TOOLS
 
 
 # ── Agent ──────────────────────────────────────────────────────────────────────
-class HireRightAgent(ChatAgent):
+class HireRightAgent(ResponsesAgent):
     """
-    Response Agent using a simple Python tool-calling loop.
-    NOT LangGraph — uses plain while-loop with LangChain message accumulation.
+    MLflow 3.0 ResponsesAgent using a simple Python tool-calling loop.
+    NOT LangGraph — uses a plain while-loop with LangChain message accumulation.
+    Tool calls are emitted as structured output items for full MLflow trace visibility.
     """
 
-    def _build_lc_messages(self, messages: list) -> list:
+    def _build_lc_messages(self, input_messages) -> list:
         lc_messages = [SystemMessage(content=SYSTEM_PROMPT)]
-        for msg in messages:
-            role = msg.get("role", "user") if isinstance(msg, dict) else msg.role
-            content = msg.get("content", "") if isinstance(msg, dict) else (msg.content or "")
+        for msg in input_messages:
+            role    = msg.role    if hasattr(msg, "role")    else msg.get("role", "user")
+            content = msg.content if hasattr(msg, "content") else msg.get("content", "")
+
+            # Responses API delivers content as a list of typed params (e.g. ResponseInputTextParam).
+            # Extract plain text from each item so LangChain gets a str, not a pydantic object.
+            if isinstance(content, list):
+                parts = []
+                for item in content:
+                    if isinstance(item, str):
+                        parts.append(item)
+                    elif hasattr(item, "text"):
+                        parts.append(item.text)
+                    elif isinstance(item, dict):
+                        parts.append(item.get("text", str(item)))
+                    else:
+                        parts.append(str(item))
+                content = " ".join(parts)
+
+            content = content or ""
             if role == "user":
                 lc_messages.append(HumanMessage(content=content))
             elif role == "assistant":
                 lc_messages.append(AIMessage(content=content))
         return lc_messages
 
-    def predict(
-        self,
-        messages: list,
-        context=None,
-        custom_inputs: Optional[dict] = None,
-    ) -> ChatAgentResponse:
-        llm = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=2048)
+    def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
+        llm            = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=2048)
         llm_with_tools = llm.bind_tools(TOOLS)
 
-        lc_messages = self._build_lc_messages(messages)
+        lc_messages  = self._build_lc_messages(request.input)
+        output_items = []
 
         for _ in range(10):
             response = llm_with_tools.invoke(lc_messages)
             lc_messages.append(response)
 
             if not response.tool_calls:
-                return ChatAgentResponse(
-                    messages=[ChatAgentMessage(
-                        role="assistant",
-                        content=response.content or "",
+                output_items.append(
+                    self.create_text_output_item(
+                        text=response.content or "",
                         id=str(uuid.uuid4()),
-                    )]
+                    )
                 )
+                return ResponsesAgentResponse(output=output_items)
 
             for tc in response.tool_calls:
+                # Emit the function call so MLflow traces it as a span
+                output_items.append(
+                    self.create_function_call_item(
+                        id=str(uuid.uuid4()),
+                        call_id=tc["id"],
+                        name=tc["name"],
+                        arguments=json.dumps(tc["args"]),
+                    )
+                )
+
                 result = f"Tool '{tc['name']}' not found."
                 for t in TOOLS:
                     if t.name == tc["name"]:
@@ -191,28 +278,47 @@ class HireRightAgent(ChatAgent):
                         except Exception as e:
                             result = f"Tool error ({tc['name']}): {str(e)}"
                         break
+
                 logger.debug("Tool %s → %s", tc["name"], str(result)[:100])
+
+                # Emit the tool result so MLflow traces it as a span
+                output_items.append(
+                    self.create_function_call_output_item(
+                        call_id=tc["id"],
+                        output=str(result),
+                    )
+                )
                 lc_messages.append(ToolMessage(content=str(result), tool_call_id=tc["id"]))
 
         # Max iterations — get final answer without tools
         llm_plain = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=1024)
         final = llm_plain.invoke(lc_messages)
-        return ChatAgentResponse(
-            messages=[ChatAgentMessage(
-                role="assistant",
-                content=final.content or "",
+        output_items.append(
+            self.create_text_output_item(
+                text=final.content or "",
                 id=str(uuid.uuid4()),
-            )]
+            )
         )
+        return ResponsesAgentResponse(output=output_items)
+
+    def predict_stream(
+        self, request: ResponsesAgentRequest
+    ) -> Generator[ResponsesAgentStreamEvent, None, None]:
+        result = self.predict(request)
+        for item in result.output:
+            # MLflow serving calls .get() on item expecting a dict — convert from pydantic
+            item_dict = item.model_dump() if hasattr(item, "model_dump") else item
+            yield ResponsesAgentStreamEvent(type="response.output_item.done", item=item_dict)
 
 
 # ── Singleton instance ─────────────────────────────────────────────────────────
+mlflow.langchain.autolog()
 AGENT = HireRightAgent()
 
 
 def get_input_example():
     return {
-        "messages": [
+        "input": [
             {"role": "user", "content": "Tell me about Sarah Chen (C001) — what are her qualifications?"}
         ]
     }
@@ -224,6 +330,9 @@ mlflow.models.set_model(AGENT)
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    mlflow.langchain.autolog()
-    result = AGENT.predict([{"role": "user", "content": "Who are the top 3 candidates for Director of HR?"}])
-    print(result.messages[0].content)
+    request = ResponsesAgentRequest(
+        input=[{"role": "user", "content": "Who are the top 3 candidates for Director of HR?"}]
+    )
+    result = AGENT.predict(request)
+    text = next((item.text for item in reversed(result.output) if hasattr(item, "text")), "")
+    print(text)

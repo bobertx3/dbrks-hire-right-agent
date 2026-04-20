@@ -3,286 +3,1555 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hire Right — J&J HRD 2030</title>
+<title>Hire Right · Jackson &amp; Jackson HR Digital</title>
 <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root {
-    --db-red: #FF3621; --db-red-light: #FF6E56; --db-dark: #1B3139;
-    --bg: #F8F6F4; --card: #FFFFFF; --text: #1B1B1B; --text-sub: #5A5A5A;
-    --border: rgba(0,0,0,0.08); --shadow: 0 4px 16px rgba(0,0,0,0.08);
-  }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+/* ── Reset & Tokens ──────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --primary:#1B3139; --accent:#FF3621; --accent-h:#e02d19;
+  --green:#00A972; --amber:#F5A623; --blue:#3B82F6;
+  --purple:#8B5CF6; --teal:#14B8A6; --orange:#F97316;
+  --bg:#F0F2F5; --card:#fff; --border:#E0E4E8;
+  --text:#1A1A2E; --sub:#64748B; --light:#94A3B8;
+  --sh-sm:0 1px 3px rgba(0,0,0,.08); --sh-md:0 4px 12px rgba(0,0,0,.1);
+  --r:12px; --r-sm:8px; --r-xs:6px;
+  --header-h:54px;
+}
+body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-  /* ── Header ── */
-  header { background:var(--db-dark); padding:12px 24px; display:flex; align-items:center; gap:16px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.3); }
-  .logo { color:var(--db-red); font-size:18px; font-weight:800; letter-spacing:1.5px; }
-  .logo-sub { color:rgba(255,255,255,0.5); font-size:12px; font-weight:500; }
-  .header-badge { margin-left:auto; background:rgba(255,54,33,0.15); border:1px solid rgba(255,54,33,0.3); color:var(--db-red); font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; }
+/* ── Header ──────────────────────────────────────────────────── */
+header{background:var(--primary);height:var(--header-h);display:flex;align-items:center;padding:0 18px;gap:0;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.25);z-index:200;}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.brand-logo{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;letter-spacing:.3px;}
+.brand-name{color:#fff;font-size:14px;font-weight:700;line-height:1.2;}
+.brand-sub{color:rgba(255,255,255,.42);font-size:10px;}
+.h-spacer{flex:1;}
+.h-actions{display:flex;gap:6px;align-items:center;}
+.h-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;border-radius:var(--r-xs);transition:all .15s;white-space:nowrap;}
+.h-btn:hover{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25);}
+.h-btn svg{width:13px;height:13px;flex-shrink:0;}
+.h-btn.agent-btn{background:rgba(255,54,33,.15);border-color:rgba(255,54,33,.3);color:#fff;}
+.h-btn.agent-btn:hover{background:rgba(255,54,33,.25);}
+.h-btn.genie-btn{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#fff;}
+.h-btn.genie-btn:hover{background:rgba(59,130,246,.25);}
+.h-btn.dbrks-link{text-decoration:none;background:rgba(255,54,33,.18);border-color:rgba(255,54,33,.45);color:#ff8a78;font-weight:600;}
+.h-btn.dbrks-link:hover{background:rgba(255,54,33,.3);border-color:rgba(255,54,33,.7);color:#fff;}
+.h-arch-sm{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.65);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0;cursor:pointer;font-family:inherit;transition:all .15s;}
+.h-arch-sm:hover{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.32);}
+.h-arch-sm svg{width:10px;height:10px;}
+.h-badge{background:rgba(255,54,33,.15);border:1px solid rgba(255,54,33,.3);color:var(--accent);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0;}
+.brand-pill{display:inline-block;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.38);font-size:9px;font-weight:500;padding:1px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;letter-spacing:.02em;}
 
-  /* ── Layout ── */
-  .layout { display:flex; flex:1; overflow:hidden; }
+/* ── Main Content ────────────────────────────────────────────── */
+#main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
-  /* ── Sidebar ── */
-  .sidebar { width:280px; background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
-  .sidebar-title { padding:16px 20px 8px; font-size:11px; font-weight:700; color:var(--text-sub); text-transform:uppercase; letter-spacing:1px; }
-  .candidate-list { padding:0 12px 12px; display:flex; flex-direction:column; gap:4px; }
-  .candidate-card { padding:10px 12px; border-radius:8px; cursor:pointer; transition:all 0.15s; border:1px solid transparent; }
-  .candidate-card:hover { background:var(--bg); border-color:var(--border); }
-  .candidate-card.hired { border-left:3px solid #00A972; }
-  .candidate-card.not-hired { border-left:3px solid var(--db-red); }
-  .cc-name { font-size:13px; font-weight:600; }
-  .cc-title { font-size:11px; color:var(--text-sub); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .cc-score { font-size:11px; font-weight:700; margin-top:4px; }
-  .cc-score.high { color:#00A972; }
-  .cc-score.low { color:var(--db-red); }
+/* Stats bar */
+.stats-bar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;gap:12px;flex-shrink:0;}
+.stat-card{flex:1;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);}
+.stat-label{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.stat-value{font-size:26px;font-weight:800;line-height:1;color:var(--text);}
+.stat-sub{font-size:11px;color:var(--light);margin-top:3px;}
+.stat-card.green .stat-value{color:var(--green);}
+.stat-card.amber .stat-value{color:var(--amber);}
+.stat-card.blue .stat-value{color:var(--blue);}
 
-  /* ── Chat ── */
-  .chat-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-  .chat-messages { flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:16px; }
+/* Filter bar */
+.filter-bar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
+.filter-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.filter-lbl{font-size:10px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.6px;margin-right:2px;white-space:nowrap;}
+.filter-divider{width:1px;height:20px;background:var(--border);margin:0 6px;flex-shrink:0;}
+.pill{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);font-family:inherit;font-size:11px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.pill:hover{border-color:var(--primary);color:var(--primary);}
+.pill.active{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600;}
+.pill.active-green{background:var(--green);border-color:var(--green);color:#fff;font-weight:600;}
+.pill.active-red{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+.pill.active-blue{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600;}
+.pill-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:middle;}
 
-  /* ── Welcome ── */
-  .welcome { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; text-align:center; padding:40px; }
-  .welcome h2 { font-size:28px; font-weight:800; color:var(--db-dark); margin-bottom:8px; }
-  .welcome p { color:var(--text-sub); font-size:15px; max-width:480px; line-height:1.6; }
-  .suggestions { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:24px; max-width:560px; width:100%; }
-  .suggestion { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; cursor:pointer; text-align:left; font-size:13px; font-family:inherit; color:var(--text); transition:all 0.15s; }
-  .suggestion:hover { border-color:var(--db-red); color:var(--db-red); box-shadow:var(--shadow); }
+/* Candidate grid */
+.cands-scroll{flex:1;overflow-y:auto;padding:18px 20px;}
+.cands-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;}
 
-  /* ── Messages ── */
-  .message { display:flex; gap:12px; max-width:780px; }
-  .message.user { flex-direction:row-reverse; align-self:flex-end; }
-  .message.user .bubble { background:var(--db-red); color:#fff; border-radius:20px 20px 4px 20px; }
-  .message.assistant .bubble { background:var(--card); border:1px solid var(--border); border-radius:20px 20px 20px 4px; box-shadow:var(--shadow); }
-  .bubble { padding:14px 18px; font-size:14px; line-height:1.65; max-width:640px; }
-  .bubble p { margin-bottom:8px; }
-  .bubble p:last-child { margin-bottom:0; }
-  .bubble h3, .bubble h4 { margin:12px 0 6px; }
-  .bubble ul, .bubble ol { padding-left:20px; margin-bottom:8px; }
-  .bubble li { margin-bottom:4px; }
-  .bubble strong { font-weight:700; }
-  .bubble code { background:rgba(0,0,0,0.06); padding:2px 6px; border-radius:4px; font-size:12px; }
-  .avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; flex-shrink:0; }
-  .avatar.user { background:var(--db-red); color:#fff; }
-  .avatar.assistant { background:var(--db-dark); color:#fff; }
+/* Candidate card */
+.c-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .15s;}
+.c-card:hover{border-color:#CBD5E1;box-shadow:var(--sh-md);transform:translateY(-1px);}
+.c-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
+.c-av{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.c-meta{flex:1;min-width:0;}
+.c-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-id-tag{display:inline-block;font-size:9px;font-weight:700;color:var(--sub);background:var(--bg);padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:middle;}
+.c-sub{font-size:11px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-score-box{flex-shrink:0;text-align:center;padding:6px 9px;border-radius:var(--r-xs);min-width:48px;}
+.c-score-box .sn{font-size:17px;font-weight:800;line-height:1;}
+.c-score-box .sl{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+.s-high{background:rgba(0,169,114,.1);color:var(--green);}
+.s-mid{background:rgba(245,166,35,.1);color:var(--amber);}
+.s-low{background:rgba(255,54,33,.1);color:var(--accent);}
+.s-pen{background:var(--bg);color:var(--light);}
+.c-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.badge{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;}
+.bj1{background:rgba(59,130,246,.1);color:var(--blue);}
+.bj2{background:rgba(139,92,246,.1);color:var(--purple);}
+.bj3{background:rgba(20,184,166,.1);color:var(--teal);}
+.bj4{background:rgba(249,115,22,.1);color:var(--orange);}
+.b-hired{background:rgba(0,169,114,.1);color:var(--green);}
+.b-rejected{background:rgba(229,57,53,.1);color:#E53935;}
+.b-inter{background:rgba(245,166,35,.1);color:var(--amber);}
+.b-screen{background:rgba(59,130,246,.1);color:var(--blue);}
+.b-pipe{background:rgba(100,116,139,.1);color:var(--sub);}
+.b-final{background:rgba(249,115,22,.1);color:var(--orange);}
+.c-footer{display:flex;align-items:center;justify-content:space-between;}
+.c-loc{font-size:10px;color:var(--light);display:flex;align-items:center;gap:3px;}
+.view-btn{padding:5px 12px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;}
+.view-btn:hover{background:#26505f;}
 
-  /* ── Typing ── */
-  .typing-dots { display:flex; gap:4px; padding:6px 0; }
-  .typing-dots span { width:7px; height:7px; background:var(--db-red); border-radius:50%; animation:bounce 1.2s infinite; }
-  .typing-dots span:nth-child(2) { animation-delay:.2s; }
-  .typing-dots span:nth-child(3) { animation-delay:.4s; }
-  @keyframes bounce { 0%,80%,100%{transform:scale(0.7);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+/* ── Candidate Detail ────────────────────────────────────────── */
+#view-detail{display:none;flex:1;flex-direction:column;overflow:hidden;}
+#view-detail.active{display:flex;}
+.det-scroll{flex:1;overflow-y:auto;padding:18px 20px;}
+.det-back{display:flex;align-items:center;gap:5px;padding:5px 0;border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;margin-bottom:14px;transition:color .15s;}
+.det-back:hover{color:var(--text);}
+.det-header{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;gap:18px;align-items:flex-start;margin-bottom:16px;box-shadow:var(--sh-sm);}
+.det-av{width:64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;flex-shrink:0;}
+.det-info{flex:1;}
+.det-name{font-size:20px;font-weight:800;margin-bottom:3px;}
+.det-title{font-size:13px;color:var(--sub);margin-bottom:8px;}
+.det-badges{display:flex;gap:6px;flex-wrap:wrap;}
+.det-score-box{text-align:center;padding:14px 20px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);flex-shrink:0;}
+.det-sn{font-size:32px;font-weight:800;line-height:1;}
+.det-sl{font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.7px;margin-top:3px;}
+.det-body{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:860px){.det-body{grid-template-columns:1fr;}}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-sm);}
+.panel-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.panel-title{font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.8px;}
+.panel-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+.panel-body{padding:16px 18px;}
 
-  /* ── Input ── */
-  .chat-input-area { padding:16px 24px; background:var(--card); border-top:1px solid var(--border); }
-  .input-row { display:flex; gap:8px; background:var(--bg); border:2px solid var(--border); border-radius:16px; padding:8px 12px; transition:border-color 0.15s; }
-  .input-row:focus-within { border-color:var(--db-red); }
-  #user-input { flex:1; border:none; background:transparent; font-family:inherit; font-size:14px; color:var(--text); resize:none; outline:none; min-height:24px; max-height:120px; }
-  .send-btn { background:var(--db-red); border:none; border-radius:10px; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; transition:background 0.15s; flex-shrink:0; align-self:flex-end; }
-  .send-btn:hover { background:var(--db-red-light, #FF6E56); }
-  .send-btn:disabled { background:#ccc; cursor:default; }
-  .input-hint { font-size:11px; color:var(--text-sub); margin-top:6px; text-align:center; }
+/* Score rows */
+.s-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.s-row:last-child{margin-bottom:0;}
+.s-row-lbl{font-size:11px;font-weight:500;color:var(--sub);width:120px;flex-shrink:0;}
+.s-row-bar{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.s-row-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+.s-row-num{font-size:12px;font-weight:700;width:32px;text-align:right;flex-shrink:0;}
+.s-row-wt{font-size:9px;color:var(--light);width:24px;text-align:right;flex-shrink:0;}
 
-  /* ── New chat button ── */
-  .new-chat-btn { margin:12px; padding:10px; background:var(--db-red); color:#fff; border:none; border-radius:8px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:opacity 0.15s; }
-  .new-chat-btn:hover { opacity:0.9; }
+/* ── Recommendation Panel ────────────────────────────────────── */
+.rec-panel{display:flex;flex-direction:column;overflow:hidden;}
+.rec-panel-head{padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.rec-btn{padding:7px 13px;background:var(--accent);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;}
+.rec-btn:hover{background:var(--accent-h);}
+.rec-btn:disabled{background:#ccc;cursor:default;}
+.rec-msgs{padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:80px;max-height:320px;overflow-y:auto;}
+.rec-empty{color:var(--light);font-size:12px;text-align:center;padding:18px 0;line-height:1.6;}
+.rec-footer{padding:10px 14px;border-top:1px solid var(--border);background:var(--bg);display:flex;gap:8px;}
+.rec-inp{flex:1;border:1px solid var(--border);border-radius:var(--r-xs);padding:7px 11px;font-family:inherit;font-size:12px;background:var(--card);color:var(--text);outline:none;transition:border-color .15s;}
+.rec-inp:focus{border-color:var(--accent);}
+.rec-send{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.rec-send:hover{background:#26505f;}
+.rec-send:disabled{background:#ccc;cursor:default;}
+.mm{display:flex;gap:0;font-size:12px;line-height:1.6;}
+.mm.user{flex-direction:row-reverse;}
+.mm-bub{padding:9px 13px;border-radius:10px;max-width:95%;}
+.mm.user .mm-bub{background:var(--accent);color:#fff;border-radius:10px 10px 3px 10px;}
+.mm.assistant .mm-bub{background:var(--bg);border:1px solid var(--border);border-radius:10px 10px 10px 3px;}
+.mm.assistant .mm-bub p{margin-bottom:5px;}
+.mm.assistant .mm-bub p:last-child{margin-bottom:0;}
+.mm.assistant .mm-bub ul,.mm.assistant .mm-bub ol{padding-left:15px;margin-bottom:5px;}
+.mm.assistant .mm-bub strong{font-weight:700;}
+.mm.assistant .mm-bub code{background:rgba(0,0,0,.06);padding:1px 4px;border-radius:3px;}
+
+/* ── Slideout Panel ──────────────────────────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.visible{opacity:1;pointer-events:auto;}
+.slideout{position:fixed;top:0;right:-500px;width:480px;height:100vh;background:var(--card);border-left:1px solid var(--border);box-shadow:-4px 0 24px rgba(0,0,0,.15);z-index:400;display:flex;flex-direction:column;transition:right .25s cubic-bezier(.4,0,.2,1);}
+.slideout.open{right:0;}
+.so-header{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--primary);}
+.so-tabs{display:flex;flex:1;}
+.so-tab{flex:1;padding:14px 0;border:none;background:transparent;color:rgba(255,255,255,.55);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;border-bottom:2px solid transparent;}
+.so-tab:hover{color:rgba(255,255,255,.85);}
+.so-tab.active{color:#fff;border-bottom-color:var(--accent);}
+.so-tab svg{width:13px;height:13px;}
+.so-close{width:44px;height:44px;border:none;background:transparent;color:rgba(255,255,255,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:color .15s;margin:0 4px;}
+.so-close:hover{color:#fff;}
+.so-pane{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.so-pane.active{display:flex;}
+
+/* Chat inside slideout */
+.so-chat-area{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;}
+.so-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:32px 20px;}
+.so-welcome-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.so-welcome h3{font-size:17px;font-weight:800;margin-bottom:6px;}
+.so-welcome p{color:var(--sub);font-size:12px;max-width:340px;line-height:1.6;margin-bottom:18px;}
+.sugg-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%;}
+.sugg{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;cursor:pointer;text-align:left;font-size:11px;font-family:inherit;color:var(--sub);transition:all .15s;line-height:1.4;}
+.sugg:hover{border-color:var(--accent);color:var(--text);box-shadow:var(--sh-sm);}
+.msg{display:flex;gap:8px;max-width:100%;}
+.msg.user{flex-direction:row-reverse;align-self:flex-end;}
+.msg-av{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.msg.user .msg-av{background:var(--accent);color:#fff;}
+.msg.assistant .msg-av{background:var(--primary);color:#fff;}
+.msg.genie .msg-av{background:var(--blue);color:#fff;}
+.msg-bub{padding:10px 13px;border-radius:10px;font-size:12px;line-height:1.65;max-width:calc(100% - 40px);}
+.msg.user .msg-bub{background:var(--accent);color:#fff;border-radius:10px 10px 3px 10px;}
+.msg.assistant .msg-bub{background:var(--bg);border:1px solid var(--border);border-radius:10px 10px 10px 3px;}
+.msg.genie .msg-bub{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:10px 10px 10px 3px;}
+.msg-bub p{margin-bottom:6px;}
+.msg-bub p:last-child{margin-bottom:0;}
+.msg-bub h3,.msg-bub h4{margin:8px 0 4px;}
+.msg-bub ul,.msg-bub ol{padding-left:16px;margin-bottom:6px;}
+.msg-bub li{margin-bottom:2px;}
+.msg-bub strong{font-weight:700;}
+.msg-bub code{background:rgba(0,0,0,.06);padding:1px 4px;border-radius:3px;font-size:11px;}
+.msg-bub pre{background:rgba(0,0,0,.04);border-radius:6px;padding:10px;overflow-x:auto;margin:6px 0;}
+.msg-bub pre code{background:none;padding:0;}
+.sql-toggle{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid rgba(59,130,246,.3);color:var(--blue);border-radius:5px;padding:3px 9px;font-size:10px;font-family:inherit;cursor:pointer;margin:6px 0 2px;transition:all .15s;}
+.sql-toggle:hover{background:rgba(59,130,246,.08);}
+.sql-block{display:none;background:rgba(0,0,0,.04);border-radius:6px;padding:10px;overflow-x:auto;margin:4px 0 6px;font-size:10.5px;line-height:1.6;font-family:monospace;white-space:pre;}
+.sql-block.open{display:block;}
+.genie-sugg-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(59,130,246,.15);}
+.genie-sugg{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:14px;padding:4px 10px;font-size:10.5px;font-family:inherit;color:var(--blue);cursor:pointer;transition:all .15s;}
+.genie-sugg:hover{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);}
+.so-bar{padding:12px 14px;background:var(--card);border-top:1px solid var(--border);flex-shrink:0;}
+.so-wrap{display:flex;gap:8px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:6px 8px;transition:border-color .15s;}
+.so-wrap:focus-within{border-color:var(--accent);}
+.so-input{flex:1;border:none;background:transparent;font-family:inherit;font-size:12px;color:var(--text);resize:none;outline:none;min-height:20px;max-height:80px;}
+.so-submit{background:var(--accent);border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:background .15s;flex-shrink:0;align-self:flex-end;}
+.so-submit:hover{background:var(--accent-h);}
+.so-submit:disabled{background:#ccc;cursor:default;}
+.so-hint{font-size:10px;color:var(--light);text-align:center;margin-top:5px;}
+.genie-actions{display:flex;align-items:center;justify-content:flex-end;padding:0 14px 8px;gap:6px;}
+.genie-new-btn{padding:4px 10px;border:1px solid var(--border);background:var(--bg);color:var(--sub);font-family:inherit;font-size:10px;font-weight:600;border-radius:var(--r-xs);cursor:pointer;transition:all .15s;}
+.genie-new-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* Typing dots */
+.dots{display:flex;gap:4px;padding:3px 0;}
+.dots span{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:bounce 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:.2s;}
+.dots span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
+.genie-typing .dots span{background:var(--blue);}
+
+/* ── Main Tab Nav ────────────────────────────────────────────── */
+.main-tabs{background:var(--card);border-bottom:2px solid var(--border);padding:0 20px;display:flex;gap:0;flex-shrink:0;}
+.main-tab{padding:11px 18px;border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:6px;transition:all .15s;}
+.main-tab:hover{color:var(--text);}
+.main-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+.main-tab svg{width:13px;height:13px;}
+
+/* Grid/Detail views */
+#view-grid{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+#view-grid.hidden{display:none;}
+
+/* ── Jobs View ───────────────────────────────────────────────── */
+#view-jobs{display:none;flex:1;flex-direction:column;overflow:hidden;}
+#view-jobs.active{display:flex;}
+.jobs-scroll{flex:1;overflow-y:auto;padding:20px;}
+.jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px;}
+.job-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--sh-sm);transition:all .15s;}
+.job-card:hover{border-color:#CBD5E1;box-shadow:var(--sh-md);transform:translateY(-1px);}
+.job-card-top{display:flex;align-items:flex-start;gap:14px;}
+.job-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.job-icon svg{width:22px;height:22px;}
+.job-head{flex:1;min-width:0;}
+.job-id-tag{display:inline-block;font-size:9px;font-weight:700;color:var(--sub);background:var(--bg);border:1px solid var(--border);padding:2px 7px;border-radius:4px;margin-bottom:5px;}
+.job-title{font-size:16px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:3px;}
+.job-meta{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.job-meta-sep{color:var(--border);}
+.job-salary{font-size:12px;font-weight:700;color:var(--green);}
+.job-divider{height:1px;background:var(--border);}
+.job-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.job-tag{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:600;background:var(--bg);border:1px solid var(--border);color:var(--sub);}
+.job-footer{display:flex;align-items:center;justify-content:space-between;margin-top:2px;}
+.job-stat{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:4px;}
+.job-desc-btn{padding:7px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;}
+.job-desc-btn:hover{background:#26505f;}
+
+/* Job description modal */
+.jd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;}
+.jd-overlay.open{display:flex;}
+.jd-modal{background:var(--card);border-radius:var(--r);box-shadow:0 20px 60px rgba(0,0,0,.25);width:90vw;max-width:720px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.jd-modal-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;background:var(--primary);}
+.jd-modal-title{color:#fff;font-size:15px;font-weight:800;line-height:1.3;}
+.jd-modal-sub{color:rgba(255,255,255,.55);font-size:11px;margin-top:3px;}
+.jd-modal-close{width:32px;height:32px;border:none;background:rgba(255,255,255,.1);color:#fff;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:background .15s;}
+.jd-modal-close:hover{background:rgba(255,255,255,.2);}
+.jd-modal-body{flex:1;overflow-y:auto;padding:28px 32px;font-size:13.5px;line-height:1.8;color:var(--text);}
+.jd-modal-body h1,.jd-modal-body h2,.jd-modal-body h3{font-size:13px;font-weight:700;margin:20px 0 8px;color:var(--text);}
+.jd-modal-body p{margin-bottom:12px;color:var(--sub);}
+.jd-modal-body p:first-child{font-size:11px;font-weight:700;color:var(--light);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+.jd-modal-body ul{padding-left:18px;margin-bottom:12px;}
+.jd-modal-body li{margin-bottom:6px;}
+.jd-modal-body strong{font-weight:700;color:var(--text);}
+
+/* ── Resume Modal ────────────────────────────────────────────── */
+.resume-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;}
+.resume-overlay.open{display:flex;}
+.resume-modal{background:var(--card);border-radius:var(--r);box-shadow:0 20px 60px rgba(0,0,0,.25);width:90vw;max-width:860px;height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.resume-modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--primary);}
+.resume-modal-title{color:#fff;font-size:14px;font-weight:700;}
+.resume-modal-sub{color:rgba(255,255,255,.55);font-size:11px;margin-top:2px;}
+.resume-modal-close{width:32px;height:32px;border:none;background:rgba(255,255,255,.1);color:#fff;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s;}
+.resume-modal-close:hover{background:rgba(255,255,255,.2);}
+.resume-modal-body{flex:1;min-height:0;padding:0;}
+#resume-iframe{width:100%;height:100%;border:none;display:block;}
+.resume-btn{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .15s;flex-shrink:0;}
+.resume-btn:hover{background:#26505f;}
+.resume-btn:disabled{background:#ccc;cursor:default;}
+
+/* ── Data Flow Modal ────────────────────────────────────── */
+.arch-ov{position:fixed;inset:0;background:rgba(5,8,15,.65);backdrop-filter:blur(6px);z-index:900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.arch-ov.open{opacity:1;pointer-events:all;}
+.arch-m{background:#0D1117;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.7);width:calc(100vw - 16px);max-width:none;height:calc(100vh - 16px);max-height:none;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.07);}
+.arch-mh{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 22px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.arch-mt{font-size:14px;font-weight:700;color:#F1F5F9;}
+.arch-ms{font-size:11px;color:#475569;margin-top:3px;}
+.arch-mx{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#94A3B8;font-family:inherit;transition:background .15s;}
+.arch-mx:hover{background:rgba(255,255,255,.14);color:#F1F5F9;}
+.arch-mb{padding:20px 22px 24px;overflow:auto;flex:1;}
+/* ── Diagram canvas ── */
+.dg{position:relative;width:1500px;height:660px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;}
+.dg-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
+/* Boxes */
+.db{position:absolute;border-radius:9px;border:1.5px solid;background:#0C1521;padding:11px 14px 10px;transition:box-shadow .18s,transform .18s;}
+.db:hover{box-shadow:0 6px 22px rgba(0,0,0,.55);transform:translateY(-1px);}
+.dbt{font-size:11px;font-weight:800;color:#F1F5F9;margin-bottom:3px;white-space:nowrap;}
+.dbs{font-size:9px;color:#475569;white-space:nowrap;}
+.dbsub{font-size:10px;font-weight:600;color:#64748B;margin-top:2px;white-space:nowrap;}
+/* Inner boxes (inside UC) */
+.dbi{position:absolute;border-radius:7px;border:1.5px solid;background:#0D1625;padding:8px 10px 7px;transition:box-shadow .15s;}
+.dbi:hover{box-shadow:0 4px 14px rgba(0,0,0,.4);}
+.dbit{font-size:10px;font-weight:700;color:#E2E8F0;margin-bottom:2px;white-space:nowrap;}
+.dbis{font-size:8px;color:#475569;white-space:nowrap;}
+/* Unity Catalog container */
+.duc{position:absolute;border-radius:11px;border:1.5px solid rgba(20,184,166,.4);background:rgba(20,184,166,.03);}
+.duc-lbl{position:absolute;font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(20,184,166,.6);text-transform:uppercase;}
+/* Color themes */
+.c-amber{border-color:rgba(245,158,11,.55);}
+.c-blue{border-color:rgba(59,130,246,.55);}
+.c-cyan{border-color:rgba(6,182,212,.55);}
+.c-green{border-color:rgba(34,197,94,.55);}
+.c-teal{border-color:rgba(20,184,166,.55);}
+.c-purple{border-color:rgba(139,92,246,.55);}
+.c-red{border-color:rgba(255,54,33,.6);}
+.c-slate{border-color:rgba(100,116,139,.45);}
+.m-vol{border-color:rgba(100,116,139,.45);}
+.m-bz{border-color:rgba(245,158,11,.45);}
+.m-sv{border-color:rgba(59,130,246,.45);}
+.m-gd{border-color:rgba(34,197,94,.45);}
+/* Animated dots */
+@keyframes fop2{0%{opacity:0}8%{opacity:1}92%{opacity:1}100%{opacity:0}}
+.fd{animation:fop2 linear infinite;}
+/* UC annotation bullets */
+.duc-bullets{position:absolute;display:flex;flex-direction:column;gap:4px;}
+.duc-bul{font-size:9px;color:#334155;font-weight:600;letter-spacing:.02em;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;}
+.duc-bul::before{content:'·';margin-right:5px;color:#14B8A6;}
 </style>
 </head>
 <body>
 
+<!-- ── Header ──────────────────────────────────────────────────── -->
 <header>
-  <div>
-    <div class="logo">HIRE RIGHT</div>
-    <div class="logo-sub">J&J HRD 2030 · AI-Powered Hiring</div>
+  <div class="brand">
+    <div class="brand-logo">HR</div>
+    <div>
+      <div class="brand-name">Hire Right</div>
+      <div class="brand-sub">Jackson &amp; Jackson · AI-Powered Hiring<span class="brand-pill">Powered by Databricks Data &amp; AI</span></div>
+    </div>
   </div>
-  <div class="header-badge">Databricks AI Agent</div>
+  <div class="h-spacer"></div>
+  <div class="h-actions">
+    <a class="h-btn dbrks-link" href="https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com/one" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Databricks One
+    </a>
+    <button class="h-btn genie-btn" onclick="openPanel('genie')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Ask Genie
+    </button>
+    <button class="h-arch-sm" onclick="openArch()" title="Data Flow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Data Flow
+    </button>
+  </div>
 </header>
 
-<div class="layout">
+<!-- ── Main Content ─────────────────────────────────────────────── -->
+<div id="main-content">
 
-  <!-- Sidebar: Candidate List -->
-  <aside class="sidebar">
-    <div class="sidebar-title">Candidates</div>
-    <div class="candidate-list" id="candidate-list">
-      <!-- populated by JS -->
+  <!-- Main Tab Nav -->
+  <div class="main-tabs">
+    <button id="main-tab-candidates" class="main-tab active" onclick="switchMainTab('candidates')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Candidates
+    </button>
+    <button id="main-tab-jobs" class="main-tab" onclick="switchMainTab('jobs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      Job Openings
+    </button>
+  </div>
+
+  <!-- Grid View -->
+  <div id="view-grid">
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-label">Total Candidates</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub">Across 4 open roles</div></div>
+      <div class="stat-card blue"><div class="stat-label">Active Pipeline</div><div class="stat-value" id="stat-active">—</div><div class="stat-sub">In evaluation</div></div>
+      <div class="stat-card green"><div class="stat-label">DS Recommended</div><div class="stat-value" id="stat-rec">—</div><div class="stat-sub">Score ≥ 80</div></div>
+      <div class="stat-card amber"><div class="stat-label">Open Positions</div><div class="stat-value">4</div><div class="stat-sub">JR001 – JR004</div></div>
     </div>
-    <button class="new-chat-btn" onclick="newChat()">+ New Conversation</button>
-  </aside>
-
-  <!-- Chat Area -->
-  <section class="chat-area">
-    <div class="chat-messages" id="chat-messages">
-      <!-- Welcome screen -->
-      <div class="welcome" id="welcome-screen">
-        <h2>Hire Right Agent</h2>
-        <p>Ask me anything about the Director of HR candidates — their background, ML predictions, comparisons, or email a report to your team.</p>
-        <div class="suggestions">
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Who are the top 3 candidates by total score?</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Summarize Sarah Chen's background and predict her hiring score</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Compare David Kim and Amanda Rodriguez</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Email the hiring shortlist to robert.leach@databricks.com</button>
-        </div>
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-lbl">Role</span>
+        <button class="pill active" data-filter-role="all" onclick="setRoleFilter('all',this)">All</button>
+        <button class="pill" data-filter-role="JR001" onclick="setRoleFilter('JR001',this)">JR001 · Dir. HR</button>
+        <button class="pill" data-filter-role="JR002" onclick="setRoleFilter('JR002',this)">JR002 · VP Talent</button>
+        <button class="pill" data-filter-role="JR003" onclick="setRoleFilter('JR003',this)">JR003 · Dir. C&amp;B</button>
+        <button class="pill" data-filter-role="JR004" onclick="setRoleFilter('JR004',this)">JR004 · CPO</button>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <span class="filter-lbl">Status</span>
+        <button class="pill active" data-filter-stage="all" onclick="setStageFilter('all',this)">All</button>
+        <button class="pill" data-filter-stage="pipeline" onclick="setStageFilter('pipeline',this)"><span class="pill-dot" style="background:var(--blue)"></span>Active Pipeline</button>
+        <button class="pill" data-filter-stage="hired" onclick="setStageFilter('hired',this)"><span class="pill-dot" style="background:var(--green)"></span>Hired</button>
+        <button class="pill" data-filter-stage="rejected" onclick="setStageFilter('rejected',this)"><span class="pill-dot" style="background:var(--accent)"></span>Rejected</button>
       </div>
     </div>
-
-    <!-- Input -->
-    <div class="chat-input-area">
-      <div class="input-row">
-        <textarea id="user-input" placeholder="Ask about a candidate, request an analysis, or send a report..." rows="1"></textarea>
-        <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-      <div class="input-hint">Hire Right is powered by Databricks AI · Agent + Genie + ML Model</div>
+    <div class="cands-scroll">
+      <div class="cands-grid" id="cands-grid"></div>
     </div>
-  </section>
+  </div>
+
+  <!-- Detail View -->
+  <div id="view-detail">
+    <div class="det-scroll">
+      <button class="det-back" onclick="showGrid()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Dashboard
+      </button>
+      <div id="det-content"></div>
+    </div>
+  </div>
+
+  <!-- Jobs View -->
+  <div id="view-jobs">
+    <div class="jobs-scroll">
+      <div class="jobs-grid" id="jobs-grid">
+        <p style="color:var(--sub);font-size:13px">Loading job openings…</p>
+      </div>
+    </div>
+  </div>
 
 </div>
 
-<script>
-  let conversationHistory = [];
-  let isLoading = false;
+<!-- ── Job Description Modal ─────────────────────────────────────── -->
+<div id="jd-overlay" class="jd-overlay" onclick="if(event.target===this)closeJD()">
+  <div class="jd-modal">
+    <div class="jd-modal-head">
+      <div>
+        <div class="jd-modal-title" id="jd-modal-title"></div>
+        <div class="jd-modal-sub" id="jd-modal-sub"></div>
+      </div>
+      <button class="jd-modal-close" onclick="closeJD()">✕</button>
+    </div>
+    <div class="jd-modal-body" id="jd-modal-body"></div>
+  </div>
+</div>
 
-  // ── Load candidates sidebar ──────────────────────────────────────────────
-  async function loadCandidates() {
-    try {
-      const res = await fetch('/api/candidates');
-      const data = await res.json();
-      const list = document.getElementById('candidate-list');
-      list.innerHTML = '';
-      data.candidates.forEach(c => {
-        const div = document.createElement('div');
-        div.className = `candidate-card ${c.hired ? 'hired' : 'not-hired'}`;
-        div.innerHTML = `
-          <div class="cc-name">${c.name}</div>
-          <div class="cc-title">${c.title}</div>
-          <div class="cc-score ${c.total_score >= 80 ? 'high' : 'low'}">Score: ${c.total_score}/100${c.hired ? ' · Hired ✓' : ''}</div>`;
-        div.onclick = () => submitSuggestion(`Tell me about ${c.name} (${c.id}) and predict their hiring score`);
-        list.appendChild(div);
-      });
-    } catch (e) {
-      console.error('Could not load candidates:', e);
-    }
-  }
+<!-- ── Resume Modal ─────────────────────────────────────────────── -->
+<div id="resume-overlay" class="resume-overlay" onclick="if(event.target===this)closeResume()">
+  <div class="resume-modal">
+    <div class="resume-modal-head">
+      <div>
+        <div class="resume-modal-title" id="resume-modal-title">Resume</div>
+        <div class="resume-modal-sub" id="resume-modal-sub"></div>
+      </div>
+      <button class="resume-modal-close" onclick="closeResume()">✕</button>
+    </div>
+    <div class="resume-modal-body">
+      <iframe id="resume-iframe" src="" title="Resume"></iframe>
+    </div>
+  </div>
+</div>
 
-  // ── Chat ─────────────────────────────────────────────────────────────────
-  async function sendMessage(text) {
-    const input = document.getElementById('user-input');
-    const message = text || input.value.trim();
-    if (!message || isLoading) return;
+<!-- ── Architecture Modal ────────────────────────────────────────── -->
+<div id="arch-ov" class="arch-ov" onclick="if(event.target===this)closeArch()">
+  <div class="arch-m">
+    <div class="arch-mh">
+      <div>
+        <div class="arch-mt">Data Flow</div>
+        <div class="arch-ms">Jackson &amp; Jackson HR Digital · End-to-end Data &amp; AI Architecture</div>
+      </div>
+      <button class="arch-mx" onclick="closeArch()">✕</button>
+    </div>
+    <div class="arch-mb">
+      <div class="dg">
 
-    // Hide welcome screen
-    const welcome = document.getElementById('welcome-screen');
-    if (welcome) welcome.remove();
+        <!-- ═══════════════════════════════════════════════
+             SVG: arrows + animated dots (slow, graceful)
+        ═══════════════════════════════════════════════ -->
+        <svg class="dg-svg" viewBox="0 0 1500 660" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="dma" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(245,158,11,.75)"/></marker>
+            <marker id="dmb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(59,130,246,.75)"/></marker>
+            <marker id="dmc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(6,182,212,.75)"/></marker>
+            <marker id="dmt" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(20,184,166,.75)"/></marker>
+            <marker id="dmr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(255,54,33,.8)"/></marker>
+            <marker id="dmp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(139,92,246,.75)"/></marker>
+            <marker id="dms" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(100,116,139,.65)"/></marker>
+            <marker id="dmg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(34,197,94,.75)"/></marker>
 
-    input.value = '';
-    input.style.height = 'auto';
-    isLoading = true;
-    document.getElementById('send-btn').disabled = true;
+            <!-- Named motion paths — all orthogonal elbows -->
+            <!-- q1: Load Resumes → Volumes -->
+            <path id="q1" d="M 130 192 H 152 V 332 H 175"/>
+            <!-- qV: Volumes → Vector Search -->
+            <path id="qV" d="M 225 318 V 247"/>
+            <!-- q2: Load Candidates → Volumes -->
+            <path id="q2" d="M 130 440 H 152 V 335 H 175"/>
+            <!-- q3: VS → Tools -->
+            <path id="q3" d="M 240 210 H 320 V 88"/>
+            <!-- q4: Gold → Genie Space -->
+            <path id="q4" d="M 575 337 H 618 V 452 H 660"/>
+            <!-- q5: AI Gateway → Agent -->
+            <path id="q5" d="M 1038 64 H 1000 V 195"/>
+            <!-- q6: Agent → Inference Tables (payload) -->
+            <path id="q6" d="M 825 270 V 317"/>
+            <!-- q8: Agent → MLflow (traces) -->
+            <path id="q8" d="M 876 195 V 72"/>
+            <!-- qHRD: HR Manager → Databricks One -->
+            <path id="qHRD" d="M 1273 268 V 421 H 1170"/>
+            <!-- q9: Agent → App -->
+            <path id="q9" d="M 1028 236 H 1062"/>
+            <!-- q11: Genie → App -->
+            <path id="q11" d="M 810 452 H 1045 V 228 H 1062"/>
+            <!-- q12: App → Databricks One -->
+            <path id="q12" d="M 1116 268 V 396"/>
+            <!-- q13: MR → Tools -->
+            <path id="q13" d="M 555 210 V 22 H 510"/>
+            <!-- qB: Gold → Model Registry (train) -->
+            <path id="qB" d="M 530 338 V 270"/>
+            <!-- qE: Tools → Emailer -->
+            <path id="qE" d="M 320 42 H 305"/>
+            <!-- qHR: App → HR Manager -->
+            <path id="qHR" d="M 1170 228 H 1205"/>
+            <!-- qGT: Genie → Tools -->
+            <path id="qGT" d="M 735 432 H 415 V 88"/>
+            <!-- qUCF: UC Functions → Tools -->
+            <path id="qUCF" d="M 415 210 V 88"/>
+            <!-- qTA: Agent → Tools (tool calls) -->
+            <path id="qTA" d="M 780 195 V 88 H 510"/>
+            <!-- qAR: Agent → Agents/MCP Registry -->
+            <path id="qAR" d="M 1028 228 V 570 H 467 V 491"/>
+          </defs>
 
-    addMessage('user', message);
-    const typingEl = addTyping();
+          <!-- Visible lines — elbow style -->
+          <!-- q1: Load Resumes → Volumes -->
+          <path d="M 130 192 H 152 V 332 H 175" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- q2: Load Candidates → Volumes -->
+          <path d="M 130 440 H 152 V 335 H 175" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- qV: Volumes → Vector Search -->
+          <path d="M 225 318 V 247" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
+          <!-- q3: Vector Search → Tools -->
+          <path d="M 240 210 H 320 V 88" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
+          <!-- q4: Gold → Genie Space -->
+          <path d="M 575 337 H 618 V 452 H 660" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- q5: AI Gateway → Agent -->
+          <path d="M 1038 64 H 1000 V 195" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- q6: Agent → Inference Tables (payload) -->
+          <path d="M 825 270 V 317" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- q8: Agent → MLflow (traces) -->
+          <path d="M 876 195 V 72" fill="none" stroke="rgba(59,130,246,.45)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#dmb)"/>
+          <!-- qHRD: HR Manager → Databricks One -->
+          <path d="M 1273 268 V 421 H 1170" fill="none" stroke="rgba(245,158,11,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- q9: Agent → App -->
+          <path d="M 1028 236 H 1062" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <!-- q11: Genie → App -->
+          <path d="M 810 452 H 1045 V 228 H 1062" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
+          <!-- q12: App → Databricks One -->
+          <path d="M 1116 268 V 396" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
+          <!-- q13: Model Registry → Tools -->
+          <path d="M 555 210 V 22 H 510" fill="none" stroke="rgba(139,92,246,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- qB: Gold → Model Registry (train) -->
+          <path d="M 530 338 V 270" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
+          <!-- qE: Tools → Emailer -->
+          <path d="M 320 42 H 305" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- qHR: App → HR Manager -->
+          <path d="M 1170 228 H 1205" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
+          <!-- qGT: Genie → Tools -->
+          <path d="M 735 432 H 415 V 88" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- qUCF: UC Functions → Tools -->
+          <path d="M 415 210 V 88" fill="none" stroke="rgba(20,184,166,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
+          <!-- qTA: Agent → Tools (tool calls) -->
+          <path d="M 780 195 V 88 H 510" fill="none" stroke="rgba(255,54,33,.7)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <!-- qAR: Agent → Agents/MCP Registry -->
+          <path d="M 1028 228 V 570 H 467 V 491" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
 
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          message,
-          conversation_history: conversationHistory
-        })
-      });
+          <!-- Labels -->
+          <text x="830" y="293" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
+          <text x="882" y="128" fill="rgba(59,130,246,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">traces</text>
+          <text x="537" y="297" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">train</text>
+          <text x="640" y="82" fill="rgba(255,54,33,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">tool calls</text>
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.detail || 'Request failed');
-      }
+          <!-- ── Animated dots ── -->
+          <!-- q1: Load Resumes → VS (6s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q1"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q1"/></animateMotion></circle>
+          <!-- q2: Load Candidates → Volumes (7s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q2"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q2"/></animateMotion></circle>
+          <!-- qV: Volumes → Vector Search (8s) -->
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#qV"/></animateMotion></circle>
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#qV"/></animateMotion></circle>
+          <!-- q3: Vector Search → Tools (9s) -->
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#q3"/></animateMotion></circle>
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#q3"/></animateMotion></circle>
+          <!-- q4: Gold → Genie (8s) -->
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q4"/></animateMotion></circle>
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q4"/></animateMotion></circle>
+          <!-- q5: AI Gateway → Agent (9s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#q5"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#q5"/></animateMotion></circle>
+          <!-- q6: Agent → Inference Tables payload (8s) -->
+          <circle r="3.5" fill="#8B5CF6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q6"/></animateMotion></circle>
+          <circle r="3.5" fill="#8B5CF6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q6"/></animateMotion></circle>
+          <!-- q8: Agent → MLflow traces (12s) -->
+          <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:12s"><animateMotion dur="12s" repeatCount="indefinite"><mpath href="#q8"/></animateMotion></circle>
+          <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:12s;animation-delay:6s"><animateMotion dur="12s" repeatCount="indefinite" begin="6s"><mpath href="#q8"/></animateMotion></circle>
+          <!-- q9: Agent → App (6s) -->
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q9"/></animateMotion></circle>
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q9"/></animateMotion></circle>
+          <!-- q11: Genie → App (7s) -->
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q11"/></animateMotion></circle>
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q11"/></animateMotion></circle>
+          <!-- q12: App → Databricks One (6s) -->
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q12"/></animateMotion></circle>
+          <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q12"/></animateMotion></circle>
+          <!-- q13: Model Registry → Tools (8s) -->
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q13"/></animateMotion></circle>
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q13"/></animateMotion></circle>
+          <!-- qB: Bronze → Model Registry (9s) -->
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#qB"/></animateMotion></circle>
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#qB"/></animateMotion></circle>
+          <!-- qE: Tools → Emailer (4s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:4s"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#qE"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:4s;animation-delay:2s"><animateMotion dur="4s" repeatCount="indefinite" begin="2s"><mpath href="#qE"/></animateMotion></circle>
+          <!-- qHR: App → HR Manager (5s) -->
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qHR"/></animateMotion></circle>
+          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qHR"/></animateMotion></circle>
+          <!-- qHRD: HR Manager → Databricks One (7s) -->
+          <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qHRD"/></animateMotion></circle>
+          <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qHRD"/></animateMotion></circle>
+          <!-- qGT: Genie → Tools (6s) -->
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#qGT"/></animateMotion></circle>
+          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#qGT"/></animateMotion></circle>
+          <!-- qUCF: UC Functions → Tools (7s) -->
+          <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qUCF"/></animateMotion></circle>
+          <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qUCF"/></animateMotion></circle>
+          <!-- qTA: Agent → Tools (5s) -->
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qTA"/></animateMotion></circle>
+          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qTA"/></animateMotion></circle>
+          <!-- qAR: Agent → Agents/MCP Registry (10s) -->
+          <circle r="3" fill="#FF3621" class="fd" style="animation-duration:10s"><animateMotion dur="10s" repeatCount="indefinite"><mpath href="#qAR"/></animateMotion></circle>
+          <circle r="3" fill="#FF3621" class="fd" style="animation-duration:10s;animation-delay:5s"><animateMotion dur="10s" repeatCount="indefinite" begin="5s"><mpath href="#qAR"/></animateMotion></circle>
+        </svg>
 
-      const data = await res.json();
-      conversationHistory = data.conversation_history;
+        <!-- ═══════════════════════════════════════════════
+             HTML Boxes (scaled to 1100×590 canvas)
+        ═══════════════════════════════════════════════ -->
 
-      typingEl.remove();
-      addMessage('assistant', data.reply);
-    } catch (e) {
-      typingEl.remove();
-      addMessage('assistant', `⚠️ Error: ${e.message}`);
-    } finally {
-      isLoading = false;
-      document.getElementById('send-btn').disabled = false;
-    }
-  }
-
-  function submitSuggestion(text) {
-    sendMessage(text);
-  }
-
-  function addMessage(role, content) {
-    const container = document.getElementById('chat-messages');
-    const wrapper = document.createElement('div');
-    wrapper.className = `message ${role}`;
-
-    const avatar = document.createElement('div');
-    avatar.className = `avatar ${role}`;
-    avatar.textContent = role === 'user' ? 'U' : 'HR';
-
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-
-    if (role === 'assistant') {
-      bubble.innerHTML = DOMPurify.sanitize(marked.parse(content));
-    } else {
-      bubble.textContent = content;
-    }
-
-    wrapper.appendChild(avatar);
-    wrapper.appendChild(bubble);
-    container.appendChild(wrapper);
-    container.scrollTop = container.scrollHeight;
-    return wrapper;
-  }
-
-  function addTyping() {
-    const container = document.getElementById('chat-messages');
-    const wrapper = document.createElement('div');
-    wrapper.className = 'message assistant';
-    wrapper.innerHTML = `<div class="avatar assistant">HR</div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-    container.appendChild(wrapper);
-    container.scrollTop = container.scrollHeight;
-    return wrapper;
-  }
-
-  function newChat() {
-    conversationHistory = [];
-    const container = document.getElementById('chat-messages');
-    container.innerHTML = `
-      <div class="welcome" id="welcome-screen">
-        <h2>Hire Right Agent</h2>
-        <p>Ask me anything about the Director of HR candidates — their background, ML predictions, comparisons, or email a report to your team.</p>
-        <div class="suggestions">
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Who are the top 3 candidates by total score?</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Summarize Sarah Chen's background and predict her hiring score</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Compare David Kim and Amanda Rodriguez</button>
-          <button class="suggestion" onclick="submitSuggestion(this.textContent)">Email the hiring shortlist to robert.leach@databricks.com</button>
+        <!-- MLflow -->
+        <div class="db c-blue" style="left:800px;top:22px;width:152px;">
+          <div class="dbt">MLflow 3.0</div>
+          <div class="dbs">Tracing · Experiments</div>
         </div>
-      </div>`;
-  }
 
-  // ── Auto-resize textarea ─────────────────────────────────────────────────
-  document.getElementById('user-input').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        <!-- Inference Tables -->
+        <div class="db c-purple" style="left:660px;top:285px;width:165px;">
+          <div class="dbt">Inference Tables</div>
+          <div class="dbs">Payload logging · drift</div>
+        </div>
+
+        <!-- AI Gateway — centered above Hire Right Agent -->
+        <div class="db c-amber" style="left:962px;top:22px;width:152px;">
+          <div class="dbt">AI Gateway</div>
+          <div class="dbsub">databricks-gpt-5-4</div>
+        </div>
+
+        <!-- Load Resumes -->
+        <div class="db c-amber" style="left:10px;top:172px;width:120px;">
+          <div class="dbt">Load Resumes</div>
+          <div class="dbs">PDF · UC Volumes</div>
+        </div>
+
+        <!-- Load Candidates -->
+        <div class="db c-amber" style="left:10px;top:420px;width:120px;">
+          <div class="dbt">Load Candidates</div>
+          <div class="dbs">CSV · candidates</div>
+        </div>
+
+        <!-- Unity Catalog container -->
+        <div class="duc" style="left:150px;top:195px;width:490px;height:345px;"></div>
+        <div class="duc-lbl" style="left:350px;top:548px;">Unity Catalog</div>
+
+        <!-- Inner boxes: top row -->
+        <div class="dbi c-cyan" style="left:175px;top:210px;width:130px;">
+          <div class="dbit">Vector Search</div>
+          <div class="dbis">Resume index · RAG</div>
+        </div>
+        <div class="dbi c-purple" style="left:495px;top:210px;width:120px;">
+          <div class="dbit">Model Registry</div>
+          <div class="dbis">XGBoost · sklearn</div>
+        </div>
+
+        <!-- Inner boxes: medallion row -->
+        <div class="dbi m-vol" style="left:175px;top:318px;width:100px;">
+          <div class="dbit">Volumes</div>
+          <div class="dbis">Raw files</div>
+        </div>
+        <div class="dbi m-bz" style="left:285px;top:318px;width:90px;">
+          <div class="dbit">Bronze</div>
+          <div class="dbis">Raw</div>
+        </div>
+        <div class="dbi m-sv" style="left:385px;top:318px;width:90px;">
+          <div class="dbit">Silver</div>
+          <div class="dbis">Clean</div>
+        </div>
+        <div class="dbi m-gd" style="left:485px;top:318px;width:90px;">
+          <div class="dbit">Gold</div>
+          <div class="dbis">Analytics</div>
+        </div>
+
+        <!-- UC Functions (inside UC) -->
+        <div class="dbi c-teal" style="left:315px;top:210px;width:165px;">
+          <div class="dbit">UC Functions</div>
+          <div class="dbis">Scoring · Analytics tools</div>
+        </div>
+
+        <!-- Hire Right Agent -->
+        <div class="db c-red" style="left:780px;top:195px;width:248px;padding:15px 18px 14px;">
+          <div class="dbt" style="font-size:13px;">Hire Right Agent</div>
+          <div class="dbs" style="margin-top:5px;">ResponsesAgent</div>
+          <div class="dbs">MLflow 3.0</div>
+        </div>
+
+        <!-- Tools -->
+        <div class="db c-teal" style="left:320px;top:22px;width:190px;padding:11px 14px;">
+          <div class="dbt" style="font-size:12px;">Tools</div>
+          <div class="dbs" style="margin-top:3px;">Vector Search · Model Registry</div>
+          <div class="dbs">Genie Space · UC Functions</div>
+        </div>
+
+        <!-- Emailer -->
+        <div class="db c-amber" style="left:165px;top:22px;width:140px;">
+          <div class="dbt">Emailer</div>
+          <div class="dbs">Mailgun · API</div>
+        </div>
+
+        <!-- Agents / MCP Registry -->
+        <div class="db c-red" style="left:385px;top:435px;width:165px;">
+          <div class="dbt">Agents / MCP Registry</div>
+          <div class="dbs">Registered agents &amp; MCP</div>
+        </div>
+
+        <!-- Genie Space -->
+        <div class="db c-teal" style="left:660px;top:432px;width:150px;padding:14px 18px;">
+          <div class="dbt" style="font-size:13px;">Genie Space</div>
+          <div class="dbs" style="margin-top:4px;">HR Analytics · NL&#x2192;SQL</div>
+        </div>
+
+        <!-- App -->
+        <div class="db c-slate" style="left:1062px;top:188px;width:108px;padding:15px 14px 14px;">
+          <div class="dbt" style="font-size:13px;">App</div>
+          <div class="dbs" style="margin-top:5px;">Databricks Apps</div>
+          <div class="dbs">FastAPI + Chat UI</div>
+        </div>
+
+        <!-- Databricks One -->
+        <div class="db c-slate" style="left:1062px;top:396px;width:108px;">
+          <div class="dbt">Databricks One</div>
+          <div class="dbs">Analytics portal</div>
+        </div>
+
+        <!-- HR Manager persona -->
+        <div style="position:absolute;left:1205px;top:182px;width:136px;border-radius:9px;border:1.5px solid rgba(245,158,11,.6);background:#0C1521;padding:12px 14px 11px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.45);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(245,158,11,.9)" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:#E2E8F0;line-height:1.25;">HR<br>Manager</div>
+          </div>
+          <div style="font-size:9px;color:#64748B;line-height:1.5;">End User<br>Accesses App</div>
+        </div>
+
+        <!-- Bullets -->
+        <div class="duc-bullets" style="left:150px;top:548px;">
+          <span class="duc-bul">Classify Data</span>
+          <span class="duc-bul">Assess Data Quality</span>
+          <span class="duc-bul">Mask PII</span>
+          <span class="duc-bul">Create Business Definitions</span>
+          <span class="duc-bul">Observability · inference tables</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Overlay ──────────────────────────────────────────────────── -->
+<div id="overlay" class="overlay" onclick="closePanel()"></div>
+
+<!-- ── Slideout Panel ───────────────────────────────────────────── -->
+<div id="slideout" class="slideout">
+  <div class="so-header">
+    <div class="so-tabs">
+      <button id="so-tab-genie" class="so-tab active" onclick="switchPanel('genie')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Genie Analytics
+      </button>
+    </div>
+    <button class="so-close" onclick="closePanel()">✕</button>
+  </div>
+
+  <!-- Agent pane -->
+  <div id="so-pane-agent" class="so-pane">
+    <div class="so-chat-area" id="agent-msgs">
+      <div class="so-welcome" id="agent-welcome">
+        <div class="so-welcome-icon" style="background:var(--primary)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Hire Right Agent</h3>
+        <p>Ask about candidates, run ML predictions, compare applicants, or send a hiring report.</p>
+        <div class="sugg-grid">
+          <button class="sugg" onclick="agentSend(this.textContent)">Who are the top 3 candidates for JR001?</button>
+          <button class="sugg" onclick="agentSend(this.textContent)">Compare David Kim and Amanda Rodriguez</button>
+          <button class="sugg" onclick="agentSend(this.textContent)">What are Priya Sharma's qualifications?</button>
+          <button class="sugg" onclick="agentSend(this.textContent)">Email the JR001 shortlist to robert.leach@databricks.com</button>
+        </div>
+      </div>
+    </div>
+    <div class="so-bar">
+      <div class="so-wrap">
+        <textarea id="agent-inp" class="so-input" placeholder="Ask the Hire Right Agent anything…" rows="1"></textarea>
+        <button id="agent-btn" class="so-submit" onclick="agentSend()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="so-hint">Hire Right Agent · Databricks AI + MLflow</div>
+    </div>
+  </div>
+
+  <!-- Genie pane -->
+  <div id="so-pane-genie" class="so-pane active">
+    <div class="genie-actions">
+      <button class="genie-new-btn" onclick="resetGenie()">+ New Conversation</button>
+    </div>
+    <div class="so-chat-area" id="genie-msgs">
+      <div class="so-welcome" id="genie-welcome">
+        <div class="so-welcome-icon" style="background:var(--blue)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+        <h3>Genie Analytics</h3>
+        <p>Query the HR data warehouse directly for real-time insights on candidates, scores, and hiring trends.</p>
+        <div class="sugg-grid">
+          <button class="sugg" onclick="genieSend(this.textContent)">Average total score for JR001 candidates?</button>
+          <button class="sugg" onclick="genieSend(this.textContent)">Hired vs. rejected by education level</button>
+          <button class="sugg" onclick="genieSend(this.textContent)">Which role has highest avg culture fit?</button>
+          <button class="sugg" onclick="genieSend(this.textContent)">Top 5 candidates across all roles</button>
+        </div>
+      </div>
+    </div>
+    <div class="so-bar">
+      <div class="so-wrap">
+        <textarea id="genie-inp" class="so-input" placeholder="Ask a data question about the hiring pipeline…" rows="1"></textarea>
+        <button id="genie-btn" class="so-submit" onclick="genieSend()" style="background:var(--blue)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="so-hint">Powered by Databricks Genie · J&amp;J HR Analytics Space</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────
+let allCandidates = [], filtered = [];
+let currentCandidate = null;
+let agentHistory = [], agentBusy = false;
+let genieConvId = null, genieBusy = false;
+let recHistory = [], recBusy = false;
+
+// ── Slideout ──────────────────────────────────────────────────
+function openPanel(tab) {
+  document.getElementById('slideout').classList.add('open');
+  document.getElementById('overlay').classList.add('visible');
+  switchPanel(tab);
+}
+function closePanel() {
+  document.getElementById('slideout').classList.remove('open');
+  document.getElementById('overlay').classList.remove('visible');
+}
+function switchPanel(tab) {
+  // Agent tab removed from header — always use genie in the slideout
+  const resolved = tab === 'agent' ? 'genie' : tab;
+  ['genie'].forEach(t => {
+    document.getElementById(`so-tab-${t}`).classList.toggle('active', t === resolved);
+    document.getElementById(`so-pane-${t}`).classList.toggle('active', t === resolved);
   });
-  document.getElementById('user-input').addEventListener('keydown', function(e) {
+  document.getElementById(`so-pane-agent`).classList.remove('active');
+  const inp = document.getElementById('genie-inp');
+  setTimeout(() => inp && inp.focus(), 50);
+}
+
+// ── Candidates ────────────────────────────────────────────────
+let activeRole = 'all', activeStage = 'all';
+
+async function loadCandidates() {
+  try {
+    const r = await fetch('/api/candidates');
+    const d = await r.json();
+    allCandidates = d.candidates;
+    renderStats();
+    applyFilters();
+  } catch(e) {
+    document.getElementById('cands-grid').innerHTML =
+      '<p style="color:var(--sub);padding:20px">Could not load candidates.</p>';
+  }
+}
+
+function renderStats() {
+  document.getElementById('stat-total').textContent  = allCandidates.length;
+  document.getElementById('stat-active').textContent = allCandidates.filter(c => c.hired === null).length;
+  document.getElementById('stat-rec').textContent    = allCandidates.filter(c => c.total_score >= 80).length;
+}
+
+function setRoleFilter(role, btn) {
+  activeRole = role;
+  document.querySelectorAll('[data-filter-role]').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  applyFilters();
+}
+
+const STAGE_CLS = {all:'active', pipeline:'active-blue', hired:'active-green', rejected:'active-red'};
+function setStageFilter(stage, btn) {
+  activeStage = stage;
+  document.querySelectorAll('[data-filter-stage]').forEach(p =>
+    p.classList.remove('active','active-blue','active-green','active-red'));
+  if (btn) btn.classList.add(STAGE_CLS[stage] || 'active');
+  applyFilters();
+}
+
+function applyFilters() {
+  filtered = allCandidates.filter(c => {
+    const roleOk  = activeRole  === 'all' || c.job_id === activeRole;
+    const stageOk = activeStage === 'all'
+      || (activeStage === 'pipeline' && c.hired === null)
+      || (activeStage === 'hired'    && c.hired === true)
+      || (activeStage === 'rejected' && c.hired === false);
+    return roleOk && stageOk;
+  });
+  renderGrid();
+}
+
+// keep old name working (used by nothing now but safe to keep)
+function applyFilter(jobId, btn) { setRoleFilter(jobId, btn); }
+
+// ── Grid ──────────────────────────────────────────────────────
+function renderGrid() {
+  document.getElementById('cands-grid').innerHTML = filtered.map(cardHTML).join('');
+}
+
+const JOB_ABBR = {JR001:'Dir. HR',JR002:'VP Talent',JR003:'Dir. C&B',JR004:'CPO'};
+const JOB_CLS  = {JR001:'bj1',JR002:'bj2',JR003:'bj3',JR004:'bj4'};
+const AV_COLORS = ['#1B3139','#FF3621','#00A972','#3B82F6','#8B5CF6','#F97316',
+                   '#14B8A6','#EC4899','#0EA5E9','#84CC16','#F59E0B','#6366F1',
+                   '#10B981','#F43F5E','#06B6D4','#7C3AED','#EF4444','#22C55E',
+                   '#EAB308','#6366F1'];
+function avColor(id){return AV_COLORS[(parseInt(id.replace('C',''))-1)%AV_COLORS.length];}
+function initials(name){return name.split(' ').map(n=>n[0]).join('');}
+function scoreClass(s){if(s==null)return 's-pen';return s>=80?'s-high':s>=60?'s-mid':'s-low';}
+function scoreColor(s){if(s==null)return 'var(--light)';return s>=80?'var(--green)':s>=60?'var(--amber)':'var(--accent)';}
+function stageCls(stage){
+  const s=(stage||'').toLowerCase();
+  if(s.includes('hired'))return 'b-hired';
+  if(s.includes('reject'))return 'b-rejected';
+  if(s.includes('final'))return 'b-final';
+  if(s.includes('interview'))return 'b-inter';
+  if(s.includes('screen'))return 'b-screen';
+  return 'b-pipe';
+}
+function cardHTML(c) {
+  const sc = c.total_score;
+  return `
+  <div class="c-card" onclick="openCandidate('${c.id}')">
+    <div class="c-top">
+      <div class="c-av" style="background:${avColor(c.id)}">${initials(c.name)}</div>
+      <div class="c-meta">
+        <div class="c-name">${esc(c.name)}<span class="c-id-tag">${c.id}</span></div>
+        <div class="c-sub">${esc(c.title)} · ${esc(c.company)}</div>
+      </div>
+      <div class="c-score-box ${scoreClass(sc)}">
+        <div class="sn">${sc!=null?sc.toFixed(0):'—'}</div>
+        <div class="sl">${sc!=null?'Score':'Pending'}</div>
+      </div>
+    </div>
+    <div class="c-badges">
+      <span class="badge ${JOB_CLS[c.job_id]||'b-pipe'}">${c.job_id} · ${JOB_ABBR[c.job_id]||''}</span>
+      <span class="badge ${stageCls(c.stage)}">${esc(c.stage)}</span>
+    </div>
+    <div class="c-footer">
+      <span class="c-loc">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${esc(c.location)}
+      </span>
+      <button class="view-btn" onclick="event.stopPropagation();openCandidate('${c.id}')">View Profile →</button>
+    </div>
+  </div>`;
+}
+
+// ── Detail ────────────────────────────────────────────────────
+function openCandidate(id) {
+  currentCandidate = allCandidates.find(c => c.id === id);
+  const _c = currentCandidate;
+  // Seed history with candidate context + all known scores so the agent can run ML predictions
+  // without needing a database fetch
+  const _sc = _c.scores || {};
+  const _scoreCtx = [
+    `education_score: ${_sc.education ?? 'pending'}`,
+    `experience_score: ${_sc.experience ?? 'pending'}`,
+    `leadership_score: ${_sc.leadership ?? 'pending'}`,
+    `certification_score: ${_sc.certifications ?? 'pending'}`,
+    `skills_match_score: ${_sc.skills_match ?? 'pending'}`,
+    `industry_relevance_score: ${_sc.industry ?? 'pending'}`,
+    `interview_score: ${_sc.interview ?? 'pending'}`,
+    `culture_fit: ${_sc.culture_fit ?? 'pending'}`,
+  ].join(', ');
+  recHistory = [
+    { role: 'user',      content: `Context: I am viewing the profile of ${_c.name} (${_c.id}), applying for ${_c.job_title} (${_c.job_id}). Stored scores: ${_scoreCtx}. All questions in this conversation are about this specific candidate unless I say otherwise.` },
+    { role: 'assistant', content: `Understood — I'll keep ${_c.name} (${_c.id}) as the context for this conversation. I have their stored scores and will use them when running the ML prediction.` },
+  ];
+  document.getElementById('view-grid').classList.add('hidden');
+  document.getElementById('view-detail').classList.add('active');
+  renderDetail();
+}
+function showGrid() {
+  document.getElementById('view-detail').classList.remove('active');
+  document.getElementById('view-grid').classList.remove('hidden');
+}
+
+const SCORE_META = [
+  {key:'education',     label:'Education',         wt:'10%'},
+  {key:'experience',    label:'Experience',         wt:'20%'},
+  {key:'leadership',    label:'Leadership',         wt:'20%'},
+  {key:'certifications',label:'Certifications',     wt:'10%'},
+  {key:'skills_match',  label:'Skills Match',       wt:'10%'},
+  {key:'industry',      label:'Industry Relevance', wt:'10%'},
+  {key:'interview',     label:'Interview',          wt:'10%'},
+  {key:'culture_fit',   label:'Culture Fit',        wt:'10%'},
+];
+
+function renderDetail() {
+  const c = currentCandidate;
+  const sc = c.total_score;
+  const totalColor = scoreColor(sc);
+
+  const scoreRows = SCORE_META.map(({key,label,wt}) => {
+    const v = c.scores[key];
+    const col = scoreColor(v);
+    const w = v != null ? v : 0;
+    const missing = v == null;
+    return `
+    <div class="s-row">
+      <div class="s-row-lbl">${label}${missing?' <span style="color:var(--amber);font-size:9px">●</span>':''}</div>
+      <div class="s-row-bar"><div class="s-row-fill" style="width:${w}%;background:${col}${missing?';opacity:.3':''}"></div></div>
+      <div class="s-row-num" style="color:${missing?'var(--amber)':col}">${missing?'—':v}</div>
+      <div class="s-row-wt">${wt}</div>
+    </div>`;
+  }).join('');
+
+  const hasMissing = SCORE_META.some(({key}) => c.scores[key] == null);
+  const isHistorical = c.hired !== null;
+
+  document.getElementById('det-content').innerHTML = `
+    <div class="det-header">
+      <div class="det-av" style="background:${avColor(c.id)}">${initials(c.name)}</div>
+      <div class="det-info">
+        <div class="det-name">${esc(c.name)}<span class="c-id-tag">${c.id}</span></div>
+        <div class="det-title">${esc(c.title)} · ${esc(c.company)} · ${esc(c.location)}</div>
+        <div class="det-badges">
+          <span class="badge ${JOB_CLS[c.job_id]||'b-pipe'}">${c.job_id} — ${esc(c.job_title)}</span>
+          <span class="badge ${stageCls(c.stage)}">${esc(c.stage)}</span>
+          <span class="badge b-pipe">${esc(c.education)}</span>
+          <span class="badge b-pipe">${esc(c.certifications)}</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;">
+        <div class="det-score-box">
+          <div class="det-sn" style="color:${totalColor}">${sc!=null?sc.toFixed(1):'—'}</div>
+          <div class="det-sl">Total Score</div>
+        </div>
+        <button class="resume-btn" onclick="showResume('${c.id}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Show Resume
+        </button>
+      </div>
+    </div>
+
+    <div class="det-body">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Score Breakdown</div>
+          <div class="panel-sub">8-factor weighted assessment${hasMissing?' · <span style="color:var(--amber)">● pending scores</span>':''}</div>
+        </div>
+        <div class="panel-body">${scoreRows}</div>
+      </div>
+
+      <div class="panel rec-panel">
+        <div class="rec-panel-head">
+          <div>
+            <div class="panel-title">DS Hire Recommendation</div>
+          </div>
+          <button class="rec-btn" id="rec-btn" onclick="generateRec()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Generate Recommendation
+          </button>
+        </div>
+        <div class="rec-msgs" id="rec-msgs">
+          <div class="rec-empty" id="rec-empty">
+            ${isHistorical
+              ? `${esc(c.name)} is a historical candidate. Click Generate to ask the agent about their data and outcome.`
+              : hasMissing
+                ? `${esc(c.name)} has missing scores (interview &amp; culture fit not yet recorded). Click Generate — the agent will ask you to provide them.`
+                : `Click "Generate Recommendation" to run the ML prediction for ${esc(c.name)}.`
+            }
+          </div>
+        </div>
+        <div class="rec-footer">
+          <input type="text" class="rec-inp" id="rec-inp"
+            placeholder="Provide scores or ask a follow-up about ${esc(c.name)}…"
+            onkeydown="if(event.key==='Enter')sendRec()">
+          <button class="rec-send" id="rec-send" onclick="sendRec()">Send</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Generate Recommendation ───────────────────────────────────
+async function generateRec() {
+  if (recBusy) return;
+  const c = currentCandidate;
+  const btn = document.getElementById('rec-btn');
+  const empty = document.getElementById('rec-empty');
+  if (empty) empty.remove();
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+  recBusy = true;
+
+  const scoreMap = [
+    ['education',      'education_score',          c.scores.education],
+    ['experience',     'experience_score',          c.scores.experience],
+    ['leadership',     'leadership_score',          c.scores.leadership],
+    ['certifications', 'certification_score',       c.scores.certifications],
+    ['skills_match',   'skills_match_score',        c.scores.skills_match],
+    ['industry',       'industry_relevance_score',  c.scores.industry],
+    ['interview',      'interview_score',           c.scores.interview],
+    ['culture_fit',    'culture_fit',               c.scores.culture_fit],
+  ];
+  const available = scoreMap.filter(([,,v]) => v != null);
+  const missing   = scoreMap.filter(([,,v]) => v == null);
+  const scoreStr  = available.map(([,api,v]) => `${api}=${v}`).join(', ');
+  const prompt = `Run the ML hire prediction for ${c.name} (${c.id}) applying for ${c.job_title} (${c.job_id}). ` +
+    `Scores on file: ${scoreStr || 'none'}. ` +
+    `If any of the 8 scores are missing, tell me which ones you need. Otherwise run the prediction now and provide: ` +
+    `(1) the DS hire recommendation, and (2) a very concise candidate summary using the search_resumes tool to retrieve relevant resume context for ${c.name} (${c.id}).`;
+
+  addRecMsg('user', `Generate DS Recommendation for ${c.name} (${c.id})`);
+  const tp = addRecTyping();
+
+  try {
+    const r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: prompt, conversation_history: recHistory})
+    });
+    const d = await r.json();
+    recHistory = d.conversation_history;
+    tp.remove();
+    addRecMsg('assistant', d.reply);
+  } catch(e) {
+    tp.remove();
+    addRecMsg('assistant', `⚠️ Error: ${e.message}`);
+  } finally {
+    recBusy = false;
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Generate Recommendation`;
+  }
+}
+
+async function sendRec() {
+  const inp = document.getElementById('rec-inp');
+  const msg = inp.value.trim();
+  if (!msg || recBusy) return;
+  inp.value = '';
+  recBusy = true;
+  document.getElementById('rec-send').disabled = true;
+  addRecMsg('user', msg);
+  const tp = addRecTyping();
+  try {
+    const r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: msg, conversation_history: recHistory})
+    });
+    const d = await r.json();
+    recHistory = d.conversation_history;
+    tp.remove();
+    addRecMsg('assistant', d.reply);
+  } catch(e) {
+    tp.remove();
+    addRecMsg('assistant', '⚠️ Error contacting agent.');
+  } finally {
+    recBusy = false;
+    document.getElementById('rec-send').disabled = false;
+  }
+}
+
+function addRecMsg(role, content) {
+  const box = document.getElementById('rec-msgs');
+  const d = document.createElement('div');
+  d.className = `mm ${role}`;
+  const safe = role === 'user' ? esc(content) : DOMPurify.sanitize(marked.parse(content||''));
+  d.innerHTML = `<div class="mm-bub">${safe}</div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+function addRecTyping() {
+  const box = document.getElementById('rec-msgs');
+  const d = document.createElement('div');
+  d.className = 'mm assistant';
+  d.innerHTML = `<div class="mm-bub"><div class="dots"><span></span><span></span><span></span></div></div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+
+// ── Agent Chat ────────────────────────────────────────────────
+async function agentSend(text) {
+  const inp = document.getElementById('agent-inp');
+  const msg = text || inp.value.trim();
+  if (!msg || agentBusy) return;
+  const w = document.getElementById('agent-welcome');
+  if (w) w.remove();
+  if (!text) inp.value = '';
+  inp.style.height = 'auto';
+  agentBusy = true;
+  document.getElementById('agent-btn').disabled = true;
+  addMsg('agent-msgs', 'user', msg);
+  const tp = addTyping('agent-msgs', 'agent');
+  try {
+    const r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: msg, conversation_history: agentHistory})
+    });
+    const d = await r.json();
+    agentHistory = d.conversation_history;
+    tp.remove();
+    addAgentMsg(d.reply);
+  } catch(e) {
+    tp.remove();
+    addAgentMsg(`⚠️ Error: ${e.message}`);
+  } finally {
+    agentBusy = false;
+    document.getElementById('agent-btn').disabled = false;
+  }
+}
+
+// ── Agent suggested questions ─────────────────────────────────
+const AGENT_SUGGESTIONS = [
+  'Who are the top 3 candidates for JR001?',
+  'Compare David Kim and Priya Sharma',
+  'Run an ML prediction for Elena Vasquez',
+  'Email the JR001 shortlist to robert.leach@databricks.com',
+];
+
+function addAgentMsg(content) {
+  const box = document.getElementById('agent-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg assistant';
+  const safe = DOMPurify.sanitize(marked.parse(content || ''));
+  const chips = AGENT_SUGGESTIONS.map(q =>
+    `<button class="genie-sugg" style="border-color:rgba(220,38,38,.2);color:var(--accent);background:rgba(220,38,38,.05);" onclick="agentSend(this.textContent)">${esc(q)}</button>`
+  ).join('');
+  d.innerHTML = `<div class="msg-av">AI</div><div class="msg-bub">${safe}<div class="genie-sugg-row" style="border-top-color:rgba(220,38,38,.15);">${chips}</div></div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+// ── Genie Chat ────────────────────────────────────────────────
+function addGenieMsg(answer, sql, suggestions) {
+  const box = document.getElementById('genie-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg genie';
+  const safe = DOMPurify.sanitize(marked.parse(answer || ''));
+  let sqlHtml = '';
+  if (sql) {
+    const id = 'sql-' + Date.now();
+    sqlHtml = `<button class="sql-toggle" onclick="
+      var b=document.getElementById('${id}');
+      var open=b.classList.toggle('open');
+      this.innerHTML=open?'▾ Hide SQL':'▸ Show SQL';
+    ">▸ Show SQL</button><pre class="sql-block" id="${id}">${esc(sql)}</pre>`;
+  }
+  let suggHtml = '';
+  if (suggestions && suggestions.length) {
+    const chips = suggestions.map(q =>
+      `<button class="genie-sugg" onclick="genieSend(this.textContent)">${esc(q)}</button>`
+    ).join('');
+    suggHtml = `<div class="genie-sugg-row">${chips}</div>`;
+  }
+  d.innerHTML = `<div class="msg-av">G</div><div class="msg-bub">${safe}${sqlHtml}${suggHtml}</div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+async function genieSend(text) {
+  const inp = document.getElementById('genie-inp');
+  const msg = text || inp.value.trim();
+  if (!msg || genieBusy) return;
+  const w = document.getElementById('genie-welcome');
+  if (w) w.remove();
+  if (!text) inp.value = '';
+  inp.style.height = 'auto';
+  genieBusy = true;
+  document.getElementById('genie-btn').disabled = true;
+  addMsg('genie-msgs', 'user', msg);
+  const tp = addTyping('genie-msgs', 'genie');
+  try {
+    const r = await fetch('/api/genie', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({question: msg, conversation_id: genieConvId})
+    });
+    const d = await r.json();
+    genieConvId = d.conversation_id || genieConvId;
+    tp.remove();
+    addGenieMsg(d.answer, d.sql, d.suggested_questions);
+  } catch(e) {
+    tp.remove();
+    addMsg('genie-msgs', 'genie', `⚠️ Error: ${e.message}`);
+  } finally {
+    genieBusy = false;
+    document.getElementById('genie-btn').disabled = false;
+  }
+}
+
+function resetGenie() {
+  genieConvId = null;
+  const box = document.getElementById('genie-msgs');
+  box.innerHTML = '';
+  const welcome = document.createElement('div');
+  welcome.id = 'genie-welcome';
+  welcome.className = 'so-welcome';
+  welcome.innerHTML = `
+    <div class="so-welcome-icon" style="background:var(--blue)">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+    </div>
+    <h3>New Conversation</h3>
+    <p>What would you like to explore in the HR data?</p>
+    <div class="sugg-grid">
+      <button class="sugg" onclick="genieSend(this.textContent)">What is the average total score for JR001 candidates?</button>
+      <button class="sugg" onclick="genieSend(this.textContent)">What is the hire rate by job role?</button>
+      <button class="sugg" onclick="genieSend(this.textContent)">Who are the top 5 candidates by total score?</button>
+      <button class="sugg" onclick="genieSend(this.textContent)">Which certifications are most common among hired candidates?</button>
+    </div>`;
+  box.appendChild(welcome);
+}
+
+// ── Message Helpers ───────────────────────────────────────────
+function addMsg(containerId, role, content) {
+  const box = document.getElementById(containerId);
+  const d = document.createElement('div');
+  d.className = `msg ${role === 'agent' ? 'assistant' : role}`;
+  const lbl = role === 'user' ? 'U' : role === 'genie' ? 'G' : 'AI';
+  const safe = role === 'user' ? esc(content) : DOMPurify.sanitize(marked.parse(content||''));
+  d.innerHTML = `<div class="msg-av">${lbl}</div><div class="msg-bub">${safe}</div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+function addTyping(containerId, role) {
+  const box = document.getElementById(containerId);
+  const d = document.createElement('div');
+  const cls = role === 'genie' ? 'genie genie-typing' : 'assistant';
+  d.className = `msg ${cls}`;
+  const lbl = role === 'genie' ? 'G' : 'AI';
+  d.innerHTML = `<div class="msg-av">${lbl}</div><div class="msg-bub"><div class="dots"><span></span><span></span><span></span></div></div>`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Auto-resize textareas ─────────────────────────────────────
+['agent-inp','genie-inp'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function(){
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+  });
+  el.addEventListener('keydown', function(e){
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      if (id === 'agent-inp') agentSend();
+      else genieSend();
     }
   });
+});
 
-  // ── Init ──────────────────────────────────────────────────────────────────
-  loadCandidates();
+// Escape key closes slideout
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// ── Resume Modal ──────────────────────────────────────────────
+function showResume(candidateId) {
+  const candidateName = (allCandidates.find(c => c.id === candidateId) || {}).name || candidateId;
+  document.getElementById('resume-modal-title').textContent = `${candidateName} — Resume`;
+  document.getElementById('resume-modal-sub').textContent   = candidateId;
+  document.getElementById('resume-iframe').src = `/api/resume-pdf/${encodeURIComponent(candidateId)}`;
+  document.getElementById('resume-overlay').classList.add('open');
+  document.addEventListener('keydown', _resumeEsc);
+}
+function closeResume() {
+  document.getElementById('resume-iframe').src = '';
+  document.getElementById('resume-overlay').classList.remove('open');
+  document.removeEventListener('keydown', _resumeEsc);
+}
+function _resumeEsc(e) { if (e.key === 'Escape') closeResume(); }
+
+// ── Main Tab Switching ────────────────────────────────────────
+function switchMainTab(tab) {
+  const isCandidates = tab === 'candidates';
+  document.getElementById('main-tab-candidates').classList.toggle('active', isCandidates);
+  document.getElementById('main-tab-jobs').classList.toggle('active', !isCandidates);
+  // hide detail view when switching tabs
+  document.getElementById('view-detail').classList.remove('active');
+  document.getElementById('view-grid').classList.toggle('hidden', !isCandidates);
+  document.getElementById('view-jobs').classList.toggle('active', !isCandidates);
+  if (!isCandidates && !jobsLoaded) loadJobs();
+}
+
+// ── Jobs ──────────────────────────────────────────────────────
+let allJobs = [], jobsLoaded = false;
+
+const JOB_COLORS = {JR001:'#3B82F6',JR002:'#8B5CF6',JR003:'#14B8A6',JR004:'#F97316'};
+const JOB_BG     = {JR001:'rgba(59,130,246,.08)',JR002:'rgba(139,92,246,.08)',JR003:'rgba(20,184,166,.08)',JR004:'rgba(249,115,22,.08)'};
+
+async function loadJobs() {
+  try {
+    const r = await fetch('/api/jobs');
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || `HTTP ${r.status}`);
+    if (!Array.isArray(d.jobs)) throw new Error('Unexpected response from /api/jobs');
+    allJobs = d.jobs;
+    jobsLoaded = true;
+    renderJobs();
+  } catch(e) {
+    document.getElementById('jobs-grid').innerHTML =
+      `<p style="color:var(--sub);padding:20px">Could not load job openings: ${esc(e.message)}</p>`;
+  }
+}
+
+function fmtSalary(min, max) {
+  const fmt = n => n >= 1000 ? `$${Math.round(n/1000)}K` : `$${n}`;
+  return `${fmt(+min)} – ${fmt(+max)}`;
+}
+
+function renderJobs() {
+  const candidateCount = id => allCandidates.filter(c => c.job_id === id).length;
+  const pipelineCount  = id => allCandidates.filter(c => c.job_id === id && c.hired === null).length;
+
+  document.getElementById('jobs-grid').innerHTML = allJobs.map(j => {
+    const color = JOB_COLORS[j.job_id] || 'var(--sub)';
+    const bg    = JOB_BG[j.job_id]    || 'var(--bg)';
+    const skills = (j.required_skills || '').split(',').slice(0,4);
+    const total  = candidateCount(j.job_id);
+    const active = pipelineCount(j.job_id);
+    return `
+    <div class="job-card">
+      <div class="job-card-top">
+        <div class="job-icon" style="background:${bg}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <div class="job-head">
+          <div class="job-id-tag" style="color:${color};border-color:${color}20;background:${bg}">${j.job_id}</div>
+          <div class="job-title">${esc(j.title)}</div>
+          <div class="job-meta">
+            <span>${esc(j.department)}</span>
+            <span class="job-meta-sep">·</span>
+            <span>${esc(j.location)}</span>
+            <span class="job-meta-sep">·</span>
+            <span>Reports to ${esc(j.reporting_to)}</span>
+          </div>
+        </div>
+        <div class="job-salary">${fmtSalary(j.salary_min, j.salary_max)}</div>
+      </div>
+      <div class="job-divider"></div>
+      <div class="job-tags">
+        ${skills.map(s => `<span class="job-tag">${esc(s.trim())}</span>`).join('')}
+        ${j.preferred_certifications ? `<span class="job-tag" style="color:${color};border-color:${color}30">${esc(j.preferred_certifications)}</span>` : ''}
+      </div>
+      <div class="job-footer">
+        <div class="job-stat" style="cursor:pointer" onclick="drillToCandidates('${j.job_id}','all')" title="View all candidates for this role">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span style="text-decoration:underline dotted">${total} applicant${total!==1?'s':''}</span>
+          · <span style="color:${color};font-weight:600;text-decoration:underline dotted;cursor:pointer" onclick="event.stopPropagation();drillToCandidates('${j.job_id}','pipeline')" title="View active candidates">${active} active</span>
+        </div>
+        <button class="job-desc-btn" style="background:${color}" onclick="openJD(${JSON.stringify(j).replace(/"/g,'&quot;')})">View Description</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function drillToCandidates(jobId, stage) {
+  switchMainTab('candidates');
+  // Set role filter to this job
+  const roleBtn = document.querySelector(`[data-filter-role="${jobId}"]`);
+  setRoleFilter(jobId, roleBtn);
+  // Optionally set stage filter
+  const stageBtn = document.querySelector(`[data-filter-stage="${stage}"]`);
+  setStageFilter(stage, stageBtn);
+}
+
+// ── Job Description Modal ─────────────────────────────────────
+function openJD(job) {
+  document.getElementById('jd-modal-title').textContent = job.title;
+  document.getElementById('jd-modal-sub').textContent   = `${job.job_id} · ${job.department} · ${job.location}`;
+  const body = document.getElementById('jd-modal-body');
+  body.innerHTML = job.description
+    ? DOMPurify.sanitize(marked.parse(job.description))
+    : '<p style="color:var(--sub)">No description available.</p>';
+  document.getElementById('jd-overlay').classList.add('open');
+  document.addEventListener('keydown', _jdEsc);
+}
+function closeJD() {
+  document.getElementById('jd-overlay').classList.remove('open');
+  document.removeEventListener('keydown', _jdEsc);
+}
+function _jdEsc(e) { if (e.key === 'Escape') closeJD(); }
+
+// ── Architecture Modal ────────────────────────────────────────
+function openArch() {
+  document.getElementById('arch-ov').classList.add('open');
+  document.addEventListener('keydown', _archEsc);
+}
+function closeArch() {
+  document.getElementById('arch-ov').classList.remove('open');
+  document.removeEventListener('keydown', _archEsc);
+}
+function _archEsc(e) { if (e.key === 'Escape') closeArch(); }
+
+// ── Init ──────────────────────────────────────────────────────
+loadCandidates();
 </script>
 </body>
 </html>

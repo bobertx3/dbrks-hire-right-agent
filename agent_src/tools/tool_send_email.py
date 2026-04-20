@@ -1,14 +1,16 @@
 """
 Tool: send_email
-Sends an HTML-formatted email via Mailgun with J&J HRD branding.
+Sends an HTML-formatted email via Mailgun with Jackson and Jackson HR Digital branding.
 Adapted from the weatherwise agent email tool pattern.
 """
 import os
 import requests
+import mlflow
 from langchain_core.tools import tool
 
 
 @tool
+@mlflow.trace(span_type="TOOL")
 def send_email(to: str, subject: str, body: str) -> str:
     """Send an email with HR hiring analysis results to a manager, recruiter, or stakeholder.
     Use this when the user asks to email results, send a report, or share a candidate summary.
@@ -31,6 +33,22 @@ def send_email(to: str, subject: str, body: str) -> str:
     # Convert plain-text body to HTML with line breaks
     html_body = body.replace("\n", "<br>").replace("**", "")
 
+    # Replace recommendation verdicts with colour-coded chips
+    _chip_recommend = (
+        '<span style="display:inline-block;background:#00A972;color:#ffffff;'
+        'font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;'
+        'letter-spacing:0.3px;vertical-align:middle;">&#10003; Recommend Hire</span>'
+    )
+    _chip_not_recommended = (
+        '<span style="display:inline-block;background:#FF3621;color:#ffffff;'
+        'font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;'
+        'letter-spacing:0.3px;vertical-align:middle;">&#10007; Not Recommended</span>'
+    )
+    html_body = html_body.replace("Data Science — Recommend Hire", _chip_recommend)
+    html_body = html_body.replace("Data Science - Recommend Hire", _chip_recommend)
+    html_body = html_body.replace("Data Science — Not Recommended", _chip_not_recommended)
+    html_body = html_body.replace("Data Science - Not Recommended", _chip_not_recommended)
+
     html_content = f"""<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
@@ -43,7 +61,7 @@ def send_email(to: str, subject: str, body: str) -> str:
         <tr>
           <td style="background:linear-gradient(135deg,#1B3139 0%,#0f2028 100%);padding:28px 32px;">
             <div style="color:#FF3621;font-size:22px;font-weight:800;letter-spacing:1px;">HIRE RIGHT</div>
-            <div style="color:rgba(255,255,255,0.65);font-size:13px;margin-top:4px;">J&amp;J HRD 2030 · AI-Powered Hiring Analysis</div>
+            <div style="color:rgba(255,255,255,0.65);font-size:13px;margin-top:4px;">Jackson and Jackson HR Digital · AI-Powered Hiring Analysis</div>
           </td>
         </tr>
 
@@ -66,7 +84,7 @@ def send_email(to: str, subject: str, body: str) -> str:
           <td style="padding:20px 32px;background:#f8f6f4;border-top:1px solid #eee;">
             <div style="font-size:12px;color:#8A8A8A;">
               Sent by <strong>Hire Right Agent</strong> · Powered by Databricks AI &amp; MLflow<br>
-              J&amp;J HRD 2030 Predictive Hiring Platform
+              Jackson and Jackson HR Digital
             </div>
           </td>
         </tr>
