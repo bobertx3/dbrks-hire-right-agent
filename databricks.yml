@@ -72,7 +72,17 @@ resources:
         - name: deploy_agent
           default: "false"
       tasks:
+        - task_key: setup
+          notebook_task:
+            notebook_path: ./notebooks/00a_setup_schema_volume.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              volume_name: raw_data
+
         - task_key: load_bronze
+          depends_on:
+            - task_key: setup
           notebook_task:
             notebook_path: ./notebooks/00_load_bronze.ipynb
             base_parameters:
@@ -179,7 +189,7 @@ resources:
               agent_endpoint_name: ${var.agent_endpoint_name}
               warehouse_id: ${var.warehouse_id}
               app_name: ${var.app_name}
-              genie_space_id: ${var.genie_space_id}
+              genie_space_id: "{{tasks.genie_space.values.genie_space_id}}"
 
         - task_key: drift_monitor
           depends_on:
@@ -202,7 +212,7 @@ resources:
               catalog: ${var.catalog}
               schema: ${var.schema}
               app_name: ${var.app_name}
-              genie_space_id: ${var.genie_space_id}
+              genie_space_id: "{{tasks.genie_space.values.genie_space_id}}"
               warehouse_id: ${var.warehouse_id}
               agent_endpoint_name: ${var.agent_endpoint_name}
 
@@ -225,7 +235,7 @@ resources:
             base_parameters:
               catalog: ${var.catalog}
               schema: ${var.schema}
-              genie_space_id: ${var.genie_space_id}
+              genie_space_id: "{{tasks.genie_space.values.genie_space_id}}"
               vs_index_name: hr_resumes_vs_index
               vs_endpoint_name: ${var.vs_endpoint_name}
               model_endpoint_name: ${var.model_endpoint_name}
