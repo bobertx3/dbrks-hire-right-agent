@@ -12,11 +12,11 @@ env:
   - name: DATABRICKS_AGENT_ENDPOINT
     value: "hire-right-agent-endpoint"
   - name: DATABRICKS_WAREHOUSE_ID
-    value: "aa06644a4b0be047"
+    value: "e3813489efa8de68"
   - name: GENIE_SPACE_ID
-    valueFrom: genie_space
+    value: "01f170b7d5dc143995f2df49ee1fbc22"
   - name: TARGET_CATALOG
-    value: "bx4"
+    value: "bldemos"
   - name: TARGET_SCHEMA
     value: "hrd_2030"
 
@@ -27,10 +27,10 @@ resources:
       permission: CAN_QUERY
   - name: sql_warehouse
     sql_warehouse:
-      id: "aa06644a4b0be047"
+      id: "e3813489efa8de68"
       permission: CAN_USE
   - name: genie_space
     genie_space:
       name: "Jackson and Jackson HR Digital — Hiring Analytics Genie"
-      space_id: "01f13a0f6a081fabbea933cfb0db1d01"
+      space_id: "01f170b7d5dc143995f2df49ee1fbc22"
       permission: CAN_RUN

@@ -8,13 +8,13 @@ sync:
 variables:
   catalog:
     description: Unity Catalog catalog name
-    default: bx4
+    default: bldemos
   schema:
     description: Unity Catalog schema name
     default: hrd_2030
   warehouse_id:
     description: SQL Warehouse ID
-    default: "aa06644a4b0be047"
+    default: "e3813489efa8de68"
   app_name:
     description: Databricks App name
     default: hire-right-agent-app
@@ -44,7 +44,7 @@ variables:
     default: ml_hr_predictive_hiring
   genie_space_id:
     description: Genie Space ID for HR analytics (set after space is created in UI or notebook 04)
-    default: "01f13a0f6a081fabbea933cfb0db1d01"
+    default: "01f170b7d5dc143995f2df49ee1fbc22"
 
 resources:
   dashboards:
@@ -57,11 +57,20 @@ resources:
   jobs:
     hrd_setup_job:
       name: jj-hr-digital-pipeline
+      tags:
+        BU: CBT-HR
+        Team: HRD
+        Project: HR-2030
+        UseCase: Hire-Right-Agent
+      schedule:
+        quartz_cron_expression: "0 0 * * * ?"
+        timezone_id: UTC
+        pause_status: UNPAUSED
       parameters:
         - name: train_model
           default: "false"
         - name: deploy_agent
-          default: "true"
+          default: "false"
       tasks:
         - task_key: load_bronze
           notebook_task:
@@ -241,4 +250,11 @@ targets:
     mode: production
     workspace:
       host: https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+
+  default:
+    mode: development
+    default: true
+    workspace:
+      host: https://fevm-bobertx3-aws-fevm.cloud.databricks.com
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
