@@ -22,7 +22,7 @@ app = FastAPI(title="Hire Right Agent", version="3.0.0")
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 AGENT_ENDPOINT = os.getenv("DATABRICKS_AGENT_ENDPOINT", "hire-right-agent-endpoint")
-GENIE_SPACE_ID = os.getenv("GENIE_SPACE_ID", "01f13a0f6a081fabbea933cfb0db1d01")
+GENIE_SPACE_ID = os.getenv("GENIE_SPACE_ID", "01f170b7d5dc143995f2df49ee1fbc22")
 TARGET_CATALOG = os.getenv("TARGET_CATALOG", "bx4")
 TARGET_SCHEMA  = os.getenv("TARGET_SCHEMA", "hrd_2030")
 WAREHOUSE_ID   = os.getenv("DATABRICKS_WAREHOUSE_ID", "")
