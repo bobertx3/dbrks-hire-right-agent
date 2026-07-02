@@ -472,6 +472,7 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
       <button class="resume-modal-close" onclick="closeResume()">✕</button>
     </div>
     <div class="resume-modal-body">
+      <div id="resume-status" style="display:none;height:100%;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--sub);font-size:13px;text-align:center;padding:24px;"></div>
       <iframe id="resume-iframe" src="" title="Resume"></iframe>
     </div>
   </div>
@@ -1139,6 +1140,35 @@ function renderDetail() {
 }
 
 // ── Generate Recommendation ───────────────────────────────────
+// Shared, resilient call to the agent chat endpoint.
+// The agent serving endpoint scales from zero and a cold start can exceed the
+// Databricks Apps proxy timeout — in that case the proxy returns a plain-text
+// body like "upstream request timeout" (not JSON). Parse defensively and turn
+// any non-JSON / error response into a clear, friendly message.
+async function postChat(body) {
+  let r;
+  try {
+    r = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+  } catch(e) {
+    throw new Error('Network error contacting the agent. Please try again.');
+  }
+  const text = await r.text();
+  let data = null;
+  try { data = JSON.parse(text); } catch(_) {}
+  if (!r.ok || data === null) {
+    const raw = (text || '').toLowerCase();
+    if (r.status === 504 || raw.includes('upstream') || raw.includes('timeout') || raw.includes('timed out')) {
+      throw new Error('The agent is warming up (cold start can take a minute or two on first use). Please click Generate again shortly.');
+    }
+    const detail = (data && data.detail) ? data.detail : (text || `HTTP ${r.status}`).slice(0, 300);
+    throw new Error(detail);
+  }
+  return data;
+}
+
 async function generateRec() {
   if (recBusy) return;
   const c = currentCandidate;
@@ -1171,17 +1201,13 @@ async function generateRec() {
   const tp = addRecTyping();
 
   try {
-    const r = await fetch('/api/chat', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({message: prompt, conversation_history: recHistory})
-    });
-    const d = await r.json();
+    const d = await postChat({message: prompt, conversation_history: recHistory});
     recHistory = d.conversation_history;
     tp.remove();
     addRecMsg('assistant', d.reply);
   } catch(e) {
     tp.remove();
-    addRecMsg('assistant', `⚠️ Error: ${e.message}`);
+    addRecMsg('assistant', `⚠️ ${e.message}`);
   } finally {
     recBusy = false;
     btn.disabled = false;
@@ -1199,17 +1225,13 @@ async function sendRec() {
   addRecMsg('user', msg);
   const tp = addRecTyping();
   try {
-    const r = await fetch('/api/chat', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({message: msg, conversation_history: recHistory})
-    });
-    const d = await r.json();
+    const d = await postChat({message: msg, conversation_history: recHistory});
     recHistory = d.conversation_history;
     tp.remove();
     addRecMsg('assistant', d.reply);
   } catch(e) {
     tp.remove();
-    addRecMsg('assistant', '⚠️ Error contacting agent.');
+    addRecMsg('assistant', `⚠️ ${e.message}`);
   } finally {
     recBusy = false;
     document.getElementById('rec-send').disabled = false;
@@ -1250,17 +1272,13 @@ async function agentSend(text) {
   addMsg('agent-msgs', 'user', msg);
   const tp = addTyping('agent-msgs', 'agent');
   try {
-    const r = await fetch('/api/chat', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({message: msg, conversation_history: agentHistory})
-    });
-    const d = await r.json();
+    const d = await postChat({message: msg, conversation_history: agentHistory});
     agentHistory = d.conversation_history;
     tp.remove();
     addAgentMsg(d.reply);
   } catch(e) {
     tp.remove();
-    addAgentMsg(`⚠️ Error: ${e.message}`);
+    addAgentMsg(`⚠️ ${e.message}`);
   } finally {
     agentBusy = false;
     document.getElementById('agent-btn').disabled = false;
@@ -1413,16 +1431,44 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
 // ── Resume Modal ──────────────────────────────────────────────
-function showResume(candidateId) {
+let _resumeBlobUrl = null;
+async function showResume(candidateId) {
   const candidateName = (allCandidates.find(c => c.id === candidateId) || {}).name || candidateId;
   document.getElementById('resume-modal-title').textContent = `${candidateName} — Resume`;
   document.getElementById('resume-modal-sub').textContent   = candidateId;
-  document.getElementById('resume-iframe').src = `/api/resume-pdf/${encodeURIComponent(candidateId)}`;
+  const iframe = document.getElementById('resume-iframe');
+  const status = document.getElementById('resume-status');
+  iframe.style.display = 'none';
+  iframe.src = '';
+  status.style.display = 'flex';
+  status.textContent = 'Loading resume…';
   document.getElementById('resume-overlay').classList.add('open');
   document.addEventListener('keydown', _resumeEsc);
+  // Fetch through the authenticated XHR path (same as other /api calls) and
+  // render via a blob: URL — a direct iframe src to the PDF renders blank
+  // behind the Databricks Apps OAuth proxy.
+  try {
+    const r = await fetch(`/api/resume-pdf/${encodeURIComponent(candidateId)}`);
+    if (!r.ok) {
+      let detail = `HTTP ${r.status}`;
+      try { const j = await r.json(); detail = j.detail || detail; } catch(_) {}
+      throw new Error(detail);
+    }
+    const blob = await r.blob();
+    if (_resumeBlobUrl) URL.revokeObjectURL(_resumeBlobUrl);
+    _resumeBlobUrl = URL.createObjectURL(blob);
+    iframe.src = _resumeBlobUrl;
+    iframe.style.display = 'block';
+    status.style.display = 'none';
+  } catch(e) {
+    status.style.display = 'flex';
+    status.textContent = `Could not load resume: ${e.message}`;
+  }
 }
 function closeResume() {
-  document.getElementById('resume-iframe').src = '';
+  const iframe = document.getElementById('resume-iframe');
+  iframe.src = '';
+  if (_resumeBlobUrl) { URL.revokeObjectURL(_resumeBlobUrl); _resumeBlobUrl = null; }
   document.getElementById('resume-overlay').classList.remove('open');
   document.removeEventListener('keydown', _resumeEsc);
 }
