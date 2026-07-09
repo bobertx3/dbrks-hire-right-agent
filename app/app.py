@@ -1,7 +1,9 @@
 """
-Hire Right Agent — Databricks App Backend (v3)
+Hire Right Agent — Databricks App Backend (v4)
 Jackson and Jackson HR Digital
-FastAPI: proxies chat to agent endpoint, Genie Conversation API with multi-turn support.
+FastAPI: serves candidate & job data from Lakebase (low latency), persists HR
+annotations to a transactional Lakebase table, proxies chat to the agent
+endpoint, and calls the Genie Conversation API with multi-turn support.
 """
 import os
 import re
@@ -15,10 +17,12 @@ from pydantic import BaseModel
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
 
+from db import execute_query, execute_write, ensure_annotations_table
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Hire Right Agent", version="3.0.0")
+app = FastAPI(title="Hire Right Agent", version="4.0.0")
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 AGENT_ENDPOINT = os.getenv("DATABRICKS_AGENT_ENDPOINT", "hire-right-agent-endpoint")
@@ -31,6 +35,16 @@ LLM_ENDPOINT   = os.getenv("LLM_ENDPOINT", "databricks-gpt-5-4")
 
 def get_client() -> WorkspaceClient:
     return WorkspaceClient(config=Config())
+
+
+@app.on_event("startup")
+def _on_startup():
+    # Belt-and-suspenders: the setup notebook creates this table, but ensure it
+    # exists so annotations work even if the app is deployed first. Run it off
+    # the startup path in a daemon thread so a slow/unavailable Lakebase never
+    # delays the app coming up (matters on scale-from-zero cold starts).
+    import threading
+    threading.Thread(target=ensure_annotations_table, daemon=True).start()
 
 
 # ── Models ─────────────────────────────────────────────────────────────────────
@@ -51,6 +65,10 @@ class GenieResponse(BaseModel):
     sql: Optional[str] = None
     suggested_questions: list = []
     conversation_id: Optional[str] = None
+
+class AnnotationRequest(BaseModel):
+    note: str
+    author: Optional[str] = None
 
 
 # ── Response parsing ───────────────────────────────────────────────────────────
@@ -140,34 +158,40 @@ def _reformat_as_markdown(w: WorkspaceClient, text: str) -> str:
     return text
 
 
-# ── Candidate Data ─────────────────────────────────────────────────────────────
-CANDIDATES = [
-    # JR001 — Director of Human Resources (historical cohort C001–C010)
-    {"id":"C001","name":"Sarah Chen","title":"VP of Human Resources","company":"Novartis Pharmaceuticals","job_id":"JR001","job_title":"Director of Human Resources","location":"Chicago, IL","education":"MBA, Northwestern","certifications":"SPHR","total_score":89.3,"stage":"Hired","hired":True,"scores":{"education":85,"experience":90,"leadership":85,"certifications":95,"skills_match":92,"industry":95,"interview":88,"culture_fit":88}},
-    {"id":"C002","name":"Michael Torres","title":"Director of People & Culture","company":"Boston Scientific","job_id":"JR001","job_title":"Director of Human Resources","location":"Boston, MA","education":"MA in HR Mgmt","certifications":"SHRM-SCP","total_score":83.7,"stage":"Hired","hired":True,"scores":{"education":75,"experience":85,"leadership":80,"certifications":90,"skills_match":85,"industry":90,"interview":82,"culture_fit":85}},
-    {"id":"C003","name":"Jennifer Williams","title":"HR Business Partner","company":"Target Corporation","job_id":"JR001","job_title":"Director of Human Resources","location":"Atlanta, GA","education":"BA in Business","certifications":"None","total_score":45.3,"stage":"Rejected","hired":False,"scores":{"education":60,"experience":55,"leadership":40,"certifications":0,"skills_match":50,"industry":40,"interview":58,"culture_fit":55}},
-    {"id":"C004","name":"David Kim","title":"Chief People Officer","company":"Merck & Co","job_id":"JR001","job_title":"Director of Human Resources","location":"Philadelphia, PA","education":"MBA, Wharton","certifications":"SPHR, PHR","total_score":92.6,"stage":"Hired","hired":True,"scores":{"education":85,"experience":95,"leadership":92,"certifications":95,"skills_match":95,"industry":95,"interview":90,"culture_fit":92}},
-    {"id":"C005","name":"Amanda Rodriguez","title":"Head of Human Resources","company":"Gilead Sciences","job_id":"JR001","job_title":"Director of Human Resources","location":"San Diego, CA","education":"PhD Org. Psychology","certifications":"SHRM-SCP","total_score":68.7,"stage":"Hired","hired":True,"scores":{"education":90,"experience":82,"leadership":50,"certifications":90,"skills_match":50,"industry":80,"interview":58,"culture_fit":55}},
-    {"id":"C006","name":"Robert Johnson","title":"HR Generalist","company":"Amazon Web Services","job_id":"JR001","job_title":"Director of Human Resources","location":"Seattle, WA","education":"BA in Psychology","certifications":"SHRM-CP","total_score":42.0,"stage":"Rejected","hired":False,"scores":{"education":60,"experience":35,"leadership":25,"certifications":65,"skills_match":40,"industry":45,"interview":45,"culture_fit":45}},
-    {"id":"C007","name":"Lisa Park","title":"HR Manager","company":"Ford Motor Company","job_id":"JR001","job_title":"Director of Human Resources","location":"Detroit, MI","education":"MA in Business Admin","certifications":"SHRM-CP","total_score":55.7,"stage":"Rejected","hired":False,"scores":{"education":75,"experience":50,"leadership":45,"certifications":65,"skills_match":55,"industry":50,"interview":60,"culture_fit":62}},
-    {"id":"C008","name":"James Wilson","title":"Senior HR Business Partner","company":"Goldman Sachs","job_id":"JR001","job_title":"Director of Human Resources","location":"New York, NY","education":"MBA","certifications":"PHR","total_score":65.0,"stage":"Rejected","hired":False,"scores":{"education":85,"experience":65,"leadership":55,"certifications":75,"skills_match":60,"industry":55,"interview":65,"culture_fit":70}},
-    {"id":"C009","name":"Maria Gonzalez","title":"HR Supervisor","company":"Publix Super Markets","job_id":"JR001","job_title":"Director of Human Resources","location":"Miami, FL","education":"BA in Human Resources","certifications":"SHRM-CP","total_score":58.5,"stage":"Rejected","hired":False,"scores":{"education":60,"experience":70,"leadership":45,"certifications":65,"skills_match":58,"industry":45,"interview":62,"culture_fit":65}},
-    {"id":"C010","name":"Thomas Brown","title":"HR Consultant","company":"Deloitte Consulting","job_id":"JR001","job_title":"Director of Human Resources","location":"Chicago, IL","education":"MA in Human Resources","certifications":"SPHR","total_score":67.5,"stage":"Rejected","hired":False,"scores":{"education":75,"experience":75,"leadership":40,"certifications":95,"skills_match":70,"industry":60,"interview":70,"culture_fit":75}},
-    # JR001 — Active Pipeline
-    {"id":"C019","name":"Sophia Nguyen","title":"HR Director","company":"Sanofi","job_id":"JR001","job_title":"Director of Human Resources","location":"Thousand Oaks, CA","education":"MBA","certifications":"SHRM-SCP","total_score":82.8,"stage":"Awaiting Interview","hired":None,"scores":{"education":85,"experience":84,"leadership":76,"certifications":90,"skills_match":78,"industry":95,"interview":80,"culture_fit":80}},
-    {"id":"C020","name":"William Foster","title":"Senior HR Business Partner","company":"Cigna","job_id":"JR001","job_title":"Director of Human Resources","location":"Indianapolis, IN","education":"MA in HR","certifications":"SHRM-CP","total_score":84.3,"stage":"Awaiting Interview","hired":None,"scores":{"education":100,"experience":98,"leadership":40,"certifications":95,"skills_match":95,"industry":95,"interview":92,"culture_fit":90}},
-    # JR002 — VP of Talent Acquisition (active pipeline)
-    {"id":"C011","name":"Elena Vasquez","title":"Director of Talent Acquisition","company":"AbbVie","job_id":"JR002","job_title":"VP of Talent Acquisition","location":"Seattle, WA","education":"MBA, University of Washington","certifications":"SHRM-SCP","total_score":None,"stage":"Interview","hired":None,"scores":{"education":90,"experience":88,"leadership":82,"certifications":90,"skills_match":None,"industry":95,"interview":None,"culture_fit":None}},
-    {"id":"C012","name":"Kevin O'Brien","title":"Global Talent Acquisition Lead","company":"Pfizer","job_id":"JR002","job_title":"VP of Talent Acquisition","location":"San Francisco, CA","education":"BA in Communications","certifications":"SHRM-CP","total_score":None,"stage":"Interview","hired":None,"scores":{"education":85,"experience":82,"leadership":72,"certifications":75,"skills_match":None,"industry":95,"interview":None,"culture_fit":None}},
-    {"id":"C013","name":"Priya Sharma","title":"Talent Acquisition Manager","company":"Accenture","job_id":"JR002","job_title":"VP of Talent Acquisition","location":"New York, NY","education":"MBA, Columbia","certifications":"SHRM-SCP","total_score":None,"stage":"Interview","hired":None,"scores":{"education":90,"experience":78,"leadership":68,"certifications":90,"skills_match":None,"industry":55,"interview":None,"culture_fit":None}},
-    # JR003 — Director of Compensation & Benefits (active pipeline)
-    {"id":"C014","name":"Marcus Thompson","title":"Senior Director of Compensation","company":"Eli Lilly","job_id":"JR003","job_title":"Director of Compensation & Benefits","location":"Milwaukee, WI","education":"MS in Finance","certifications":"CCP","total_score":None,"stage":"Screening","hired":None,"scores":{"education":90,"experience":92,"leadership":86,"certifications":80,"skills_match":None,"industry":95,"interview":None,"culture_fit":None}},
-    {"id":"C015","name":"Rachel Kim","title":"Director of Total Rewards","company":"UnitedHealth Group","job_id":"JR003","job_title":"Director of Compensation & Benefits","location":"New York, NY","education":"MBA, NYU Stern","certifications":"SHRM-SCP, CCP","total_score":None,"stage":"Screening","hired":None,"scores":{"education":85,"experience":84,"leadership":76,"certifications":90,"skills_match":None,"industry":88,"interview":None,"culture_fit":None}},
-    {"id":"C016","name":"Daniel Park","title":"Compensation & Benefits Manager","company":"Apple","job_id":"JR003","job_title":"Director of Compensation & Benefits","location":"Minneapolis, MN","education":"BA in Accounting","certifications":"PHR","total_score":None,"stage":"Screening","hired":None,"scores":{"education":90,"experience":75,"leadership":62,"certifications":70,"skills_match":None,"industry":40,"interview":None,"culture_fit":None}},
-    # JR004 — Chief People Officer (active pipeline)
-    {"id":"C017","name":"Victoria Santos","title":"EVP of Human Resources","company":"Bristol-Myers Squibb","job_id":"JR004","job_title":"Chief People Officer","location":"Cambridge, MA","education":"PhD, Org. Leadership","certifications":"SPHR, SHRM-SCP","total_score":None,"stage":"Final Round","hired":None,"scores":{"education":100,"experience":100,"leadership":100,"certifications":100,"skills_match":None,"industry":100,"interview":None,"culture_fit":None}},
-    {"id":"C018","name":"Jonathan Reed","title":"Chief Human Resources Officer","company":"Biogen","job_id":"JR004","job_title":"Chief People Officer","location":"New York, NY","education":"MBA, Harvard","certifications":"SPHR","total_score":None,"stage":"Final Round","hired":None,"scores":{"education":90,"experience":95,"leadership":94,"certifications":95,"skills_match":None,"industry":95,"interview":None,"culture_fit":None}},
-]
+# ── Candidate Data (served from Lakebase synced table) ──────────────────────────
+def _to_bool(v):
+    """hired: int 1/0 -> True/False; NULL -> None (UI uses `hired !== null`)."""
+    if v is None:
+        return None
+    return bool(v)
+
+
+def _shape_candidate(r: dict) -> dict:
+    """Map a candidate_scoring_summary row to the shape the UI expects."""
+    return {
+        "id":            r.get("candidate_id"),
+        "name":          r.get("full_name"),
+        "title":         r.get("current_title"),
+        "company":       r.get("current_company"),
+        "location":      r.get("location"),
+        "education":     r.get("education_level"),
+        "certifications": r.get("certifications"),
+        "job_id":        r.get("job_id"),
+        "job_title":     r.get("job_title"),
+        "total_score":   r.get("total_score"),
+        "stage":         r.get("stage"),
+        "hired":         _to_bool(r.get("hired")),
+        "scores": {
+            "education":      r.get("education_score"),
+            "experience":     r.get("experience_score"),
+            "leadership":     r.get("leadership_score"),
+            "certifications": r.get("certification_score"),
+            "skills_match":   r.get("skills_match_score"),
+            "industry":       r.get("industry_relevance_score"),
+            "interview":      r.get("interview_score"),
+            "culture_fit":    r.get("culture_fit"),
+        },
+    }
 
 
 # ── API Endpoints ──────────────────────────────────────────────────────────────
@@ -178,7 +202,70 @@ async def health():
 
 @app.get("/api/candidates")
 async def get_candidates():
-    return {"candidates": CANDIDATES}
+    """Return all candidates from the Lakebase synced scoring-summary table."""
+    try:
+        rows = execute_query("""
+            SELECT candidate_id, full_name, current_title, current_company, location,
+                   education_level, certifications, job_id, job_title,
+                   total_score, stage, hired,
+                   education_score, experience_score, leadership_score, certification_score,
+                   skills_match_score, industry_relevance_score, interview_score, culture_fit
+            FROM candidate_scoring_summary
+            ORDER BY candidate_id
+        """)
+        return {"candidates": [_shape_candidate(r) for r in rows]}
+    except Exception as e:
+        logger.error("Candidates error: %s", str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Candidate Annotations (transactional Lakebase table) ────────────────────────
+@app.get("/api/candidates/{candidate_id}/annotations")
+async def get_annotations(candidate_id: str):
+    """List HR annotations for a candidate, joined to candidate info."""
+    try:
+        # LEFT JOIN so a note is never hidden if the candidate row is briefly
+        # absent from the synced table (e.g. sync lag); candidate_name may be NULL.
+        rows = execute_query("""
+            SELECT a.id, a.candidate_id, a.note, a.author, a.created_at,
+                   c.full_name AS candidate_name, c.job_title
+            FROM candidate_annotations a
+            LEFT JOIN candidate_scoring_summary c ON c.candidate_id = a.candidate_id
+            WHERE a.candidate_id = :cid
+            ORDER BY a.created_at DESC
+        """, {"cid": candidate_id})
+        return {"annotations": rows}
+    except Exception as e:
+        logger.error("Get annotations error: %s", str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/candidates/{candidate_id}/annotations")
+async def add_annotation(candidate_id: str, req: AnnotationRequest):
+    """Add an HR annotation (note) to a candidate record."""
+    note = (req.note or "").strip()
+    if not note:
+        raise HTTPException(status_code=400, detail="Note cannot be empty.")
+    try:
+        # Guard against notes on unknown candidates (keeps the FK-style join valid).
+        exists = execute_query(
+            "SELECT 1 FROM candidate_scoring_summary WHERE candidate_id = :cid LIMIT 1",
+            {"cid": candidate_id},
+        )
+        if not exists:
+            raise HTTPException(status_code=404, detail=f"Unknown candidate {candidate_id}")
+
+        rows = execute_write("""
+            INSERT INTO candidate_annotations (candidate_id, note, author)
+            VALUES (:cid, :note, :author)
+            RETURNING id, candidate_id, note, author, created_at
+        """, {"cid": candidate_id, "note": note, "author": req.author or "HR Manager"})
+        return {"annotation": rows[0] if rows else None}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Add annotation error: %s", str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -376,36 +463,17 @@ Jackson & Jackson is conducting a confidential search for an exceptional **Chief
 # ── Jobs ───────────────────────────────────────────────────────────────────────
 @app.get("/api/jobs")
 async def get_jobs():
-    """Fetch job requirements with candidate counts from the UC table."""
+    """Fetch job requirements from the Lakebase synced table (low latency)."""
     try:
-        w = get_client()
-        # Use try_extract_value pattern: fall back to NULL if description col absent
-        # DESCRIBE TABLE returns data_array rows as lists [col_name, data_type, comment]
-        desc_rows = w.api_client.do(
-            "POST", "/api/2.0/sql/statements",
-            body={"warehouse_id": WAREHOUSE_ID, "wait_timeout": "30s",
-                  "statement": f"DESCRIBE TABLE {TARGET_CATALOG}.{TARGET_SCHEMA}.job_requirements"},
-        ).get("result", {}).get("data_array", [])
-        has_desc = any(r[0] == "description" for r in desc_rows if r)
-        desc_expr = "j.description" if has_desc else "NULL AS description"
-        sql = f"""
-            SELECT j.job_id, j.title, j.department, j.location,
-                   j.min_years_experience, j.required_education,
-                   j.preferred_certifications, j.required_skills, j.preferred_skills,
-                   j.salary_min, j.salary_max, j.team_size, j.reporting_to,
-                   {desc_expr}
-            FROM {TARGET_CATALOG}.{TARGET_SCHEMA}.job_requirements j
-            ORDER BY j.job_id
-        """
-        result = w.api_client.do(
-            "POST",
-            "/api/2.0/sql/statements",
-            body={"warehouse_id": WAREHOUSE_ID, "statement": sql, "wait_timeout": "30s"},
-        )
-        cols = [c["name"] for c in (result.get("manifest") or {}).get("schema", {}).get("columns", [])]
-        rows = (result.get("result") or {}).get("data_array", [])
-        jobs = [dict(zip(cols, row)) for row in rows]
-        # Overlay static descriptions (table has no description column)
+        jobs = execute_query("""
+            SELECT job_id, title, department, location,
+                   min_years_experience, required_education,
+                   preferred_certifications, required_skills, preferred_skills,
+                   salary_min, salary_max, team_size, reporting_to, description
+            FROM job_requirements
+            ORDER BY job_id
+        """)
+        # Overlay curated descriptions where the table has none.
         for j in jobs:
             if not j.get("description"):
                 j["description"] = JOB_DESCRIPTIONS.get(j.get("job_id"), "")

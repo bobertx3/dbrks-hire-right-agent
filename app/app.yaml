@@ -19,6 +19,12 @@ env:
     value: "bldemos"
   - name: TARGET_SCHEMA
     value: "hrd_2030"
+  - name: LAKEBASE_INSTANCE_NAME
+    value: "hire-right-lb"
+  - name: LAKEBASE_DATABASE
+    value: "databricks_postgres"
+  - name: PG_SCHEMA
+    value: "hrd_2030"
 
 resources:
   - name: agent_endpoint
@@ -34,3 +40,8 @@ resources:
       name: "Jackson and Jackson HR Digital — Hiring Analytics Genie"
       space_id: "01f170b7d5dc143995f2df49ee1fbc22"
       permission: CAN_RUN
+  - name: lakebase_db
+    database:
+      instance_name: "hire-right-lb"
+      database_name: "databricks_postgres"
+      permission: CAN_CONNECT_AND_CREATE

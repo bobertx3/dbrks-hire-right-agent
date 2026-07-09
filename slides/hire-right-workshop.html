@@ -488,7 +488,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">From feature engineering to production monitoring — MLflow 3.0 tracks every experiment, registers every model, and governs every deployment through Unity Catalog.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/ml-lifecycle.png" alt="The ML lifecycle on Databricks — from data to deployment" style="width:100%; height:100%; object-fit:contain; object-position:center; display:block;">
+        <img src="../images/ml-lifecycle.png" alt="The ML lifecycle on Databricks — from data to deployment" style="width:100%; height:100%; object-fit:contain; object-position:center; display:block;">
         <p class="screenshot-caption">ML Lifecycle · Experiments → Registry → Serving → Monitoring</p>
       </div>
     </div>
@@ -735,7 +735,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">Raw candidate data lands in Delta Lake as a Bronze table — schema inferred from CSV, resumes uploaded as PDFs to a Unity Catalog Volume.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/ingest.png" alt="UC Catalog Explorer showing raw_data volume" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+        <img src="../images/ingest.png" alt="UC Catalog Explorer showing raw_data volume" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
         <p class="screenshot-caption">Catalog Explorer · bx4.hrd_2030 · raw_data volume with CSVs &amp; resumes</p>
       </div>
     </div>
@@ -755,7 +755,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0;">The full end-to-end pipeline is orchestrated as a Databricks Workflow — each notebook runs as a serverless task, with lineage and run history tracked automatically.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/workflow_1.png" alt="Databricks Workflow DAG: Bronze to Gold pipeline tasks" style="width:100%; height:100%; object-fit:contain; object-position:center; display:block;">
+        <img src="../images/workflow_1.png" alt="Databricks Workflow DAG: Bronze to Gold pipeline tasks" style="width:100%; height:100%; object-fit:contain; object-position:center; display:block;">
         <p class="screenshot-caption">Databricks Workflow · Bronze → Silver → Classify &amp; Quality → Gold → Business Semantics</p>
       </div>
     </div>
@@ -775,7 +775,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0;">Downstream tasks fan out from the data pipeline — Vector Search index, Genie Space, ML training, Agent registration, and dashboard refresh all run as a single coordinated job.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/workflow_2.png" alt="Databricks Workflow DAG: ML, Agent, Vector Search and monitoring tasks" style="width:100%; height:100%; object-fit:contain; object-position:center; display:block;">
+        <img src="../images/workflow_2.png" alt="Databricks Workflow DAG: ML, Agent, Vector Search and monitoring tasks" style="width:100%; height:100%; object-fit:contain; object-position:center; display:block;">
         <p class="screenshot-caption">Databricks Workflow · Vector Search · Genie · ML Training · Agent · Drift Monitor</p>
       </div>
     </div>
@@ -802,7 +802,7 @@
         </div>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/data_classification_masking_quality.png" alt="Unity Catalog candidates table with PII tags and column masking" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+        <img src="../images/data_classification_masking_quality.png" alt="Unity Catalog candidates table with PII tags and column masking" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
         <p class="screenshot-caption">Unity Catalog · candidates · PII tags, column masking &amp; data quality</p>
       </div>
     </div>
@@ -822,7 +822,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">Gold tables aggregate candidate scores for analytics and ML training. Genie Space gives the agent natural language access to HR data. Vector Search enables semantic resume retrieval.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/masking.png" alt="Candidates table sample data with masked phone numbers" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+        <img src="../images/masking.png" alt="Candidates table sample data with masked phone numbers" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
         <p class="screenshot-caption">bx4.hrd_2030.candidates · sample data · masked PII columns</p>
       </div>
     </div>
@@ -842,7 +842,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">MLflow autolog captures every experiment run. Best model (GradientBoostingClassifier) selected by AUC-ROC and registered to Unity Catalog with the <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">@champion</code> alias.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/traditional_mlflow_experiment.png" alt="MLflow Experiments with multiple model runs" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+        <img src="../images/traditional_mlflow_experiment.png" alt="MLflow Experiments with multiple model runs" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
         <p class="screenshot-caption">MLflow Experiments · ml-hr-predictive-hiring · GradientBoosting selected</p>
       </div>
     </div>
@@ -862,7 +862,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">Best run registered to Unity Catalog Model Registry and aliased as <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">@champion</code>. A serverless Model Serving endpoint exposes it as a REST API — the agent calls it via <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">predict_hiring_score</code>.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/serving_agents.png" alt="Model Serving endpoints" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+        <img src="../images/serving_agents.png" alt="Model Serving endpoints" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
         <p class="screenshot-caption">Model Serving · hire-right-agent-endpoint &amp; hr-predictive-hiring-endpoint</p>
       </div>
     </div>
@@ -882,7 +882,7 @@
         <p style="font-size:clamp(0.78rem,1vw,0.88rem); margin-bottom:0.4rem;">The Hire Right Agent is a <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">ResponsesAgent</code> (OpenAI-compatible ChatAgent) packaged with MLflow 3.0, evaluated with <code style="font-family:var(--font-mono); font-size:0.8em; color:#5cd6a8;">mlflow.genai.evaluate()</code>, and deployed as a serverless endpoint.</p>
       </div>
       <div class="screenshot-frame" style="flex:1; min-height:0; overflow:hidden;">
-        <img src="images/llm_judge.png" alt="MLflow evaluation with JnJ Tone judge scores" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+        <img src="../images/llm_judge.png" alt="MLflow evaluation with JnJ Tone judge scores" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
         <p class="screenshot-caption">MLflow Evaluate · JnJ Tone judge · agent quality assessment</p>
       </div>
     </div>
@@ -903,11 +903,11 @@
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; flex:1; min-height:0;">
         <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/agent_evals_2.png" alt="MLflow agent evaluation results table" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+          <img src="../images/agent_evals_2.png" alt="MLflow agent evaluation results table" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
           <p class="screenshot-caption">MLflow Evaluate · evaluation results · safety · relevance · JnJ Tone</p>
         </div>
         <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/agent_evals.png" alt="MLflow trace with JnJ Tone assessment detail" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+          <img src="../images/agent_evals.png" alt="MLflow trace with JnJ Tone assessment detail" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
           <p class="screenshot-caption">MLflow Trace · JnJ Tone assessment · rationale · pass / fail</p>
         </div>
       </div>
@@ -929,11 +929,11 @@
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; flex:1; min-height:0;">
         <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/build_app.png" alt="Databricks Apps interface showing hire-right-agent" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+          <img src="../images/build_app.png" alt="Databricks Apps interface showing hire-right-agent" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
           <p class="screenshot-caption">Databricks Apps · hire-right-agent deployed</p>
         </div>
         <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/app_home.png" alt="Hire Right app showing candidate scoring dashboard" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+          <img src="../images/app_home.png" alt="Hire Right app showing candidate scoring dashboard" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
           <p class="screenshot-caption">Hire Right App · AI-powered candidate ranking · live</p>
         </div>
       </div>
@@ -962,11 +962,11 @@
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; flex:1; min-height:0;">
         <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/mlflow_tracing.png" alt="MLflow tracing timeline with tool calls" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+          <img src="../images/mlflow_tracing.png" alt="MLflow tracing timeline with tool calls" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
           <p class="screenshot-caption">MLflow Tracing · hire-right-agent-endpoint · tool call timeline</p>
         </div>
         <div class="screenshot-frame" style="overflow:hidden; min-height:0;">
-          <img src="images/agent_registry.png" alt="Databricks Agents registry showing hire-right-agent-endpoint" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
+          <img src="../images/agent_registry.png" alt="Databricks Agents registry showing hire-right-agent-endpoint" style="width:100%; height:100%; object-fit:contain; object-position:top; display:block;">
           <p class="screenshot-caption">Databricks Agents Registry · hire-right-agent-endpoint</p>
         </div>
       </div>

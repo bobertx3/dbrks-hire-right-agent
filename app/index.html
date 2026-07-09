@@ -153,6 +153,16 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .rec-send{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;transition:background .15s;}
 .rec-send:hover{background:#26505f;}
 .rec-send:disabled{background:#ccc;cursor:default;}
+/* HR Notes / annotations */
+.notes-panel{margin-top:16px;display:flex;flex-direction:column;overflow:hidden;}
+.notes-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.notes-list{padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:60px;max-height:280px;overflow-y:auto;}
+.notes-empty{color:var(--light);font-size:12px;text-align:center;padding:16px 0;line-height:1.6;}
+.note-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;}
+.note-text{font-size:13px;color:var(--text);line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+.note-meta{font-size:10px;color:var(--light);margin-top:6px;display:flex;gap:8px;align-items:center;}
+.note-author{font-weight:700;color:var(--sub);}
+.notes-footer{padding:10px 14px;border-top:1px solid var(--border);background:var(--bg);display:flex;gap:8px;}
 .mm{display:flex;gap:0;font-size:12px;line-height:1.6;}
 .mm.user{flex-direction:row-reverse;}
 .mm-bub{padding:9px 13px;border-radius:10px;max-width:95%;}
@@ -546,6 +556,12 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
             <path id="qTA" d="M 780 195 V 88 H 510"/>
             <!-- qAR: Agent → Agents/MCP Registry -->
             <path id="qAR" d="M 1028 228 V 570 H 467 V 491"/>
+            <!-- qLB1: Gold → Lakebase (sync) -->
+            <path id="qLB1" d="M 575 339 H 855"/>
+            <!-- qLB2: Lakebase → App (serve) -->
+            <path id="qLB2" d="M 1030 335 H 1050 V 210 H 1062"/>
+            <!-- qLB3: App → Lakebase (annotations / notes) -->
+            <path id="qLB3" d="M 1090 258 V 290 H 942 V 315"/>
           </defs>
 
           <!-- Visible lines — elbow style -->
@@ -589,12 +605,21 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <path d="M 780 195 V 88 H 510" fill="none" stroke="rgba(255,54,33,.7)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
           <!-- qAR: Agent → Agents/MCP Registry -->
           <path d="M 1028 228 V 570 H 467 V 491" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
+          <!-- qLB1: Gold → Lakebase (sync) -->
+          <path d="M 575 339 H 855" fill="none" stroke="rgba(34,197,94,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmg)"/>
+          <!-- qLB2: Lakebase → App (serve) -->
+          <path d="M 1030 335 H 1050 V 210 H 1062" fill="none" stroke="rgba(6,182,212,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
+          <!-- qLB3: App → Lakebase (annotations / notes) -->
+          <path d="M 1090 258 V 290 H 942 V 315" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
 
           <!-- Labels -->
           <text x="830" y="293" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
           <text x="882" y="128" fill="rgba(59,130,246,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">traces</text>
           <text x="537" y="297" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">train</text>
           <text x="640" y="82" fill="rgba(255,54,33,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">tool calls</text>
+          <text x="690" y="333" fill="rgba(34,197,94,.75)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">sync</text>
+          <text x="1034" y="330" fill="rgba(6,182,212,.75)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">serve</text>
+          <text x="960" y="284" fill="rgba(139,92,246,.75)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">notes</text>
 
           <!-- ── Animated dots ── -->
           <!-- q1: Load Resumes → VS (6s) -->
@@ -657,6 +682,15 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <!-- qAR: Agent → Agents/MCP Registry (10s) -->
           <circle r="3" fill="#FF3621" class="fd" style="animation-duration:10s"><animateMotion dur="10s" repeatCount="indefinite"><mpath href="#qAR"/></animateMotion></circle>
           <circle r="3" fill="#FF3621" class="fd" style="animation-duration:10s;animation-delay:5s"><animateMotion dur="10s" repeatCount="indefinite" begin="5s"><mpath href="#qAR"/></animateMotion></circle>
+          <!-- qLB1: Gold → Lakebase sync (8s) -->
+          <circle r="3.5" fill="#22C55E" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#qLB1"/></animateMotion></circle>
+          <circle r="3.5" fill="#22C55E" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#qLB1"/></animateMotion></circle>
+          <!-- qLB2: Lakebase → App serve (6s) -->
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#qLB2"/></animateMotion></circle>
+          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#qLB2"/></animateMotion></circle>
+          <!-- qLB3: App → Lakebase notes (7s) -->
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qLB3"/></animateMotion></circle>
+          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qLB3"/></animateMotion></circle>
         </svg>
 
         <!-- ═══════════════════════════════════════════════
@@ -768,6 +802,12 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
           <div class="dbt" style="font-size:13px;">App</div>
           <div class="dbs" style="margin-top:5px;">Databricks Apps</div>
           <div class="dbs">FastAPI + Chat UI</div>
+        </div>
+
+        <!-- Lakebase -->
+        <div class="db c-blue" style="left:855px;top:315px;width:175px;">
+          <div class="dbt">Lakebase</div>
+          <div class="dbs">Postgres · synced tables + notes</div>
         </div>
 
         <!-- Databricks One -->
@@ -1136,7 +1176,87 @@ function renderDetail() {
           <button class="rec-send" id="rec-send" onclick="sendRec()">Send</button>
         </div>
       </div>
+    </div>
+
+    <div class="panel notes-panel">
+      <div class="panel-head notes-head">
+        <div>
+          <div class="panel-title">HR Notes</div>
+          <div class="panel-sub">Private annotations on ${esc(c.name)} — saved to Lakebase</div>
+        </div>
+      </div>
+      <div class="notes-list" id="notes-list">
+        <div class="notes-empty">Loading notes…</div>
+      </div>
+      <div class="notes-footer">
+        <input type="text" class="rec-inp" id="note-inp"
+          placeholder="Add a note about ${esc(c.name)}…"
+          onkeydown="if(event.key==='Enter')addAnnotation()">
+        <button class="rec-send" id="note-send" onclick="addAnnotation()">Add Note</button>
+      </div>
     </div>`;
+
+  loadAnnotations(c.id);
+}
+
+// ── HR Notes / Annotations ────────────────────────────────
+async function loadAnnotations(candidateId) {
+  const list = document.getElementById('notes-list');
+  if (!list) return;
+  try {
+    const r = await fetch(`/api/candidates/${encodeURIComponent(candidateId)}/annotations`);
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Failed to load notes');
+    renderNotes(d.annotations || []);
+  } catch(e) {
+    list.innerHTML = `<div class="notes-empty">Could not load notes: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderNotes(notes) {
+  const list = document.getElementById('notes-list');
+  if (!list) return;
+  if (!notes.length) {
+    list.innerHTML = `<div class="notes-empty">No notes yet. Add the first annotation below.</div>`;
+    return;
+  }
+  list.innerHTML = notes.map(n => `
+    <div class="note-item">
+      <div class="note-text">${esc(n.note)}</div>
+      <div class="note-meta"><span class="note-author">${esc(n.author||'HR Manager')}</span><span>${fmtTime(n.created_at)}</span></div>
+    </div>`).join('');
+}
+
+async function addAnnotation() {
+  const inp = document.getElementById('note-inp');
+  const btn = document.getElementById('note-send');
+  if (!inp || !currentCandidate) return;
+  const note = inp.value.trim();
+  if (!note) return;
+  btn.disabled = true; inp.disabled = true;
+  const prev = btn.textContent; btn.textContent = 'Saving…';
+  try {
+    const r = await fetch(`/api/candidates/${encodeURIComponent(currentCandidate.id)}/annotations`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({note})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Failed to save note');
+    inp.value = '';
+    await loadAnnotations(currentCandidate.id);
+  } catch(e) {
+    alert('Could not save note: ' + e.message);
+  } finally {
+    btn.disabled = false; inp.disabled = false; btn.textContent = prev;
+    inp.focus();
+  }
+}
+
+function fmtTime(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleString(undefined, {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'});
+  } catch(_) { return iso; }
 }
 
 // ── Generate Recommendation ───────────────────────────────────
