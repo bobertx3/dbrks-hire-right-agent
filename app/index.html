@@ -163,6 +163,24 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .note-meta{font-size:10px;color:var(--light);margin-top:6px;display:flex;gap:8px;align-items:center;}
 .note-author{font-weight:700;color:var(--sub);}
 .notes-footer{padding:10px 14px;border-top:1px solid var(--border);background:var(--bg);display:flex;gap:8px;}
+/* Streaming agent tool-call cards */
+.tool-cards{display:flex;flex-direction:column;gap:6px;margin:2px 0;}
+.tool-cards:empty{display:none;}
+.tool-card{border:1px solid var(--border);border-radius:8px;background:var(--card);overflow:hidden;}
+.tool-card__head{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;}
+.tool-card__ic{width:13px;height:13px;color:var(--sub);flex-shrink:0;}
+.tool-card__name{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:600;color:var(--text);flex:1;font-size:11.5px;word-break:break-all;}
+.tool-card__badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
+.tool-card__badge.running{background:rgba(59,130,246,.12);color:var(--blue);}
+.tool-card__badge.done{background:rgba(16,163,74,.12);color:var(--green);}
+.tool-card__chev{width:12px;height:12px;color:var(--light);transition:transform .15s;flex-shrink:0;}
+.tool-card.open .tool-card__chev{transform:rotate(180deg);}
+.tool-card__body{display:none;border-top:1px solid var(--border);padding:9px 11px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--sub);white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;}
+.tool-card.open .tool-card__body{display:block;}
+.tool-card__body .lbl{color:var(--light);text-transform:uppercase;letter-spacing:.5px;font-size:9px;font-weight:700;display:block;margin:6px 0 3px;}
+.tool-card__body .lbl:first-child{margin-top:0;}
+.spin{display:inline-block;width:9px;height:9px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:tcspin .7s linear infinite;}
+@keyframes tcspin{to{transform:rotate(360deg);}}
 .mm{display:flex;gap:0;font-size:12px;line-height:1.6;}
 .mm.user{flex-direction:row-reverse;}
 .mm-bub{padding:9px 13px;border-radius:10px;max-width:95%;}
@@ -1289,6 +1307,108 @@ async function postChat(body) {
   return data;
 }
 
+// ── Streaming agent chat (SSE) with live tool-call cards ───────────────
+const _TOOL_IC = '<svg class="tool-card__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.77a6 6 0 0 1-7.94 7.94l-6.9 6.91a2.1 2.1 0 0 1-3-3l6.9-6.91a6 6 0 0 1 7.94-7.94l-3.75 3.76z"/></svg>';
+const _CHEV = '<svg class="tool-card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>';
+
+// Runs one agent turn against /api/chat/stream, rendering tool cards + answer
+// live into `box`. Returns {answer, ok, bubble}. History is managed by callers.
+async function streamChat(box, message, history, opts) {
+  opts = opts || {};
+  const wrap = document.createElement('div');
+  wrap.className = opts.assistantClass || 'msg assistant';
+  if (opts.withAvatar) {
+    const av = document.createElement('div'); av.className = 'msg-av'; av.textContent = 'AI';
+    wrap.appendChild(av);
+  }
+  const bub = document.createElement('div'); bub.className = opts.bubClass || 'msg-bub';
+  const cards = document.createElement('div'); cards.className = 'tool-cards';
+  const textEl = document.createElement('div'); textEl.className = 'stream-text';
+  textEl.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+  bub.appendChild(cards); bub.appendChild(textEl); wrap.appendChild(bub);
+  box.appendChild(wrap); box.scrollTop = box.scrollHeight;
+
+  const cardByCall = {};
+  let answer = '', gotFirst = false;
+  const clearTyping = () => { if (!gotFirst) { textEl.innerHTML = ''; gotFirst = true; } };
+
+  const handle = (evt) => {
+    if (evt.type === 'tool_call') {
+      let args = '';
+      try { args = JSON.stringify(JSON.parse(evt.arguments || '{}'), null, 2); } catch(_) { args = evt.arguments || ''; }
+      const card = document.createElement('div'); card.className = 'tool-card';
+      card.innerHTML =
+        `<div class="tool-card__head" onclick="this.parentNode.classList.toggle('open')">${_TOOL_IC}`+
+        `<span class="tool-card__name">${esc(evt.name || 'tool')}</span>`+
+        `<span class="tool-card__badge running"><span class="spin"></span>Running</span>${_CHEV}</div>`+
+        `<div class="tool-card__body"><span class="lbl">Arguments</span>${esc(args || '(none)')}<div class="tc-out"></div></div>`;
+      cards.appendChild(card);
+      if (evt.call_id) cardByCall[evt.call_id] = card;
+      box.scrollTop = box.scrollHeight;
+    } else if (evt.type === 'tool_result') {
+      const card = cardByCall[evt.call_id] || cards.querySelector('.tool-card:last-child');
+      if (card) {
+        const badge = card.querySelector('.tool-card__badge');
+        if (badge) { badge.className = 'tool-card__badge done'; badge.textContent = 'Completed'; }
+        const out = card.querySelector('.tc-out');
+        if (out) out.innerHTML = '<span class="lbl">Result</span>' + esc(String(evt.output || '').slice(0, 4000));
+      }
+    } else if (evt.type === 'text') {
+      clearTyping();
+      answer += (answer ? '\n\n' : '') + (evt.text || '');
+      textEl.innerHTML = DOMPurify.sanitize(marked.parse(answer));
+      box.scrollTop = box.scrollHeight;
+    } else if (evt.type === 'error') {
+      clearTyping();
+      answer = '⚠️ ' + (evt.message || 'Agent error');
+      textEl.innerHTML = DOMPurify.sanitize(marked.parse(answer));
+    }
+  };
+
+  let resp;
+  try {
+    resp = await fetch('/api/chat/stream', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, conversation_history: history })
+    });
+  } catch(e) {
+    clearTyping(); answer = '⚠️ Network error contacting the agent. Please try again.';
+    textEl.textContent = answer; return { answer, ok: false, bubble: bub };
+  }
+  if (!resp.ok || !resp.body) {
+    clearTyping(); answer = '⚠️ ' + (resp.status === 504
+      ? 'The agent is warming up (cold start can take a minute or two). Please try again shortly.'
+      : `Agent request failed (HTTP ${resp.status}).`);
+    textEl.textContent = answer; return { answer, ok: false, bubble: bub };
+  }
+
+  const reader = resp.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let i;
+      while ((i = buf.indexOf('\n\n')) >= 0) {
+        const chunk = buf.slice(0, i); buf = buf.slice(i + 2);
+        const line = chunk.split('\n').find(l => l.startsWith('data:'));
+        if (!line) continue;
+        const data = line.slice(5).trim();
+        if (!data) continue;
+        let evt; try { evt = JSON.parse(data); } catch(_) { continue; }
+        if (evt.type !== 'done') handle(evt);
+      }
+    }
+  } catch(e) {
+    clearTyping();
+    if (!answer) { answer = '⚠️ Streaming interrupted. Please try again.'; textEl.textContent = answer; }
+  }
+  if (!gotFirst) { textEl.innerHTML = ''; }  // no text came back
+  return { answer, ok: true, bubble: bub };
+}
+
 async function generateRec() {
   if (recBusy) return;
   const c = currentCandidate;
@@ -1318,16 +1438,11 @@ async function generateRec() {
     `(1) the DS hire recommendation, and (2) a very concise candidate summary using the search_resumes tool to retrieve relevant resume context for ${c.name} (${c.id}).`;
 
   addRecMsg('user', `Generate DS Recommendation for ${c.name} (${c.id})`);
-  const tp = addRecTyping();
-
+  const box = document.getElementById('rec-msgs');
   try {
-    const d = await postChat({message: prompt, conversation_history: recHistory});
-    recHistory = d.conversation_history;
-    tp.remove();
-    addRecMsg('assistant', d.reply);
-  } catch(e) {
-    tp.remove();
-    addRecMsg('assistant', `⚠️ ${e.message}`);
+    const { answer } = await streamChat(box, prompt, recHistory,
+      { assistantClass: 'mm assistant', bubClass: 'mm-bub' });
+    recHistory.push({ role: 'user', content: prompt }, { role: 'assistant', content: answer });
   } finally {
     recBusy = false;
     btn.disabled = false;
@@ -1343,15 +1458,11 @@ async function sendRec() {
   recBusy = true;
   document.getElementById('rec-send').disabled = true;
   addRecMsg('user', msg);
-  const tp = addRecTyping();
+  const box = document.getElementById('rec-msgs');
   try {
-    const d = await postChat({message: msg, conversation_history: recHistory});
-    recHistory = d.conversation_history;
-    tp.remove();
-    addRecMsg('assistant', d.reply);
-  } catch(e) {
-    tp.remove();
-    addRecMsg('assistant', `⚠️ ${e.message}`);
+    const { answer } = await streamChat(box, msg, recHistory,
+      { assistantClass: 'mm assistant', bubClass: 'mm-bub' });
+    recHistory.push({ role: 'user', content: msg }, { role: 'assistant', content: answer });
   } finally {
     recBusy = false;
     document.getElementById('rec-send').disabled = false;
@@ -1390,15 +1501,18 @@ async function agentSend(text) {
   agentBusy = true;
   document.getElementById('agent-btn').disabled = true;
   addMsg('agent-msgs', 'user', msg);
-  const tp = addTyping('agent-msgs', 'agent');
+  const box = document.getElementById('agent-msgs');
   try {
-    const d = await postChat({message: msg, conversation_history: agentHistory});
-    agentHistory = d.conversation_history;
-    tp.remove();
-    addAgentMsg(d.reply);
-  } catch(e) {
-    tp.remove();
-    addAgentMsg(`⚠️ ${e.message}`);
+    const { answer } = await streamChat(box, msg, agentHistory,
+      { withAvatar: true, assistantClass: 'msg assistant', bubClass: 'msg-bub' });
+    agentHistory.push({ role: 'user', content: msg }, { role: 'assistant', content: answer });
+    // Append the suggested follow-up chips under the streamed answer.
+    const chips = AGENT_SUGGESTIONS.map(q =>
+      `<button class="genie-sugg" style="border-color:rgba(220,38,38,.2);color:var(--accent);background:rgba(220,38,38,.05);" onclick="agentSend(this.textContent)">${esc(q)}</button>`
+    ).join('');
+    const bub = box.querySelector('.msg.assistant:last-child .msg-bub');
+    if (bub) bub.insertAdjacentHTML('beforeend',
+      `<div class="genie-sugg-row" style="border-top-color:rgba(220,38,38,.15);">${chips}</div>`);
   } finally {
     agentBusy = false;
     document.getElementById('agent-btn').disabled = false;

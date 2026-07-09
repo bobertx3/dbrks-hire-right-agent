@@ -7,12 +7,14 @@ endpoint, and calls the Genie Conversation API with multi-turn support.
 """
 import os
 import re
+import json
 import time
 import logging
 from typing import Optional
 
+import httpx
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 from pydantic import BaseModel
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
@@ -292,6 +294,121 @@ async def chat(request: ChatRequest):
     except Exception as e:
         logger.error("Chat error: %s", str(e), exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Streaming chat (Server-Sent Events) ─────────────────────────────────────────
+def _sse(obj: dict) -> str:
+    return f"data: {json.dumps(obj)}\n\n"
+
+
+def _item_text(item: dict) -> str:
+    """Pull display text out of a Responses 'message'/text output item."""
+    if not isinstance(item, dict):
+        return ""
+    if item.get("type") in ("output_text", "text") and item.get("text"):
+        return item["text"]
+    content = item.get("content")
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = [
+            c.get("text", "")
+            for c in content
+            if isinstance(c, dict) and c.get("type") in ("output_text", "text")
+        ]
+        joined = " ".join(p for p in parts if p)
+        if joined:
+            return joined
+    return item.get("text") or ""
+
+
+def _normalize_item(item: dict) -> Optional[dict]:
+    """Map a Responses output item to the compact event shape the browser renders."""
+    if not isinstance(item, dict):
+        return None
+    itype = item.get("type", "")
+    if itype == "function_call":
+        return {"type": "tool_call", "name": item.get("name"),
+                "call_id": item.get("call_id"), "arguments": item.get("arguments")}
+    if itype == "function_call_output":
+        return {"type": "tool_result", "call_id": item.get("call_id"),
+                "output": item.get("output")}
+    text = _item_text(item)
+    if text:
+        return {"type": "text", "text": text}
+    return None
+
+
+@app.post("/api/chat/stream")
+async def chat_stream(request: ChatRequest):
+    """Stream the agent's tool calls + answer to the browser as SSE.
+
+    Invokes the ResponsesAgent endpoint in streaming mode and forwards each
+    `response.output_item.done` event (function call, tool result, text) as a
+    compact SSE event. Falls back to a single JSON invocation if the endpoint
+    does not return an event-stream.
+    """
+    w = get_client()
+    host = w.config.host.rstrip("/")
+    history = list(request.conversation_history)
+    history.append({"role": "user", "content": request.message})
+
+    url = f"{host}/serving-endpoints/{AGENT_ENDPOINT}/invocations"
+    headers = {"Content-Type": "application/json", "Accept": "text/event-stream"}
+    headers.update(w.config.authenticate())  # Authorization: Bearer ...
+    payload = {"input": history, "stream": True}
+
+    async def gen():
+        try:
+            timeout = httpx.Timeout(300.0, connect=30.0)
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                async with client.stream("POST", url, json=payload, headers=headers) as resp:
+                    ctype = resp.headers.get("content-type", "")
+                    if resp.status_code != 200:
+                        body = (await resp.aread()).decode("utf-8", "replace")
+                        low = body.lower()
+                        msg = ("The agent is warming up (cold start can take a minute or two). "
+                               "Please try again shortly.") if ("upstream" in low or "timeout" in low) \
+                              else body[:400]
+                        yield _sse({"type": "error", "message": msg})
+                        return
+
+                    if "text/event-stream" in ctype:
+                        async for line in resp.aiter_lines():
+                            if not line or not line.startswith("data:"):
+                                continue
+                            data = line[5:].strip()
+                            if data == "[DONE]":
+                                break
+                            try:
+                                evt = json.loads(data)
+                            except Exception:
+                                continue
+                            if evt.get("type") == "response.output_item.done":
+                                out = _normalize_item(evt.get("item") or {})
+                                if out:
+                                    yield _sse(out)
+                    else:
+                        # Non-streaming fallback: parse the whole JSON and replay items.
+                        full = json.loads((await resp.aread()).decode("utf-8", "replace"))
+                        for item in (full.get("output") or []):
+                            out = _normalize_item(item)
+                            if out:
+                                yield _sse(out)
+            yield _sse({"type": "done"})
+        except Exception as e:
+            logger.error("Stream error: %s", str(e), exc_info=True)
+            yield _sse({"type": "error", "message": str(e)})
+
+    return StreamingResponse(
+        gen(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",  # disable proxy buffering so events flush live
+        },
+    )
 
 
 @app.post("/api/genie", response_model=GenieResponse)
