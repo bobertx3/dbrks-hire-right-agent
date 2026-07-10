@@ -189,7 +189,7 @@ window.DB_IMAGES={logo:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwAAAAB5CA
     <div class="db-card"><h3>Resume Q&amp;A (RAG)</h3><p>Ask about any candidate&rsquo;s experience &mdash; grounded in their actual resume.</p></div>
     <div class="db-card"><h3>Genie analytics</h3><p>&ldquo;Who are the top 3 for the CPO role?&rdquo; answered instantly over governed data.</p></div>
     <div class="db-card"><h3>HR notes</h3><p>Add durable, audit-trailed annotations to a candidate record &mdash; saved to Lakebase.</p></div>
-    <div class="db-card"><h3>Snappy &amp; always-on</h3><p>Low-latency reads from Lakebase keep the whole workspace instant.</p></div>
+    <div class="db-card"><h3>AI offer letter</h3><p>One click drafts a salaried offer letter and sends it via the agent&rsquo;s mailer tool.</p></div>
   </div>
 <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide "><div class="slide__glow"></div>
   <span class="db-label eyebrow reveal">How it works</span>
@@ -197,9 +197,10 @@ window.DB_IMAGES={logo:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwAAAAB5CA
   <div class="card-grid reveal">
     <div class="db-card green"><div class="step">01 &middot; FOUNDATION</div><h3>Lakeflow + Unity Catalog</h3><p>Synthetic applicant data ingested with Lakeflow, refined Bronze&rarr;Silver&rarr;Gold, governed with lineage, PII masking &amp; tags.</p></div>
     <div class="db-card"><div class="step">02 &middot; SERVE</div><h3>Lakebase</h3><p>Governed tables synced to a low-latency Postgres layer that powers the app &mdash; and stores HR annotations.</p></div>
-    <div class="db-card"><div class="step">03 &middot; INTELLIGENCE</div><h3>ML + Gen AI</h3><p>An MLflow hiring model on Model Serving, plus a data-grounded agent (Genie, resume RAG, scoring tools).</p></div>
-    <div class="db-card"><div class="step">04 &middot; EXPLORE</div><h3>Genie Room</h3><p>Recruiters ask questions in natural language over governed data &mdash; no SQL required.</p></div>
-    <div class="db-card"><div class="step">05 &middot; DELIVER</div><h3>Databricks App</h3><p>A single HR workspace: scoring, recommendations, resume viewer, Genie Q&amp;A, and candidate notes.</p></div>
+    <div class="db-card"><div class="step">03 &middot; PREDICT</div><h3>Predictive ML</h3><p>An MLflow hire model on Model Serving returns a hire / no-hire decision from the scoring features.</p></div>
+    <div class="db-card"><div class="step">04 &middot; AGENT</div><h3>AI Agent</h3><p>A ResponsesAgent orchestrates tools &mdash; Genie, resume RAG, ML scoring, and email &mdash; grounded in your data.</p></div>
+    <div class="db-card"><div class="step">05 &middot; EXPLORE</div><h3>Genie Room</h3><p>Recruiters ask questions in natural language over governed data &mdash; no SQL required.</p></div>
+    <div class="db-card"><div class="step">06 &middot; DELIVER</div><h3>Databricks App</h3><p>A single HR workspace: scoring, recommendations, resume viewer, Genie Q&amp;A, and candidate notes.</p></div>
   </div>
 <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide slide--arch"><div class="slide__glow"></div>
   <span class="db-label eyebrow reveal">Architecture &middot; key technical components</span>
