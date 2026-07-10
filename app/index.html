@@ -170,7 +170,10 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .notes-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
 .notes-list{padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:60px;max-height:280px;overflow-y:auto;}
 .notes-empty{color:var(--light);font-size:12px;text-align:center;padding:16px 0;line-height:1.6;}
-.note-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;}
+.note-item{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 34px 10px 12px;}
+.note-del{position:absolute;top:7px;right:7px;width:24px;height:24px;border:none;background:transparent;color:var(--light);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s,color .15s,background .15s;}
+.note-item:hover .note-del{opacity:1;}
+.note-del:hover{background:rgba(220,38,38,.1);color:var(--accent);}
 .note-text{font-size:13px;color:var(--text);line-height:1.5;white-space:pre-wrap;word-break:break-word;}
 .note-meta{font-size:10px;color:var(--light);margin-top:6px;display:flex;gap:8px;align-items:center;}
 .note-author{font-weight:700;color:var(--sub);}
@@ -1127,9 +1130,25 @@ function renderNotes(notes) {
   }
   list.innerHTML = notes.map(n => `
     <div class="note-item">
+      <button class="note-del" title="Delete note" onclick="deleteAnnotation(${n.id})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+      </button>
       <div class="note-text">${esc(n.note)}</div>
       <div class="note-meta"><span class="note-author">${esc(n.author||'HR Manager')}</span><span>${fmtTime(n.created_at)}</span></div>
     </div>`).join('');
+}
+
+async function deleteAnnotation(id) {
+  if (!currentCandidate) return;
+  if (!confirm('Delete this note? This cannot be undone.')) return;
+  try {
+    const r = await fetch(`/api/candidates/${encodeURIComponent(currentCandidate.id)}/annotations/${id}`, { method: 'DELETE' });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.detail || 'Delete failed');
+    await loadAnnotations(currentCandidate.id);
+  } catch (e) {
+    alert('Could not delete note: ' + e.message);
+  }
 }
 
 async function addAnnotation() {

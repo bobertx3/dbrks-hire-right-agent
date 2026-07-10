@@ -278,6 +278,25 @@ async def add_annotation(candidate_id: str, req: AnnotationRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.delete("/api/candidates/{candidate_id}/annotations/{note_id}")
+async def delete_annotation(candidate_id: str, note_id: int):
+    """Delete a single HR annotation from the candidate record."""
+    try:
+        rows = execute_write("""
+            DELETE FROM candidate_annotations
+            WHERE id = :id AND candidate_id = :cid
+            RETURNING id
+        """, {"id": note_id, "cid": candidate_id})
+        if not rows:
+            raise HTTPException(status_code=404, detail="Note not found.")
+        return {"ok": True, "deleted": rows[0].get("id")}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Delete annotation error: %s", str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # ── AI-Powered Offer Letter ─────────────────────────────────────────────────────
 def _llm_complete(w: WorkspaceClient, system: str, user: str, max_tokens: int = 900) -> str:
     """Single-shot completion against the LLM serving endpoint."""
