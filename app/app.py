@@ -72,6 +72,14 @@ class AnnotationRequest(BaseModel):
     note: str
     author: Optional[str] = None
 
+class OfferDraftRequest(BaseModel):
+    candidate_id: str
+
+class OfferSendRequest(BaseModel):
+    to: str
+    subject: str
+    body: str
+
 
 # ── Response parsing ───────────────────────────────────────────────────────────
 def _extract_agent_reply(pred) -> str:
@@ -267,6 +275,129 @@ async def add_annotation(candidate_id: str, req: AnnotationRequest):
         raise
     except Exception as e:
         logger.error("Add annotation error: %s", str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── AI-Powered Offer Letter ─────────────────────────────────────────────────────
+def _llm_complete(w: WorkspaceClient, system: str, user: str, max_tokens: int = 900) -> str:
+    """Single-shot completion against the LLM serving endpoint."""
+    result = w.api_client.do(
+        "POST",
+        f"/serving-endpoints/{LLM_ENDPOINT}/invocations",
+        body={
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            "max_tokens": max_tokens,
+            "temperature": 0.4,
+        },
+    )
+    choices = result.get("choices", []) if isinstance(result, dict) else []
+    if choices:
+        return choices[0].get("message", {}).get("content", "") or ""
+    return ""
+
+
+def _offer_salary(row: dict) -> int:
+    smin, smax = row.get("salary_min"), row.get("salary_max")
+    try:
+        if smin and smax:
+            return int(round(((float(smin) + float(smax)) / 2) / 1000.0)) * 1000
+        if smax:
+            return int(float(smax))
+        if smin:
+            return int(float(smin))
+    except (TypeError, ValueError):
+        pass
+    return 185000
+
+
+@app.post("/api/offer-letter/draft")
+async def offer_letter_draft(req: OfferDraftRequest):
+    """AI-draft an offer letter (HTML body + subject) for a candidate."""
+    cid = (req.candidate_id or "").upper().strip()
+    try:
+        rows = execute_query("""
+            SELECT candidate_id, full_name, first_name, email, job_title, department,
+                   current_company, salary_min, salary_max
+            FROM candidate_scoring_summary WHERE candidate_id = :cid LIMIT 1
+        """, {"cid": cid})
+        if not rows:
+            raise HTTPException(status_code=404, detail=f"Unknown candidate {cid}")
+        r = rows[0]
+        name = r.get("full_name") or cid
+        first = r.get("first_name") or name.split(" ")[0]
+        job_title = r.get("job_title") or "the role"
+        dept = r.get("department") or "Human Resources"
+        salary = _offer_salary(r)
+
+        w = get_client()
+        system = (
+            "You are an HR talent-acquisition assistant writing a formal, warm job offer letter "
+            "for Jackson & Jackson, a leading pharmaceutical company. "
+            "Return ONLY the letter body as clean semantic HTML using <p>, <strong>, and <ul><li> tags. "
+            "Do NOT include <html>, <head>, <body>, markdown, or code fences. "
+            "Keep it professional and concise (about 200-280 words)."
+        )
+        user = (
+            f"Write an offer letter to {first} for the position of {job_title} in the {dept} "
+            f"organization at Jackson & Jackson. Annual base salary: ${salary:,}. "
+            "Include: warm congratulations addressing them by first name; the role title and base salary; "
+            "a brief mention of benefits (comprehensive health coverage, 401(k) match, and equity); "
+            "a note that employment is at-will; and a closing line asking them to sign and return the letter "
+            "within two weeks. Sign off from 'The Jackson & Jackson Talent Acquisition Team'."
+        )
+        body = _llm_complete(w, system, user, max_tokens=900).strip()
+        # strip accidental code fences
+        if body.startswith("```"):
+            body = body.split("```", 2)[1] if body.count("```") >= 2 else body.replace("```", "")
+            body = body.lstrip("html").strip()
+        subject = f"Your Offer from Jackson & Jackson — {job_title}"
+        return {"to": r.get("email") or "", "subject": subject, "body": body,
+                "salary": salary, "candidate_name": name}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Offer draft error: %s", str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/offer-letter/send")
+async def offer_letter_send(req: OfferSendRequest):
+    """Send the offer letter via the agent's send_email (Mailer) tool.
+
+    The Mailgun credentials live on the agent serving endpoint, so we route the
+    send through the agent and instruct it to call send_email verbatim.
+    """
+    to = (req.to or "").strip()
+    subject = (req.subject or "").strip()
+    body = (req.body or "").strip()
+    if "@" not in to:
+        raise HTTPException(status_code=400, detail="A valid recipient email is required.")
+    if not body:
+        raise HTTPException(status_code=400, detail="The offer letter body is empty.")
+    try:
+        w = get_client()
+        instruction = (
+            "Call the send_email tool exactly once, then reply only with the tool's result. "
+            "Use these arguments verbatim — do NOT edit, summarize, translate, or reformat the body; "
+            "pass the HTML between the <<<BODY>>> markers exactly as-is (excluding the markers).\n\n"
+            f"to = {to}\n"
+            f"subject = {subject}\n"
+            "body =\n<<<BODY>>>\n" + body + "\n<<<BODY>>>"
+        )
+        result = w.api_client.do(
+            "POST",
+            f"/serving-endpoints/{AGENT_ENDPOINT}/invocations",
+            body={"input": [{"role": "user", "content": instruction}]},
+        )
+        reply = _extract_agent_reply(result) if isinstance(result, dict) else str(result)
+        low = (reply or "").lower()
+        ok = ("sent successfully" in low) or ("✅" in (reply or "")) or ("mailgun id" in low)
+        return {"ok": ok, "detail": reply or "No response from agent."}
+    except Exception as e:
+        logger.error("Offer send error: %s", str(e), exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
