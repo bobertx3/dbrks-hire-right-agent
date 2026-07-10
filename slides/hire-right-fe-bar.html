@@ -42,7 +42,9 @@ img{max-width:100%;}
 .accent{color:var(--db-accent);}
 .coral{color:var(--db-accent-coral);}
 
-.eyebrow{display:block;margin-bottom:18px;}
+/* Attention-grabbing kicker: coral text + a short leading accent bar */
+.eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;color:var(--db-accent-coral);font-weight:700;}
+.eyebrow::before{content:'';width:24px;height:3px;border-radius:2px;background:var(--db-accent-coral);flex:none;}
 .mt-s{margin-top:12px;} .mt-m{margin-top:22px;} .mt-l{margin-top:34px;}
 ul.ticks{list-style:none;margin-top:20px;}
 ul.ticks li{position:relative;padding-left:26px;margin-bottom:14px;font-size:clamp(15px,1.7vw,20px);line-height:1.5;color:var(--db-body);}
@@ -149,8 +151,13 @@ ul.ticks li::before{content:'';position:absolute;left:0;top:9px;width:9px;height
 .slide--shot .db-h1{font-size:clamp(23px,3.2vw,38px);margin-bottom:18px;}
 .slide--shot .shot-grid{display:grid;grid-template-columns:0.82fr 1.3fr;gap:46px;align-items:center;}
 .slide--shot ul.ticks{margin-top:6px;}
-.shot-frame{border:1px solid var(--db-border);border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.17);background:#fff;line-height:0;}
+.shot-frame{position:relative;border:1px solid var(--db-border);border-radius:12px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.17);background:#fff;line-height:0;}
 .shot-frame img{display:block;width:100%;height:auto;}
+/* tall screenshots: cap height, hug the image, keep annotations aligned */
+.slide--shot .shot-frame{width:-moz-fit-content;width:fit-content;max-width:100%;margin:0 auto;}
+.slide--shot .shot-frame img{width:auto;max-width:100%;max-height:74vh;}
+.shot-frame .hi{position:absolute;border:3px solid #FF5F46;border-radius:9px;box-shadow:0 0 0 3px rgba(255,95,70,.14);pointer-events:none;}
+.shot-frame .tag{position:absolute;transform:translateY(-100%);background:#FF5F46;color:#fff;font:600 11px/1.2 'DM Mono',monospace;padding:5px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,.22);}
 @media (max-width:900px){.slide--shot .shot-grid{grid-template-columns:1fr;gap:24px;}}
 </style>
 </head>
@@ -305,16 +312,17 @@ window.DB_IMAGES={logo:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwAAAAB5CA
         </div>
         <div class="shot-frame"><img src="screenshots/uc-masked-data.png" alt="Governance you can see &mdash; PII masked in place."></div>
       </div>
-    <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide "><div class="slide__glow"></div>
-  <span class="db-label eyebrow reveal">Technical &middot; operational serving</span>
-  <h2 class="db-h1 reveal">Lakebase turns the lakehouse into an app backend.</h2>
-  <div class="card-grid reveal">
-    <div class="db-card"><h3>Synced tables</h3><p>Gold candidate &amp; job tables synced Delta&rarr;Postgres for millisecond, app-facing reads.</p></div>
-    <div class="db-card"><h3>Transactional notes</h3><p>A native <code>candidate_annotations</code> table captures HR notes, joined to candidate data.</p></div>
-    <div class="db-card"><h3>Powers the app</h3><p>Candidate cards, job views and notes all served from Lakebase &mdash; a snappy UX.</p></div>
-    <div class="db-card"><h3>Secure by default</h3><p>The app connects with short-lived OAuth credentials, governed in Unity Catalog.</p></div>
-  </div>
-<footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide slide--shot"><div class="slide__glow"></div>
+    <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide slide--shot"><div class="slide__glow"></div>
+      <span class="db-label eyebrow reveal">Technical &middot; operational serving</span>
+      <h2 class="db-h1 reveal">Lakebase turns the lakehouse into an app backend.</h2>
+      <div class="shot-grid reveal">
+        <div>
+          <ul class="ticks"><li>Gold candidate &amp; job tables synced Delta&rarr;Postgres for millisecond reads.</li><li>HR notes write to a native <strong>candidate_annotations</strong> table &mdash; add or delete inline.</li><li>The whole cockpit is served from Lakebase; the app connects via OAuth.</li></ul>
+          <p class="db-body-t" style="margin-top:16px;color:var(--db-body-dim);">Analytical lakehouse + operational Postgres, governed together in Unity Catalog.</p>
+        </div>
+        <div class="shot-frame"><img src="screenshots/app-candidate-detail.png" alt="Lakebase turns the lakehouse into an app backend."><div class="hi" style="top:72.5%;left:2%;width:96%;height:26%;"></div><div class="tag" style="top:72%;left:3%;">HR notes &mdash; add &amp; delete inline, committed to Lakebase (Postgres)</div></div>
+      </div>
+    <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide slide--shot"><div class="slide__glow"></div>
       <span class="db-label eyebrow reveal">Technical &middot; predictive ML</span>
       <h2 class="db-h1 reveal">Three models, tracked and compared in MLflow.</h2>
       <div class="shot-grid reveal">
