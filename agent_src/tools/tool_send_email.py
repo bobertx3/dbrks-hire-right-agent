@@ -4,6 +4,7 @@ Sends an HTML-formatted email via Mailgun with Jackson and Jackson HR Digital br
 Adapted from the weatherwise agent email tool pattern.
 """
 import os
+import re
 import requests
 import mlflow
 from langchain_core.tools import tool
@@ -30,8 +31,16 @@ def send_email(to: str, subject: str, body: str) -> str:
     if not recipient:
         return "Error: No valid email recipient provided and RECIPIENT env var is not set."
 
-    # Convert plain-text body to HTML with line breaks
-    html_body = body.replace("\n", "<br>").replace("**", "")
+    # The body may arrive as pre-formatted HTML (e.g. the offer letter, which
+    # uses <p>/<ul> block tags) or as plain text from a chat reply. For HTML we
+    # must NOT turn every source newline into <br>: the block tags already
+    # provide spacing, so newline->br would double it (blank lines everywhere).
+    # HTML renderers ignore raw newlines, so we leave them as-is. For plain
+    # text, newlines are the only paragraph signal, so keep the conversion.
+    if re.search(r"<(p|ul|ol|li|div|table|tr|h[1-6]|br)\b", body, re.I):
+        html_body = body.replace("**", "")
+    else:
+        html_body = body.replace("\n", "<br>").replace("**", "")
 
     # Replace recommendation verdicts with colour-coded chips
     _chip_recommend = (
