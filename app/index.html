@@ -386,10 +386,10 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 #arch-ov .arch-mh{border-bottom:1px solid rgba(0,0,0,.08);}
 #arch-ov .arch-mt{color:#1B3139;}
 #arch-ov .arch-ms{color:rgba(0,0,0,.5);}
-#arch-ov .arch-mb{background:#f4f2ee;}
+#arch-ov .arch-mb{background:#f4f2ee;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 #arch-ov .arch-mx{color:#8a857c;background:rgba(0,0,0,.04);}
 #arch-ov .arch-mx:hover{background:rgba(0,0,0,.08);}
-.af-diagram{font-family:'DM Sans',system-ui,sans-serif;color:#2a2a2a;display:inline-block;min-width:100%;box-sizing:border-box;padding:8px 6px 12px;}
+.af-diagram{font-family:'DM Sans',system-ui,sans-serif;color:#2a2a2a;display:inline-block;box-sizing:border-box;padding:8px 6px 12px;transform-origin:center center;}
 .af-sheet{display:flex;align-items:stretch;gap:0;}
 .af-col{display:flex;flex-direction:column;gap:13px;align-items:stretch;justify-content:center;}
 .af-lbl{font:600 10px/1 'DM Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:#a8a196;margin-bottom:1px;}
@@ -1801,15 +1801,32 @@ function closeJD() {
 function _jdEsc(e) { if (e.key === 'Escape') closeJD(); }
 
 // ── Architecture Modal ────────────────────────────────────────
+function scaleArchToFit() {
+  const body = document.querySelector('#arch-ov .arch-mb');
+  const dg = document.querySelector('#arch-ov .af-diagram');
+  if (!body || !dg) return;
+  dg.style.transform = 'none';
+  const availW = body.clientWidth - 24, availH = body.clientHeight - 24;
+  const w = dg.offsetWidth, h = dg.offsetHeight;
+  if (!w || !h) return;
+  const s = Math.min(availW / w, availH / h, 1);
+  dg.style.transform = 'scale(' + s + ')';
+}
 function openArch() {
   document.getElementById('arch-ov').classList.add('open');
   document.addEventListener('keydown', _archEsc);
+  requestAnimationFrame(scaleArchToFit);
+  setTimeout(scaleArchToFit, 80);   // re-fit after fonts/layout settle
 }
 function closeArch() {
   document.getElementById('arch-ov').classList.remove('open');
   document.removeEventListener('keydown', _archEsc);
 }
 function _archEsc(e) { if (e.key === 'Escape') closeArch(); }
+window.addEventListener('resize', function () {
+  const ov = document.getElementById('arch-ov');
+  if (ov && ov.classList.contains('open')) scaleArchToFit();
+});
 
 // ── Init ──────────────────────────────────────────────────────
 loadCandidates();

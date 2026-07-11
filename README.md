@@ -199,7 +199,13 @@ Run in numeric order (`00a → 10`). Minimum path to a working app after data ex
 ### Deploy gotchas (learned the hard way)
 - **First-time app adoption** — if an app with the same `name` already exists but wasn't created by
   this bundle, `bundle deploy` errors ("app already exists"). Delete it once
-  (`databricks apps delete <name>`) so the bundle can own it, then redeploy.
+  (`databricks apps delete <name>`) so the bundle can own it, then redeploy. Note this mints a
+  **new app service principal**.
+- **Grant the app SP Unity Catalog access.** The resource bindings cover the endpoint / warehouse /
+  Genie / Lakebase, but the SP still needs UC grants (`USE CATALOG`, `USE SCHEMA`, `SELECT`,
+  `READ VOLUME` on `raw_data`) to read the résumé volume and let Genie run SQL. Notebook `09`
+  (`grant_app_permissions`) grants these **dynamically for the current SP** — run it (or the job)
+  after the app is (re)created.
 - **Redeploying the agent endpoint out-of-band** can reset its ACL — re-run `bundle deploy` (or
   notebook `09`) to reassert the app SP's `CAN_QUERY`.
 - **Secret scanner** flags base64 image blobs and Postgres connection-string placeholders
