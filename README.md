@@ -50,59 +50,95 @@ The repo is intentionally lean (~120 tracked files) — build/tooling artifacts
 are gitignored, so everything you see below is the actual work.
 
 ```
-databricks.yml                # DAB bundle: variables, the pipeline Job, dashboard, 2 targets
-notebooks/                    # The build pipeline (run in order; also the Job's tasks)
-  00a_setup_schema_volume     # Create UC schema + raw_data volume
-  00_load_bronze              # Ingest synthetic CSVs via read_files (Lakeflow/Auto Loader)
-  01_load_silver              # Type, clean, mask PII
-  01b_build_vector_search     # Resume embedding index (RAG)
-  02_apply_data_quality_and_classification
-  03_build_gold               # candidate_scoring_summary (join, total_score avg, stage)
-  03b_apply_business_semantics# Metric view / business definitions for Genie
-  04_create_genie_space       # HR Analytics Genie Space   (+ 04_genie_space.json config)
-  04b_create_uc_functions     # UC SQL functions (agent tools)
-  05_train_ml_model           # Train 3 sklearn models -> MLflow -> @champion -> Model Serving
-  05b_create_drift_monitor    # Lakehouse Monitoring on the model
-  06_evaluate_register_agent  # Log/eval (LLM judge) + register + deploy the ResponsesAgent
-  07_deploy_app               # Build app.yaml, deploy the App, PATCH resource bindings
-  08_refresh_dashboard        # Refresh the Lakeview dashboard
-  09_grant_app_permissions    # Grant the app SP UC + endpoint + Genie access
-  10_setup_lakebase           # Create Lakebase, sync tables, create candidate_annotations
-  run_all                     # Manual orchestrator (not the Job DAG)
-
-agent_src/                    # The MLflow 3.0 ResponsesAgent (deployed by notebook 06)
-  hire_right_agent.py         # ToolCalling ResponsesAgent; predict + streaming predict_stream
-  config_helper.py            # os.getenv-based config (no ModelConfig)
-  tools/
-    tool_query_genie.py       # Genie Conversation API
-    tool_search_resume.py     # Vector Search RAG
-    tool_predict_score.py     # Calls the ML serving endpoint (+ weighted-sum fallback)
-    tool_send_email.py        # Mailgun mailer (used by the AI offer letter)
-    tool_query_hr_data.py     # Direct SQL helper
-
-app/                          # The Databricks App (deployed by notebook 07)
-  app.py                      # FastAPI: candidates/jobs from Lakebase, chat (SSE streaming),
-                              #   Genie proxy, resume PDF, offer-letter draft+send, annotations CRUD
-  db.py                       # Lakebase (Postgres) access via OAuth credential injection
-  index.html                  # Single-file UI: candidate cockpit, streaming tool cards,
-                              #   HR notes, AI offer-letter composer, architecture modal
-  app.yaml                    # App config + resource bindings (serving, warehouse, genie, database)
-  requirements.txt
-
-dashboard/hiring_analytics.lvdash.json   # Lakeview AI/BI dashboard
-scripts/generate_resumes.py              # Synthetic resume generator
-slides/                                  # FE Bar deck + workshop deck (HTML + PDF) + screenshots
-  hire-right-fe-bar.html / .pdf          # The FE Bar business+architecture deck (submit this)
-  hire-right-workshop.html / .pdf        # Longer technical workshop deck
-  screenshots/                           # Product screenshots used in the deck
-solution-brief/                          # Printable customer leave-behind (PDF)
-reference/                               # Reference material collected before building
-BUILD.md                                 # How this was built (workflow, AI tools, decisions)
+.
+├── databricks.yml                       # DAB bundle: variables, pipeline Job, dashboard, 2 targets
+├── notebooks/                           # Build pipeline — run in order (also the Job's tasks)
+│   ├── 00a_setup_schema_volume.ipynb    # Create UC schema + raw_data volume
+│   ├── 00_load_bronze.ipynb             # Ingest synthetic CSVs via read_files (Lakeflow)
+│   ├── 01_load_silver.ipynb             # Type, clean, mask PII
+│   ├── 01b_build_vector_search.ipynb    # Resume embedding index (RAG)
+│   ├── 02_apply_data_quality_and_classification.ipynb
+│   ├── 03_build_gold.ipynb              # candidate_scoring_summary (join, total_score, stage)
+│   ├── 03b_apply_business_semantics.ipynb   # Metric view / definitions for Genie
+│   ├── 04_create_genie_space.ipynb      # HR Analytics Genie Space (+ 04_genie_space.json)
+│   ├── 04b_create_uc_functions.ipynb    # UC SQL functions (agent tools)
+│   ├── 05_train_ml_model.ipynb          # Train 3 sklearn models → MLflow → @champion → Serving
+│   ├── 05b_create_drift_monitor.ipynb   # Lakehouse Monitoring on the model
+│   ├── 06_evaluate_register_agent.ipynb # Log/eval (LLM judge) + register + deploy the agent
+│   ├── 07_deploy_app.ipynb              # Write app.yaml, deploy App, PATCH resource bindings
+│   ├── 08_refresh_dashboard.ipynb       # Refresh the Lakeview dashboard
+│   ├── 09_grant_app_permissions.ipynb   # Grant app SP: UC + endpoint + Genie access
+│   ├── 10_setup_lakebase.ipynb          # Create Lakebase, sync tables, candidate_annotations
+│   └── run_all.ipynb                    # Manual orchestrator (not the Job DAG)
+├── agent_src/                           # MLflow 3.0 ResponsesAgent (deployed by notebook 06)
+│   ├── hire_right_agent.py              # ResponsesAgent: predict + streaming predict_stream
+│   ├── config_helper.py                 # os.getenv-based config
+│   └── tools/
+│       ├── tool_query_genie.py          # Genie Conversation API
+│       ├── tool_search_resume.py        # Vector Search RAG
+│       ├── tool_predict_score.py        # ML serving endpoint (+ weighted-sum fallback)
+│       ├── tool_send_email.py           # Mailgun mailer (AI offer letter)
+│       └── tool_query_hr_data.py        # Direct SQL helper
+├── app/                                 # Databricks App (deployed by notebook 07)
+│   ├── app.py                           # FastAPI: candidates/jobs (Lakebase), chat SSE stream,
+│   │                                    #   Genie proxy, resume PDF, offer letter, notes CRUD
+│   ├── db.py                            # Lakebase (Postgres) via OAuth credential injection
+│   ├── index.html                       # Single-file UI: cockpit, tool cards, notes, composer
+│   ├── app.yaml                         # App config + resource bindings
+│   └── requirements.txt
+├── dashboard/
+│   └── hiring_analytics.lvdash.json     # Lakeview AI/BI dashboard
+├── scripts/
+│   └── generate_resumes.py              # Synthetic resume generator
+├── slides/                              # Decks (HTML + PDF)
+│   ├── hire-right-fe-bar.html / .pdf    # FE Bar value + architecture deck (submit this)
+│   ├── hire-right-workshop.html / .pdf  # Longer technical workshop deck
+│   └── screenshots/                     # Product screenshots used in the deck
+├── solution-brief/                      # Printable customer leave-behind (PDF)
+├── reference/                           # Reference material collected before building
+├── README.md
+└── BUILD.md                             # How this was built (workflow, AI tools, decisions)
 ```
 
 ## Architecture — one connected journey
 
-`Ingest → Unity Catalog (Bronze→Silver→Gold) → Lakebase → ML + AI Agent → Genie → App`
+```
+          Synthetic data  (resumes PDF + candidate / job CSVs)
+                                    │  Lakeflow · read_files / Auto Loader
+                                    ▼
+       ┌────────────────────────────────────────────────────────┐
+       │ Unity Catalog — bldemos.hrd_2030                       │
+       │ Bronze → Silver → Gold                                 │
+       │ PII masking · tags · data quality · lineage            │
+       └────────────────────────────────────────────────────────┘
+                                    │  synced  (Delta → Postgres)
+                                    ▼
+       ┌────────────────────────────────────────────────────────┐
+       │ Lakebase (Postgres)                                    │
+       │ synced candidate / job tables                          │
+       │ + candidate_annotations  (transactional HR notes)      │
+       └────────────────────────────────────────────────────────┘
+                                    │  low-latency reads · note writes
+                                    ▼
+       ┌────────────────────────────────────────────────────────┐
+       │ Databricks App   (FastAPI + single-page UI)            │
+       │ cockpit · streaming tool cards · Genie panel ·         │
+       │ HR notes · AI offer letter                             │
+       └────────────────────────────────────────────────────────┘
+             │ chat (SSE stream)          │ NL analytics
+             ▼                            ▼
+    ┌────────────────────────────┐       ┌──────────────────────┐
+    │ Hire Right Agent           │       │ Genie Space          │
+    │ MLflow 3.0 ResponsesAgent  │       │ NL → SQL analytics   │
+    └────────────────────────────┘       └──────────────────────┘
+                    │  tools
+          ┌─────────┼───────────────┬────────────────────┐
+          ▼         ▼               ▼                    ▼
+   query_genie  search_resumes  predict_score        send_email
+   (→ Genie)    (→ Vector       (→ ML Model          (→ Mailgun
+                Search RAG)      Serving:             offer letter)
+                                 hire / no-hire)
+```
 
 - **Lakeflow + Unity Catalog** — synthetic data ingested with `read_files` (Auto Loader), refined
   through the medallion, governed with PII tags, column masking, data quality, and lineage.
