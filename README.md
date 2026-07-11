@@ -93,7 +93,6 @@ slides/                                  # FE Bar deck + workshop deck (HTML + P
   screenshots/                           # Product screenshots used in the deck
 solution-brief/                          # Printable customer leave-behind (PDF)
 reference/                               # Reference material collected before building
-obo-test-app/                            # Diagnostic app used to debug app->endpoint auth
 BUILD.md                                 # How this was built (workflow, AI tools, decisions)
 ```
 
