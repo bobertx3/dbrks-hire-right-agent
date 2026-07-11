@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <title>Hire Right · Jackson &amp; Jackson HR Digital</title>
 <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
@@ -113,15 +116,24 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .det-scroll{flex:1;overflow-y:auto;padding:18px 20px;}
 .det-back{display:flex;align-items:center;gap:5px;padding:5px 0;border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;margin-bottom:14px;transition:color .15s;}
 .det-back:hover{color:var(--text);}
-.det-header{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;gap:18px;align-items:flex-start;margin-bottom:16px;box-shadow:var(--sh-sm);}
-.det-av{width:64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;flex-shrink:0;}
-.det-info{flex:1;}
-.det-name{font-size:20px;font-weight:800;margin-bottom:3px;}
-.det-title{font-size:13px;color:var(--sub);margin-bottom:8px;}
-.det-badges{display:flex;gap:6px;flex-wrap:wrap;}
-.det-score-box{text-align:center;padding:14px 20px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);flex-shrink:0;}
-.det-sn{font-size:32px;font-weight:800;line-height:1;}
-.det-sl{font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.7px;margin-top:3px;}
+.det-header{position:relative;background:linear-gradient(180deg,var(--card),var(--card));border:1px solid var(--border);border-radius:16px;padding:22px 26px 22px 28px;display:flex;gap:22px;align-items:center;margin-bottom:16px;box-shadow:0 10px 34px rgba(15,32,40,.07);overflow:hidden;}
+.det-header::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--primary),var(--accent));}
+.det-av{width:74px;height:74px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;color:#fff;flex-shrink:0;position:relative;box-shadow:0 10px 22px rgba(0,0,0,.18);}
+.det-av::after{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(155deg,rgba(255,255,255,.25),transparent 55%);pointer-events:none;}
+.det-info{flex:1;min-width:0;}
+.det-name{font-size:23px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px;color:var(--text);}
+.det-title{font-size:13.5px;color:var(--sub);margin-bottom:11px;}
+.det-badges{display:flex;gap:7px;flex-wrap:wrap;}
+.det-actions{display:flex;align-items:center;gap:24px;flex-shrink:0;border-left:1px solid var(--border);padding-left:26px;}
+.det-btns{display:flex;flex-direction:column;gap:10px;}
+.score-ring{position:relative;width:106px;height:106px;flex-shrink:0;}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.sr-track{fill:none;stroke:var(--bg);stroke-width:8.5;}
+.sr-arc{fill:none;stroke-width:8.5;stroke-linecap:round;transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1);}
+.sr-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.sr-num{font-size:27px;font-weight:800;line-height:1;letter-spacing:-1px;}
+.sr-lbl{font-size:8px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;}
+@media(max-width:760px){.det-header{flex-wrap:wrap;}.det-actions{border-left:none;padding-left:0;border-top:1px solid var(--border);padding-top:16px;margin-top:2px;width:100%;justify-content:space-between;}}
 .det-body{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media(max-width:860px){.det-body{grid-template-columns:1fr;}}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-sm);}
@@ -153,6 +165,37 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .rec-send{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0;transition:background .15s;}
 .rec-send:hover{background:#26505f;}
 .rec-send:disabled{background:#ccc;cursor:default;}
+/* HR Notes / annotations */
+.notes-panel{margin-top:16px;display:flex;flex-direction:column;overflow:hidden;}
+.notes-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.notes-list{padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:60px;max-height:280px;overflow-y:auto;}
+.notes-empty{color:var(--light);font-size:12px;text-align:center;padding:16px 0;line-height:1.6;}
+.note-item{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 34px 10px 12px;}
+.note-del{position:absolute;top:7px;right:7px;width:24px;height:24px;border:none;background:transparent;color:var(--light);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s,color .15s,background .15s;}
+.note-item:hover .note-del{opacity:1;}
+.note-del:hover{background:rgba(220,38,38,.1);color:var(--accent);}
+.note-text{font-size:13px;color:var(--text);line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+.note-meta{font-size:10px;color:var(--light);margin-top:6px;display:flex;gap:8px;align-items:center;}
+.note-author{font-weight:700;color:var(--sub);}
+.notes-footer{padding:10px 14px;border-top:1px solid var(--border);background:var(--bg);display:flex;gap:8px;}
+/* Streaming agent tool-call cards */
+.tool-cards{display:flex;flex-direction:column;gap:6px;margin:2px 0;}
+.tool-cards:empty{display:none;}
+.tool-card{border:1px solid var(--border);border-radius:8px;background:var(--card);overflow:hidden;}
+.tool-card__head{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;}
+.tool-card__ic{width:13px;height:13px;color:var(--sub);flex-shrink:0;}
+.tool-card__name{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:600;color:var(--text);flex:1;font-size:11.5px;word-break:break-all;}
+.tool-card__badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
+.tool-card__badge.running{background:rgba(59,130,246,.12);color:var(--blue);}
+.tool-card__badge.done{background:rgba(16,163,74,.12);color:var(--green);}
+.tool-card__chev{width:12px;height:12px;color:var(--light);transition:transform .15s;flex-shrink:0;}
+.tool-card.open .tool-card__chev{transform:rotate(180deg);}
+.tool-card__body{display:none;border-top:1px solid var(--border);padding:9px 11px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:var(--sub);white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;}
+.tool-card.open .tool-card__body{display:block;}
+.tool-card__body .lbl{color:var(--light);text-transform:uppercase;letter-spacing:.5px;font-size:9px;font-weight:700;display:block;margin:6px 0 3px;}
+.tool-card__body .lbl:first-child{margin-top:0;}
+.spin{display:inline-block;width:9px;height:9px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:tcspin .7s linear infinite;}
+@keyframes tcspin{to{transform:rotate(360deg);}}
 .mm{display:flex;gap:0;font-size:12px;line-height:1.6;}
 .mm.user{flex-direction:row-reverse;}
 .mm-bub{padding:9px 13px;border-radius:10px;max-width:95%;}
@@ -298,9 +341,38 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .resume-modal-close:hover{background:rgba(255,255,255,.2);}
 .resume-modal-body{flex:1;min-height:0;padding:0;}
 #resume-iframe{width:100%;height:100%;border:none;display:block;}
-.resume-btn{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-xs);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .15s;flex-shrink:0;}
-.resume-btn:hover{background:#26505f;}
+.resume-btn{padding:10px 18px;min-width:216px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s,transform .12s;flex-shrink:0;box-shadow:0 4px 12px rgba(15,32,40,.12);}
+.resume-btn:hover{background:#26505f;transform:translateY(-1px);}
 .resume-btn:disabled{background:#ccc;cursor:default;}
+.offer-btn{padding:10px 18px;min-width:216px;background:linear-gradient(135deg,#00b87e,#0d8f63);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:filter .15s,transform .12s;flex-shrink:0;white-space:nowrap;box-shadow:0 4px 14px rgba(0,169,114,.28);}
+.offer-btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+.offer-btn:disabled{background:#ccc;cursor:default;}
+/* Centered Gmail-style AI offer-letter composer */
+.cmp{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:28px;background:rgba(5,8,15,.5);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);}
+.cmp.open{display:flex;}
+.cmp-card{width:min(680px,100%);height:min(660px,calc(100vh - 56px));background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.42);display:flex;flex-direction:column;overflow:hidden;}
+.cmp.min .cmp-card{height:auto;}
+.cmp-head{border-radius:12px 12px 0 0;}
+.cmp-head{background:#0b1f27;color:#fff;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;flex-shrink:0;}
+.cmp-title{font-size:13px;font-weight:600;}
+.cmp-hbtns{display:flex;gap:2px;}
+.cmp-hbtn{background:transparent;border:none;color:rgba(255,255,255,.8);cursor:pointer;font-size:15px;line-height:1;padding:2px 8px;border-radius:4px;}
+.cmp-hbtn:hover{background:rgba(255,255,255,.14);color:#fff;}
+.cmp-body{display:flex;flex-direction:column;flex:1;overflow:hidden;position:relative;}
+.cmp.min .cmp-body{display:none;}
+.cmp-field{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);}
+.cmp-field label{font-size:12px;color:var(--sub);width:56px;flex-shrink:0;}
+.cmp-field input{flex:1;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);background:transparent;}
+.cmp-edit{flex:1;overflow-y:auto;padding:16px 18px;font-size:13.5px;line-height:1.65;color:var(--text);outline:none;}
+.cmp-edit p{margin:0 0 10px;} .cmp-edit ul,.cmp-edit ol{margin:0 0 10px;padding-left:22px;}
+.cmp-toolbar{display:flex;align-items:center;gap:2px;padding:6px 10px;border-top:1px solid var(--border);background:var(--bg);flex-wrap:wrap;flex-shrink:0;}
+.cmp-tb{min-width:28px;height:28px;padding:0 7px;border:none;background:transparent;border-radius:6px;cursor:pointer;color:var(--sub);font-size:13px;display:flex;align-items:center;justify-content:center;}
+.cmp-tb:hover{background:rgba(0,0,0,.06);color:var(--text);}
+.cmp-foot{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;}
+.cmp-send{background:#1a73e8;color:#fff;border:none;border-radius:20px;padding:9px 22px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.cmp-send:hover{background:#1666c9;} .cmp-send:disabled{background:#9db8e0;cursor:default;}
+.cmp-status{font-size:12px;flex:1;line-height:1.4;}
+.cmp-drafting{position:absolute;inset:0;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--sub);font-size:13px;z-index:3;}
 
 /* ── Data Flow Modal ────────────────────────────────────── */
 .arch-ov{position:fixed;inset:0;background:rgba(5,8,15,.65);backdrop-filter:blur(6px);z-index:900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
@@ -309,6 +381,53 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
 .arch-mh{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 22px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
 .arch-mt{font-size:14px;font-weight:700;color:#F1F5F9;}
 .arch-ms{font-size:11px;color:#475569;margin-top:3px;}
+/* ── Architecture modal: clean cream redesign ── */
+#arch-ov .arch-m{background:#f4f2ee;border-color:rgba(0,0,0,.08);}
+#arch-ov .arch-mh{border-bottom:1px solid rgba(0,0,0,.08);}
+#arch-ov .arch-mt{color:#1B3139;}
+#arch-ov .arch-ms{color:rgba(0,0,0,.5);}
+#arch-ov .arch-mb{background:#f4f2ee;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#arch-ov .arch-mx{color:#8a857c;background:rgba(0,0,0,.04);}
+#arch-ov .arch-mx:hover{background:rgba(0,0,0,.08);}
+.af-diagram{font-family:'DM Sans',system-ui,sans-serif;color:#2a2a2a;display:inline-block;box-sizing:border-box;padding:8px 6px 12px;transform-origin:center center;}
+.af-sheet{display:flex;align-items:stretch;gap:0;}
+.af-col{display:flex;flex-direction:column;gap:13px;align-items:stretch;justify-content:center;}
+.af-lbl{font:600 10px/1 'DM Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:#a8a196;margin-bottom:1px;}
+.af-node{background:#fff;border:1.5px solid #cdc7bd;border-radius:9px;padding:10px 13px;min-width:150px;transition:box-shadow .18s,transform .18s;}
+.af-node:hover{box-shadow:0 6px 20px rgba(0,0,0,.08);transform:translateY(-1px);}
+.af-nt{font:600 14px/1.2 'DM Sans',sans-serif;color:#2a2a2a;}
+.af-ns{font:400 10.5px/1.35 'DM Mono',monospace;color:#948f85;margin-top:4px;}
+.af-node.accent{border-color:#FF5F46;border-width:2px;}
+.af-node.gold{border-color:#FFAB00;}
+.af-node.slate{border-color:#618794;}
+.af-node.sm{min-width:76px;padding:9px 13px;text-align:center;flex:none;}
+.af-node.sm .af-nt{font-size:12.5px;white-space:nowrap;}
+.af-node.sm .af-ns{white-space:nowrap;}
+.af-container{border:1.5px dashed #b6c3ba;border-radius:12px;padding:13px 15px 12px;background:rgba(0,169,114,.04);align-self:center;}
+.af-container.coral{border-color:#f0b8ad;background:rgba(255,95,70,.05);}
+.af-clbl{font:600 10px/1 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#4f8a6f;margin-bottom:10px;}
+.af-container.coral .af-clbl{color:#e0552f;}
+.af-chiprow{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;}
+.af-chip{font:500 10px/1 'DM Mono',monospace;color:#7d786f;background:#f0ede7;border:1px solid #ddd7cc;border-radius:20px;padding:5px 9px;}
+.af-mchain{display:flex;align-items:center;gap:7px;}
+/* animated flow connectors (the interactive lines) */
+.af-flow{position:relative;flex:1;min-width:30px;height:2px;align-self:center;background-image:linear-gradient(90deg,#c9c2b6 45%,transparent 45%);background-size:8px 2px;background-repeat:repeat-x;}
+.af-flow::after{content:'';position:absolute;top:-2px;left:0;width:6px;height:6px;border-radius:50%;background:#b0a99e;box-shadow:0 0 6px rgba(176,169,158,.6);animation:afdot 2.8s linear infinite;}
+.af-flow.coral{background-image:linear-gradient(90deg,#f0b8ad 45%,transparent 45%);}
+.af-flow.coral::after{background:#FF5F46;box-shadow:0 0 7px rgba(255,95,70,.5);}
+@keyframes afdot{from{left:-3px}to{left:calc(100% - 3px)}}
+.af-gut{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:74px;align-self:center;padding:0 8px;}
+.af-gut .af-flow{width:56px;flex:none;}
+.af-gl{font:600 9px/1.2 'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#b0a99e;text-align:center;}
+.af-gut.coral .af-gl{color:#e0552f;}
+.af-vconn{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.af-vflow{position:relative;width:2px;height:16px;background-image:linear-gradient(180deg,#f0b8ad 45%,transparent 45%);background-size:2px 8px;background-repeat:repeat-y;}
+.af-vflow::after{content:'';position:absolute;left:-2px;top:0;width:6px;height:6px;border-radius:50%;background:#FF5F46;box-shadow:0 0 7px rgba(255,95,70,.5);animation:afvdot 2.4s linear infinite;}
+@keyframes afvdot{from{top:-3px}to{top:calc(100% - 3px)}}
+.af-fblbl{font:600 9px/1.2 'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase;color:#e0552f;white-space:nowrap;}
+.af-legend{display:flex;gap:20px;margin-top:18px;font:500 10.5px/1 'DM Mono',monospace;color:#948f85;flex-wrap:wrap;}
+.af-legend b{color:#e0552f;font-weight:700;}
+@media (prefers-reduced-motion:reduce){.af-flow::after,.af-vflow::after{animation:none;}}
 .arch-mx{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:13px;color:#94A3B8;font-family:inherit;transition:background .15s;}
 .arch-mx:hover{background:rgba(255,255,255,.14);color:#F1F5F9;}
 .arch-mb{padding:20px 22px 24px;overflow:auto;flex:1;}
@@ -364,9 +483,9 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
   </div>
   <div class="h-spacer"></div>
   <div class="h-actions">
-    <a class="h-btn dbrks-link" href="https://fevm-stable-classic-zso77x-bx3.cloud.databricks.com/one" target="_blank" rel="noopener">
+    <a class="h-btn dbrks-link" href="https://fevm-bobertx3-aws-fevm.cloud.databricks.com/one" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Databricks One
+      Genie One
     </a>
     <button class="h-btn genie-btn" onclick="openPanel('genie')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
@@ -478,6 +597,42 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
   </div>
 </div>
 
+<!-- ── AI Offer Letter Composer (Gmail-style) ───────────────────── -->
+<div id="offer-cmp" class="cmp" onclick="if(event.target===this)closeOffer()">
+  <div class="cmp-card">
+  <div class="cmp-head" onclick="if(!event.target.closest('.cmp-hbtn'))toggleOfferMin()">
+    <span class="cmp-title" id="offer-title">New Offer Letter</span>
+    <div class="cmp-hbtns">
+      <button class="cmp-hbtn" title="Minimize" onclick="toggleOfferMin()">&#8211;</button>
+      <button class="cmp-hbtn" title="Close" onclick="closeOffer()">&#10005;</button>
+    </div>
+  </div>
+  <div class="cmp-body">
+    <div class="cmp-field"><label>To</label><input id="offer-to" type="email" placeholder="name@email.com"></div>
+    <div class="cmp-field"><label>Subject</label><input id="offer-subject" type="text" placeholder="Subject"></div>
+    <div id="offer-edit" class="cmp-edit" contenteditable="true"></div>
+    <div class="cmp-toolbar">
+      <button class="cmp-tb" title="Bold" onmousedown="event.preventDefault()" onclick="offerExec('bold')"><b>B</b></button>
+      <button class="cmp-tb" title="Italic" onmousedown="event.preventDefault()" onclick="offerExec('italic')"><i>I</i></button>
+      <button class="cmp-tb" title="Underline" onmousedown="event.preventDefault()" onclick="offerExec('underline')"><u>U</u></button>
+      <button class="cmp-tb" title="Bulleted list" onmousedown="event.preventDefault()" onclick="offerExec('insertUnorderedList')">&#8226;</button>
+      <button class="cmp-tb" title="Numbered list" onmousedown="event.preventDefault()" onclick="offerExec('insertOrderedList')">1.</button>
+      <button class="cmp-tb" title="Re-draft with AI" onmousedown="event.preventDefault()" onclick="regenOffer()" style="margin-left:auto;color:var(--green);">&#10022; Re-draft</button>
+    </div>
+    <div class="cmp-foot">
+      <button class="cmp-send" id="offer-send" onclick="sendOffer()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg> Send
+      </button>
+      <span class="cmp-status" id="offer-status"></span>
+    </div>
+    <div id="offer-drafting" class="cmp-drafting" style="display:none;">
+      <div class="dots"><span></span><span></span><span></span></div>
+      Drafting offer letter with AI…
+    </div>
+  </div>
+  </div>
+</div>
+
 <!-- ── Architecture Modal ────────────────────────────────────────── -->
 <div id="arch-ov" class="arch-ov" onclick="if(event.target===this)closeArch()">
   <div class="arch-m">
@@ -489,313 +644,88 @@ header{background:var(--primary);height:var(--header-h);display:flex;align-items
       <button class="arch-mx" onclick="closeArch()">✕</button>
     </div>
     <div class="arch-mb">
-      <div class="dg">
+      <div class="af-diagram">
+        <div class="af-sheet">
 
-        <!-- ═══════════════════════════════════════════════
-             SVG: arrows + animated dots (slow, graceful)
-        ═══════════════════════════════════════════════ -->
-        <svg class="dg-svg" viewBox="0 0 1500 660" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="dma" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(245,158,11,.75)"/></marker>
-            <marker id="dmb" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(59,130,246,.75)"/></marker>
-            <marker id="dmc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(6,182,212,.75)"/></marker>
-            <marker id="dmt" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(20,184,166,.75)"/></marker>
-            <marker id="dmr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(255,54,33,.8)"/></marker>
-            <marker id="dmp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(139,92,246,.75)"/></marker>
-            <marker id="dms" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(100,116,139,.65)"/></marker>
-            <marker id="dmg" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3z" fill="rgba(34,197,94,.75)"/></marker>
-
-            <!-- Named motion paths — all orthogonal elbows -->
-            <!-- q1: Load Resumes → Volumes -->
-            <path id="q1" d="M 130 192 H 152 V 332 H 175"/>
-            <!-- qV: Volumes → Vector Search -->
-            <path id="qV" d="M 225 318 V 247"/>
-            <!-- q2: Load Candidates → Volumes -->
-            <path id="q2" d="M 130 440 H 152 V 335 H 175"/>
-            <!-- q3: VS → Tools -->
-            <path id="q3" d="M 240 210 H 320 V 88"/>
-            <!-- q4: Gold → Genie Space -->
-            <path id="q4" d="M 575 337 H 618 V 452 H 660"/>
-            <!-- q5: AI Gateway → Agent -->
-            <path id="q5" d="M 1038 64 H 1000 V 195"/>
-            <!-- q6: Agent → Inference Tables (payload) -->
-            <path id="q6" d="M 825 270 V 317"/>
-            <!-- q8: Agent → MLflow (traces) -->
-            <path id="q8" d="M 876 195 V 72"/>
-            <!-- qHRD: HR Manager → Databricks One -->
-            <path id="qHRD" d="M 1273 268 V 421 H 1170"/>
-            <!-- q9: Agent → App -->
-            <path id="q9" d="M 1028 236 H 1062"/>
-            <!-- q11: Genie → App -->
-            <path id="q11" d="M 810 452 H 1045 V 228 H 1062"/>
-            <!-- q12: App → Databricks One -->
-            <path id="q12" d="M 1116 268 V 396"/>
-            <!-- q13: MR → Tools -->
-            <path id="q13" d="M 555 210 V 22 H 510"/>
-            <!-- qB: Gold → Model Registry (train) -->
-            <path id="qB" d="M 530 338 V 270"/>
-            <!-- qE: Tools → Emailer -->
-            <path id="qE" d="M 320 42 H 305"/>
-            <!-- qHR: App → HR Manager -->
-            <path id="qHR" d="M 1170 228 H 1205"/>
-            <!-- qGT: Genie → Tools -->
-            <path id="qGT" d="M 735 432 H 415 V 88"/>
-            <!-- qUCF: UC Functions → Tools -->
-            <path id="qUCF" d="M 415 210 V 88"/>
-            <!-- qTA: Agent → Tools (tool calls) -->
-            <path id="qTA" d="M 780 195 V 88 H 510"/>
-            <!-- qAR: Agent → Agents/MCP Registry -->
-            <path id="qAR" d="M 1028 228 V 570 H 467 V 491"/>
-          </defs>
-
-          <!-- Visible lines — elbow style -->
-          <!-- q1: Load Resumes → Volumes -->
-          <path d="M 130 192 H 152 V 332 H 175" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- q2: Load Candidates → Volumes -->
-          <path d="M 130 440 H 152 V 335 H 175" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- qV: Volumes → Vector Search -->
-          <path d="M 225 318 V 247" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
-          <!-- q3: Vector Search → Tools -->
-          <path d="M 240 210 H 320 V 88" fill="none" stroke="rgba(6,182,212,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmc)"/>
-          <!-- q4: Gold → Genie Space -->
-          <path d="M 575 337 H 618 V 452 H 660" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
-          <!-- q5: AI Gateway → Agent -->
-          <path d="M 1038 64 H 1000 V 195" fill="none" stroke="rgba(245,158,11,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- q6: Agent → Inference Tables (payload) -->
-          <path d="M 825 270 V 317" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
-          <!-- q8: Agent → MLflow (traces) -->
-          <path d="M 876 195 V 72" fill="none" stroke="rgba(59,130,246,.45)" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#dmb)"/>
-          <!-- qHRD: HR Manager → Databricks One -->
-          <path d="M 1273 268 V 421 H 1170" fill="none" stroke="rgba(245,158,11,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- q9: Agent → App -->
-          <path d="M 1028 236 H 1062" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
-          <!-- q11: Genie → App -->
-          <path d="M 810 452 H 1045 V 228 H 1062" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
-          <!-- q12: App → Databricks One -->
-          <path d="M 1116 268 V 396" fill="none" stroke="rgba(100,116,139,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dms)"/>
-          <!-- q13: Model Registry → Tools -->
-          <path d="M 555 210 V 22 H 510" fill="none" stroke="rgba(139,92,246,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
-          <!-- qB: Gold → Model Registry (train) -->
-          <path d="M 530 338 V 270" fill="none" stroke="rgba(139,92,246,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmp)"/>
-          <!-- qE: Tools → Emailer -->
-          <path d="M 320 42 H 305" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- qHR: App → HR Manager -->
-          <path d="M 1170 228 H 1205" fill="none" stroke="rgba(245,158,11,.55)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dma)"/>
-          <!-- qGT: Genie → Tools -->
-          <path d="M 735 432 H 415 V 88" fill="none" stroke="rgba(20,184,166,.5)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
-          <!-- qUCF: UC Functions → Tools -->
-          <path d="M 415 210 V 88" fill="none" stroke="rgba(20,184,166,.45)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmt)"/>
-          <!-- qTA: Agent → Tools (tool calls) -->
-          <path d="M 780 195 V 88 H 510" fill="none" stroke="rgba(255,54,33,.7)" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
-          <!-- qAR: Agent → Agents/MCP Registry -->
-          <path d="M 1028 228 V 570 H 467 V 491" fill="none" stroke="rgba(255,54,33,.65)" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#dmr)"/>
-
-          <!-- Labels -->
-          <text x="830" y="293" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">payload</text>
-          <text x="882" y="128" fill="rgba(59,130,246,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">traces</text>
-          <text x="537" y="297" fill="rgba(139,92,246,.72)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">train</text>
-          <text x="640" y="82" fill="rgba(255,54,33,.68)" font-size="10" font-family="'JetBrains Mono','Fira Code',monospace" font-weight="700" letter-spacing=".04em">tool calls</text>
-
-          <!-- ── Animated dots ── -->
-          <!-- q1: Load Resumes → VS (6s) -->
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q1"/></animateMotion></circle>
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q1"/></animateMotion></circle>
-          <!-- q2: Load Candidates → Volumes (7s) -->
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q2"/></animateMotion></circle>
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q2"/></animateMotion></circle>
-          <!-- qV: Volumes → Vector Search (8s) -->
-          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#qV"/></animateMotion></circle>
-          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#qV"/></animateMotion></circle>
-          <!-- q3: Vector Search → Tools (9s) -->
-          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#q3"/></animateMotion></circle>
-          <circle r="3.5" fill="#06B6D4" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#q3"/></animateMotion></circle>
-          <!-- q4: Gold → Genie (8s) -->
-          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q4"/></animateMotion></circle>
-          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q4"/></animateMotion></circle>
-          <!-- q5: AI Gateway → Agent (9s) -->
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#q5"/></animateMotion></circle>
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#q5"/></animateMotion></circle>
-          <!-- q6: Agent → Inference Tables payload (8s) -->
-          <circle r="3.5" fill="#8B5CF6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q6"/></animateMotion></circle>
-          <circle r="3.5" fill="#8B5CF6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q6"/></animateMotion></circle>
-          <!-- q8: Agent → MLflow traces (12s) -->
-          <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:12s"><animateMotion dur="12s" repeatCount="indefinite"><mpath href="#q8"/></animateMotion></circle>
-          <circle r="3" fill="#3B82F6" class="fd" style="animation-duration:12s;animation-delay:6s"><animateMotion dur="12s" repeatCount="indefinite" begin="6s"><mpath href="#q8"/></animateMotion></circle>
-          <!-- q9: Agent → App (6s) -->
-          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q9"/></animateMotion></circle>
-          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q9"/></animateMotion></circle>
-          <!-- q11: Genie → App (7s) -->
-          <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#q11"/></animateMotion></circle>
-          <circle r="3" fill="#64748B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#q11"/></animateMotion></circle>
-          <!-- q12: App → Databricks One (6s) -->
-          <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#q12"/></animateMotion></circle>
-          <circle r="3" fill="#64748B" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#q12"/></animateMotion></circle>
-          <!-- q13: Model Registry → Tools (8s) -->
-          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#q13"/></animateMotion></circle>
-          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:8s;animation-delay:4s"><animateMotion dur="8s" repeatCount="indefinite" begin="4s"><mpath href="#q13"/></animateMotion></circle>
-          <!-- qB: Bronze → Model Registry (9s) -->
-          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#qB"/></animateMotion></circle>
-          <circle r="3" fill="#8B5CF6" class="fd" style="animation-duration:9s;animation-delay:4.5s"><animateMotion dur="9s" repeatCount="indefinite" begin="4.5s"><mpath href="#qB"/></animateMotion></circle>
-          <!-- qE: Tools → Emailer (4s) -->
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:4s"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#qE"/></animateMotion></circle>
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:4s;animation-delay:2s"><animateMotion dur="4s" repeatCount="indefinite" begin="2s"><mpath href="#qE"/></animateMotion></circle>
-          <!-- qHR: App → HR Manager (5s) -->
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qHR"/></animateMotion></circle>
-          <circle r="3.5" fill="#F59E0B" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qHR"/></animateMotion></circle>
-          <!-- qHRD: HR Manager → Databricks One (7s) -->
-          <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qHRD"/></animateMotion></circle>
-          <circle r="3" fill="#F59E0B" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qHRD"/></animateMotion></circle>
-          <!-- qGT: Genie → Tools (6s) -->
-          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:6s"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#qGT"/></animateMotion></circle>
-          <circle r="3.5" fill="#14B8A6" class="fd" style="animation-duration:6s;animation-delay:3s"><animateMotion dur="6s" repeatCount="indefinite" begin="3s"><mpath href="#qGT"/></animateMotion></circle>
-          <!-- qUCF: UC Functions → Tools (7s) -->
-          <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#qUCF"/></animateMotion></circle>
-          <circle r="3" fill="#14B8A6" class="fd" style="animation-duration:7s;animation-delay:3.5s"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s"><mpath href="#qUCF"/></animateMotion></circle>
-          <!-- qTA: Agent → Tools (5s) -->
-          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#qTA"/></animateMotion></circle>
-          <circle r="4" fill="#FF3621" class="fd" style="animation-duration:5s;animation-delay:2.5s"><animateMotion dur="5s" repeatCount="indefinite" begin="2.5s"><mpath href="#qTA"/></animateMotion></circle>
-          <!-- qAR: Agent → Agents/MCP Registry (10s) -->
-          <circle r="3" fill="#FF3621" class="fd" style="animation-duration:10s"><animateMotion dur="10s" repeatCount="indefinite"><mpath href="#qAR"/></animateMotion></circle>
-          <circle r="3" fill="#FF3621" class="fd" style="animation-duration:10s;animation-delay:5s"><animateMotion dur="10s" repeatCount="indefinite" begin="5s"><mpath href="#qAR"/></animateMotion></circle>
-        </svg>
-
-        <!-- ═══════════════════════════════════════════════
-             HTML Boxes (scaled to 1100×590 canvas)
-        ═══════════════════════════════════════════════ -->
-
-        <!-- MLflow -->
-        <div class="db c-blue" style="left:800px;top:22px;width:152px;">
-          <div class="dbt">MLflow 3.0</div>
-          <div class="dbs">Tracing · Experiments</div>
-        </div>
-
-        <!-- Inference Tables -->
-        <div class="db c-purple" style="left:660px;top:285px;width:165px;">
-          <div class="dbt">Inference Tables</div>
-          <div class="dbs">Payload logging · drift</div>
-        </div>
-
-        <!-- AI Gateway — centered above Hire Right Agent -->
-        <div class="db c-amber" style="left:962px;top:22px;width:152px;">
-          <div class="dbt">AI Gateway</div>
-          <div class="dbsub">databricks-gpt-5-4</div>
-        </div>
-
-        <!-- Load Resumes -->
-        <div class="db c-amber" style="left:10px;top:172px;width:120px;">
-          <div class="dbt">Load Resumes</div>
-          <div class="dbs">PDF · UC Volumes</div>
-        </div>
-
-        <!-- Load Candidates -->
-        <div class="db c-amber" style="left:10px;top:420px;width:120px;">
-          <div class="dbt">Load Candidates</div>
-          <div class="dbs">CSV · candidates</div>
-        </div>
-
-        <!-- Unity Catalog container -->
-        <div class="duc" style="left:150px;top:195px;width:490px;height:345px;"></div>
-        <div class="duc-lbl" style="left:350px;top:548px;">Unity Catalog</div>
-
-        <!-- Inner boxes: top row -->
-        <div class="dbi c-cyan" style="left:175px;top:210px;width:130px;">
-          <div class="dbit">Vector Search</div>
-          <div class="dbis">Resume index · RAG</div>
-        </div>
-        <div class="dbi c-purple" style="left:495px;top:210px;width:120px;">
-          <div class="dbit">Model Registry</div>
-          <div class="dbis">XGBoost · sklearn</div>
-        </div>
-
-        <!-- Inner boxes: medallion row -->
-        <div class="dbi m-vol" style="left:175px;top:318px;width:100px;">
-          <div class="dbit">Volumes</div>
-          <div class="dbis">Raw files</div>
-        </div>
-        <div class="dbi m-bz" style="left:285px;top:318px;width:90px;">
-          <div class="dbit">Bronze</div>
-          <div class="dbis">Raw</div>
-        </div>
-        <div class="dbi m-sv" style="left:385px;top:318px;width:90px;">
-          <div class="dbit">Silver</div>
-          <div class="dbis">Clean</div>
-        </div>
-        <div class="dbi m-gd" style="left:485px;top:318px;width:90px;">
-          <div class="dbit">Gold</div>
-          <div class="dbis">Analytics</div>
-        </div>
-
-        <!-- UC Functions (inside UC) -->
-        <div class="dbi c-teal" style="left:315px;top:210px;width:165px;">
-          <div class="dbit">UC Functions</div>
-          <div class="dbis">Scoring · Analytics tools</div>
-        </div>
-
-        <!-- Hire Right Agent -->
-        <div class="db c-red" style="left:780px;top:195px;width:248px;padding:15px 18px 14px;">
-          <div class="dbt" style="font-size:13px;">Hire Right Agent</div>
-          <div class="dbs" style="margin-top:5px;">ResponsesAgent</div>
-          <div class="dbs">MLflow 3.0</div>
-        </div>
-
-        <!-- Tools -->
-        <div class="db c-teal" style="left:320px;top:22px;width:190px;padding:11px 14px;">
-          <div class="dbt" style="font-size:12px;">Tools</div>
-          <div class="dbs" style="margin-top:3px;">Vector Search · Model Registry</div>
-          <div class="dbs">Genie Space · UC Functions</div>
-        </div>
-
-        <!-- Emailer -->
-        <div class="db c-amber" style="left:165px;top:22px;width:140px;">
-          <div class="dbt">Emailer</div>
-          <div class="dbs">Mailgun · API</div>
-        </div>
-
-        <!-- Agents / MCP Registry -->
-        <div class="db c-red" style="left:385px;top:435px;width:165px;">
-          <div class="dbt">Agents / MCP Registry</div>
-          <div class="dbs">Registered agents &amp; MCP</div>
-        </div>
-
-        <!-- Genie Space -->
-        <div class="db c-teal" style="left:660px;top:432px;width:150px;padding:14px 18px;">
-          <div class="dbt" style="font-size:13px;">Genie Space</div>
-          <div class="dbs" style="margin-top:4px;">HR Analytics · NL&#x2192;SQL</div>
-        </div>
-
-        <!-- App -->
-        <div class="db c-slate" style="left:1062px;top:188px;width:108px;padding:15px 14px 14px;">
-          <div class="dbt" style="font-size:13px;">App</div>
-          <div class="dbs" style="margin-top:5px;">Databricks Apps</div>
-          <div class="dbs">FastAPI + Chat UI</div>
-        </div>
-
-        <!-- Databricks One -->
-        <div class="db c-slate" style="left:1062px;top:396px;width:108px;">
-          <div class="dbt">Databricks One</div>
-          <div class="dbs">Analytics portal</div>
-        </div>
-
-        <!-- HR Manager persona -->
-        <div style="position:absolute;left:1205px;top:182px;width:136px;border-radius:9px;border:1.5px solid rgba(245,158,11,.6);background:#0C1521;padding:12px 14px 11px;font-family:'JetBrains Mono','Fira Code','SF Mono',monospace;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <div style="width:30px;height:30px;border-radius:50%;background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.45);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(245,158,11,.9)" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-            </div>
-            <div style="font-size:11px;font-weight:700;color:#E2E8F0;line-height:1.25;">HR<br>Manager</div>
+          <!-- Ingest -->
+          <div class="af-col">
+            <div class="af-lbl">Ingest</div>
+            <div class="af-node"><div class="af-nt">Load Resumes</div><div class="af-ns">PDF &middot; UC Volumes</div></div>
+            <div class="af-node"><div class="af-nt">Load Candidates</div><div class="af-ns">CSV &middot; candidates</div></div>
           </div>
-          <div style="font-size:9px;color:#64748B;line-height:1.5;">End User<br>Accesses App</div>
+
+          <div class="af-gut"><div class="af-flow"></div><div class="af-gl">load</div></div>
+
+          <!-- Unity Catalog -->
+          <div class="af-container">
+            <div class="af-clbl">Unity Catalog &middot; governed lakehouse</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div>
+                <div class="af-lbl" style="margin-bottom:7px">Medallion</div>
+                <div class="af-mchain">
+                  <div class="af-node sm"><div class="af-nt">Volumes</div><div class="af-ns">Raw files</div></div>
+                  <div class="af-flow"></div>
+                  <div class="af-node sm"><div class="af-nt">Bronze</div><div class="af-ns">Raw</div></div>
+                  <div class="af-flow"></div>
+                  <div class="af-node sm"><div class="af-nt">Silver</div><div class="af-ns">Clean</div></div>
+                  <div class="af-flow"></div>
+                  <div class="af-node sm gold"><div class="af-nt">Gold</div><div class="af-ns">Analytics</div></div>
+                  <div class="af-flow"></div>
+                  <div class="af-node sm"><div class="af-nt">Lakebase</div><div class="af-ns">Postgres &middot; synced + notes</div></div>
+                </div>
+              </div>
+              <div>
+                <div class="af-lbl" style="margin-bottom:7px">MLOps &nbsp;&middot;&nbsp; from Gold</div>
+                <div class="af-mchain">
+                  <div class="af-node sm"><div class="af-nt">Train Model</div><div class="af-ns">XGBoost &middot; sklearn</div></div>
+                  <div class="af-flow"></div>
+                  <div class="af-node sm"><div class="af-nt">Register</div><div class="af-ns">MLflow &middot; log &amp; version</div></div>
+                  <div class="af-flow coral" style="min-width:44px"></div>
+                  <span class="af-fblbl">deploy to Serving</span>
+                </div>
+              </div>
+              <div>
+                <div class="af-lbl" style="margin-bottom:7px">Data &amp; AI assets</div>
+                <div class="af-mchain" style="flex-wrap:wrap;gap:9px">
+                  <div class="af-node sm"><div class="af-nt">Vector Search</div><div class="af-ns">Resume index &middot; RAG</div></div>
+                  <div class="af-node sm"><div class="af-nt">UC Functions</div><div class="af-ns">Scoring &middot; Analytics</div></div>
+                  <div class="af-node sm"><div class="af-nt">Agents / MCP Registry</div><div class="af-ns">Registered agents &amp; MCP</div></div>
+                  <div class="af-node sm"><div class="af-nt">Genie Space</div><div class="af-ns">HR Analytics &middot; NL&rarr;SQL</div></div>
+                </div>
+              </div>
+              <div class="af-chiprow">
+                <span class="af-chip">Classify Data</span><span class="af-chip">Assess Data Quality</span><span class="af-chip">Mask PII</span><span class="af-chip">Create Business Definitions</span><span class="af-chip">Observability &middot; inference tables</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="af-gut coral"><div class="af-flow coral"></div><div class="af-gl">deploy &middot; tools</div></div>
+
+          <!-- Serving -->
+          <div class="af-container coral">
+            <div class="af-clbl">Serving</div>
+            <div class="af-col">
+              <div class="af-node"><div class="af-nt">AI Gateway</div><div class="af-ns">databricks-gpt-5-4</div></div>
+              <div class="af-vconn"><div class="af-vflow"></div><span class="af-fblbl">&darr; llm to agent</span></div>
+              <div class="af-node"><div class="af-nt">Tools</div><div class="af-ns">Vector Search &middot; UC Functions &middot; Emailer<br>Call Predictive Hiring Model</div></div>
+              <div class="af-vconn"><div class="af-vflow"></div><span class="af-fblbl">&#8645; tool calls</span></div>
+              <div class="af-node accent"><div class="af-nt">Hire Right Agent</div><div class="af-ns">ResponsesAgent &middot; MLflow 3.0</div></div>
+              <div class="af-vconn"><div class="af-vflow"></div><span class="af-fblbl">&darr; scores candidates</span></div>
+              <div class="af-node accent"><div class="af-nt">Predictive Hiring Model</div><div class="af-ns">XGBoost &middot; served endpoint</div></div>
+            </div>
+          </div>
+
+          <div class="af-gut coral"><div class="af-flow coral"></div><div class="af-gl">serve</div></div>
+
+          <!-- Experience -->
+          <div class="af-col">
+            <div class="af-lbl">Experience</div>
+            <div class="af-node slate"><div class="af-nt">App</div><div class="af-ns">Databricks Apps &middot; FastAPI &middot; Chat UI<br>Hire Right Agent &middot; Genie Space &middot; Lakebase</div></div>
+          </div>
+
         </div>
 
-        <!-- Bullets -->
-        <div class="duc-bullets" style="left:150px;top:548px;">
-          <span class="duc-bul">Classify Data</span>
-          <span class="duc-bul">Assess Data Quality</span>
-          <span class="duc-bul">Mask PII</span>
-          <span class="duc-bul">Create Business Definitions</span>
-          <span class="duc-bul">Observability · inference tables</span>
-        </div>
-
+        <div class="af-legend"><span><b>&rarr;</b> data / build flow</span><span><b>&#8644; / &#8645;</b> request &amp; response</span><span>coral = serving runtime &middot; grey = pipeline</span></div>
       </div>
     </div>
   </div>
@@ -1075,6 +1005,11 @@ function renderDetail() {
   const hasMissing = SCORE_META.some(({key}) => c.scores[key] == null);
   const isHistorical = c.hired !== null;
 
+  // Circular score-ring geometry
+  const RING_C = 2 * Math.PI * 42;
+  const ringPct = sc != null ? Math.max(0, Math.min(100, sc)) : 0;
+  const ringOffset = RING_C * (1 - ringPct / 100);
+
   document.getElementById('det-content').innerHTML = `
     <div class="det-header">
       <div class="det-av" style="background:${avColor(c.id)}">${initials(c.name)}</div>
@@ -1088,15 +1023,28 @@ function renderDetail() {
           <span class="badge b-pipe">${esc(c.certifications)}</span>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;">
-        <div class="det-score-box">
-          <div class="det-sn" style="color:${totalColor}">${sc!=null?sc.toFixed(1):'—'}</div>
-          <div class="det-sl">Total Score</div>
+      <div class="det-actions">
+        <div class="score-ring" title="Total Score">
+          <svg viewBox="0 0 100 100">
+            <circle class="sr-track" cx="50" cy="50" r="42"></circle>
+            <circle class="sr-arc" cx="50" cy="50" r="42"
+              style="stroke:${totalColor};stroke-dasharray:${RING_C.toFixed(1)};stroke-dashoffset:${ringOffset.toFixed(1)};"></circle>
+          </svg>
+          <div class="sr-center">
+            <div class="sr-num" style="color:${totalColor}">${sc!=null?sc.toFixed(1):'—'}</div>
+            <div class="sr-lbl">Total Score</div>
+          </div>
         </div>
-        <button class="resume-btn" onclick="showResume('${c.id}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          Show Resume
-        </button>
+        <div class="det-btns">
+          <button class="resume-btn" onclick="showResume('${c.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Show Resume
+          </button>
+          <button class="offer-btn" onclick="openOffer('${c.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L3.2 7.7l5.4-.8z"/></svg>
+            AI-Powered Offer Letter
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1136,7 +1084,103 @@ function renderDetail() {
           <button class="rec-send" id="rec-send" onclick="sendRec()">Send</button>
         </div>
       </div>
+    </div>
+
+    <div class="panel notes-panel">
+      <div class="panel-head notes-head">
+        <div>
+          <div class="panel-title">HR Notes</div>
+          <div class="panel-sub">Private annotations on ${esc(c.name)} — saved to Lakebase</div>
+        </div>
+      </div>
+      <div class="notes-list" id="notes-list">
+        <div class="notes-empty">Loading notes…</div>
+      </div>
+      <div class="notes-footer">
+        <input type="text" class="rec-inp" id="note-inp"
+          placeholder="Add a note about ${esc(c.name)}…"
+          onkeydown="if(event.key==='Enter')addAnnotation()">
+        <button class="rec-send" id="note-send" onclick="addAnnotation()">Add Note</button>
+      </div>
     </div>`;
+
+  loadAnnotations(c.id);
+}
+
+// ── HR Notes / Annotations ────────────────────────────────
+async function loadAnnotations(candidateId) {
+  const list = document.getElementById('notes-list');
+  if (!list) return;
+  try {
+    const r = await fetch(`/api/candidates/${encodeURIComponent(candidateId)}/annotations`);
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Failed to load notes');
+    renderNotes(d.annotations || []);
+  } catch(e) {
+    list.innerHTML = `<div class="notes-empty">Could not load notes: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderNotes(notes) {
+  const list = document.getElementById('notes-list');
+  if (!list) return;
+  if (!notes.length) {
+    list.innerHTML = `<div class="notes-empty">No notes yet. Add the first annotation below.</div>`;
+    return;
+  }
+  list.innerHTML = notes.map(n => `
+    <div class="note-item">
+      <button class="note-del" title="Delete note" onclick="deleteAnnotation(${n.id})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+      </button>
+      <div class="note-text">${esc(n.note)}</div>
+      <div class="note-meta"><span class="note-author">${esc(n.author||'HR Manager')}</span><span>${fmtTime(n.created_at)}</span></div>
+    </div>`).join('');
+}
+
+async function deleteAnnotation(id) {
+  if (!currentCandidate) return;
+  if (!confirm('Delete this note? This cannot be undone.')) return;
+  try {
+    const r = await fetch(`/api/candidates/${encodeURIComponent(currentCandidate.id)}/annotations/${id}`, { method: 'DELETE' });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.detail || 'Delete failed');
+    await loadAnnotations(currentCandidate.id);
+  } catch (e) {
+    alert('Could not delete note: ' + e.message);
+  }
+}
+
+async function addAnnotation() {
+  const inp = document.getElementById('note-inp');
+  const btn = document.getElementById('note-send');
+  if (!inp || !currentCandidate) return;
+  const note = inp.value.trim();
+  if (!note) return;
+  btn.disabled = true; inp.disabled = true;
+  const prev = btn.textContent; btn.textContent = 'Saving…';
+  try {
+    const r = await fetch(`/api/candidates/${encodeURIComponent(currentCandidate.id)}/annotations`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({note})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Failed to save note');
+    inp.value = '';
+    await loadAnnotations(currentCandidate.id);
+  } catch(e) {
+    alert('Could not save note: ' + e.message);
+  } finally {
+    btn.disabled = false; inp.disabled = false; btn.textContent = prev;
+    inp.focus();
+  }
+}
+
+function fmtTime(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleString(undefined, {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'});
+  } catch(_) { return iso; }
 }
 
 // ── Generate Recommendation ───────────────────────────────────
@@ -1169,6 +1213,108 @@ async function postChat(body) {
   return data;
 }
 
+// ── Streaming agent chat (SSE) with live tool-call cards ───────────────
+const _TOOL_IC = '<svg class="tool-card__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.77a6 6 0 0 1-7.94 7.94l-6.9 6.91a2.1 2.1 0 0 1-3-3l6.9-6.91a6 6 0 0 1 7.94-7.94l-3.75 3.76z"/></svg>';
+const _CHEV = '<svg class="tool-card__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>';
+
+// Runs one agent turn against /api/chat/stream, rendering tool cards + answer
+// live into `box`. Returns {answer, ok, bubble}. History is managed by callers.
+async function streamChat(box, message, history, opts) {
+  opts = opts || {};
+  const wrap = document.createElement('div');
+  wrap.className = opts.assistantClass || 'msg assistant';
+  if (opts.withAvatar) {
+    const av = document.createElement('div'); av.className = 'msg-av'; av.textContent = 'AI';
+    wrap.appendChild(av);
+  }
+  const bub = document.createElement('div'); bub.className = opts.bubClass || 'msg-bub';
+  const cards = document.createElement('div'); cards.className = 'tool-cards';
+  const textEl = document.createElement('div'); textEl.className = 'stream-text';
+  textEl.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+  bub.appendChild(cards); bub.appendChild(textEl); wrap.appendChild(bub);
+  box.appendChild(wrap); box.scrollTop = box.scrollHeight;
+
+  const cardByCall = {};
+  let answer = '', gotFirst = false;
+  const clearTyping = () => { if (!gotFirst) { textEl.innerHTML = ''; gotFirst = true; } };
+
+  const handle = (evt) => {
+    if (evt.type === 'tool_call') {
+      let args = '';
+      try { args = JSON.stringify(JSON.parse(evt.arguments || '{}'), null, 2); } catch(_) { args = evt.arguments || ''; }
+      const card = document.createElement('div'); card.className = 'tool-card';
+      card.innerHTML =
+        `<div class="tool-card__head" onclick="this.parentNode.classList.toggle('open')">${_TOOL_IC}`+
+        `<span class="tool-card__name">${esc(evt.name || 'tool')}</span>`+
+        `<span class="tool-card__badge running"><span class="spin"></span>Running</span>${_CHEV}</div>`+
+        `<div class="tool-card__body"><span class="lbl">Arguments</span>${esc(args || '(none)')}<div class="tc-out"></div></div>`;
+      cards.appendChild(card);
+      if (evt.call_id) cardByCall[evt.call_id] = card;
+      box.scrollTop = box.scrollHeight;
+    } else if (evt.type === 'tool_result') {
+      const card = cardByCall[evt.call_id] || cards.querySelector('.tool-card:last-child');
+      if (card) {
+        const badge = card.querySelector('.tool-card__badge');
+        if (badge) { badge.className = 'tool-card__badge done'; badge.textContent = 'Completed'; }
+        const out = card.querySelector('.tc-out');
+        if (out) out.innerHTML = '<span class="lbl">Result</span>' + esc(String(evt.output || '').slice(0, 4000));
+      }
+    } else if (evt.type === 'text') {
+      clearTyping();
+      answer += (answer ? '\n\n' : '') + (evt.text || '');
+      textEl.innerHTML = DOMPurify.sanitize(marked.parse(answer));
+      box.scrollTop = box.scrollHeight;
+    } else if (evt.type === 'error') {
+      clearTyping();
+      answer = '⚠️ ' + (evt.message || 'Agent error');
+      textEl.innerHTML = DOMPurify.sanitize(marked.parse(answer));
+    }
+  };
+
+  let resp;
+  try {
+    resp = await fetch('/api/chat/stream', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, conversation_history: history })
+    });
+  } catch(e) {
+    clearTyping(); answer = '⚠️ Network error contacting the agent. Please try again.';
+    textEl.textContent = answer; return { answer, ok: false, bubble: bub };
+  }
+  if (!resp.ok || !resp.body) {
+    clearTyping(); answer = '⚠️ ' + (resp.status === 504
+      ? 'The agent is warming up (cold start can take a minute or two). Please try again shortly.'
+      : `Agent request failed (HTTP ${resp.status}).`);
+    textEl.textContent = answer; return { answer, ok: false, bubble: bub };
+  }
+
+  const reader = resp.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let i;
+      while ((i = buf.indexOf('\n\n')) >= 0) {
+        const chunk = buf.slice(0, i); buf = buf.slice(i + 2);
+        const line = chunk.split('\n').find(l => l.startsWith('data:'));
+        if (!line) continue;
+        const data = line.slice(5).trim();
+        if (!data) continue;
+        let evt; try { evt = JSON.parse(data); } catch(_) { continue; }
+        if (evt.type !== 'done') handle(evt);
+      }
+    }
+  } catch(e) {
+    clearTyping();
+    if (!answer) { answer = '⚠️ Streaming interrupted. Please try again.'; textEl.textContent = answer; }
+  }
+  if (!gotFirst) { textEl.innerHTML = ''; }  // no text came back
+  return { answer, ok: true, bubble: bub };
+}
+
 async function generateRec() {
   if (recBusy) return;
   const c = currentCandidate;
@@ -1198,16 +1344,11 @@ async function generateRec() {
     `(1) the DS hire recommendation, and (2) a very concise candidate summary using the search_resumes tool to retrieve relevant resume context for ${c.name} (${c.id}).`;
 
   addRecMsg('user', `Generate DS Recommendation for ${c.name} (${c.id})`);
-  const tp = addRecTyping();
-
+  const box = document.getElementById('rec-msgs');
   try {
-    const d = await postChat({message: prompt, conversation_history: recHistory});
-    recHistory = d.conversation_history;
-    tp.remove();
-    addRecMsg('assistant', d.reply);
-  } catch(e) {
-    tp.remove();
-    addRecMsg('assistant', `⚠️ ${e.message}`);
+    const { answer } = await streamChat(box, prompt, recHistory,
+      { assistantClass: 'mm assistant', bubClass: 'mm-bub' });
+    recHistory.push({ role: 'user', content: prompt }, { role: 'assistant', content: answer });
   } finally {
     recBusy = false;
     btn.disabled = false;
@@ -1223,15 +1364,11 @@ async function sendRec() {
   recBusy = true;
   document.getElementById('rec-send').disabled = true;
   addRecMsg('user', msg);
-  const tp = addRecTyping();
+  const box = document.getElementById('rec-msgs');
   try {
-    const d = await postChat({message: msg, conversation_history: recHistory});
-    recHistory = d.conversation_history;
-    tp.remove();
-    addRecMsg('assistant', d.reply);
-  } catch(e) {
-    tp.remove();
-    addRecMsg('assistant', `⚠️ ${e.message}`);
+    const { answer } = await streamChat(box, msg, recHistory,
+      { assistantClass: 'mm assistant', bubClass: 'mm-bub' });
+    recHistory.push({ role: 'user', content: msg }, { role: 'assistant', content: answer });
   } finally {
     recBusy = false;
     document.getElementById('rec-send').disabled = false;
@@ -1270,15 +1407,18 @@ async function agentSend(text) {
   agentBusy = true;
   document.getElementById('agent-btn').disabled = true;
   addMsg('agent-msgs', 'user', msg);
-  const tp = addTyping('agent-msgs', 'agent');
+  const box = document.getElementById('agent-msgs');
   try {
-    const d = await postChat({message: msg, conversation_history: agentHistory});
-    agentHistory = d.conversation_history;
-    tp.remove();
-    addAgentMsg(d.reply);
-  } catch(e) {
-    tp.remove();
-    addAgentMsg(`⚠️ ${e.message}`);
+    const { answer } = await streamChat(box, msg, agentHistory,
+      { withAvatar: true, assistantClass: 'msg assistant', bubClass: 'msg-bub' });
+    agentHistory.push({ role: 'user', content: msg }, { role: 'assistant', content: answer });
+    // Append the suggested follow-up chips under the streamed answer.
+    const chips = AGENT_SUGGESTIONS.map(q =>
+      `<button class="genie-sugg" style="border-color:rgba(220,38,38,.2);color:var(--accent);background:rgba(220,38,38,.05);" onclick="agentSend(this.textContent)">${esc(q)}</button>`
+    ).join('');
+    const bub = box.querySelector('.msg.assistant:last-child .msg-bub');
+    if (bub) bub.insertAdjacentHTML('beforeend',
+      `<div class="genie-sugg-row" style="border-top-color:rgba(220,38,38,.15);">${chips}</div>`);
   } finally {
     agentBusy = false;
     document.getElementById('agent-btn').disabled = false;
@@ -1474,6 +1614,81 @@ function closeResume() {
 }
 function _resumeEsc(e) { if (e.key === 'Escape') closeResume(); }
 
+// ── AI-Powered Offer Letter composer ──────────────────────────
+let offerCandidate = null;
+
+async function openOffer(id) {
+  offerCandidate = allCandidates.find(c => c.id === id) || { id: id, name: id };
+  const cmp = document.getElementById('offer-cmp');
+  cmp.classList.add('open');
+  cmp.classList.remove('min');
+  document.getElementById('offer-title').textContent = `Offer Letter — ${offerCandidate.name || id}`;
+  document.getElementById('offer-to').value = '';
+  document.getElementById('offer-subject').value = '';
+  document.getElementById('offer-edit').innerHTML = '';
+  const st = document.getElementById('offer-status'); st.textContent = ''; st.style.color = 'var(--sub)';
+  await draftOffer();
+}
+
+async function draftOffer() {
+  const ov = document.getElementById('offer-drafting');
+  const send = document.getElementById('offer-send');
+  ov.style.display = 'flex';
+  send.disabled = true;
+  try {
+    const r = await fetch('/api/offer-letter/draft', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ candidate_id: offerCandidate.id })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Draft failed');
+    document.getElementById('offer-to').value = d.to || '';
+    document.getElementById('offer-subject').value = d.subject || '';
+    document.getElementById('offer-edit').innerHTML = DOMPurify.sanitize(d.body || '');
+  } catch (e) {
+    document.getElementById('offer-edit').innerHTML =
+      `<p style="color:var(--accent)">Could not draft the letter: ${esc(e.message)}. You can still write one manually.</p>`;
+  } finally {
+    ov.style.display = 'none';
+    send.disabled = false;
+  }
+}
+
+function regenOffer() { if (offerCandidate) draftOffer(); }
+function offerExec(cmd) { document.getElementById('offer-edit').focus(); try { document.execCommand(cmd, false, null); } catch (_) {} }
+function toggleOfferMin() { document.getElementById('offer-cmp').classList.toggle('min'); }
+function closeOffer() { document.getElementById('offer-cmp').classList.remove('open'); }
+
+async function sendOffer() {
+  const to = document.getElementById('offer-to').value.trim();
+  const subject = document.getElementById('offer-subject').value.trim();
+  const body = document.getElementById('offer-edit').innerHTML.trim();
+  const st = document.getElementById('offer-status');
+  if (!to || !to.includes('@')) { st.style.color = 'var(--accent)'; st.textContent = 'Enter a valid recipient email.'; return; }
+  if (!body) { st.style.color = 'var(--accent)'; st.textContent = 'The letter is empty.'; return; }
+  const btn = document.getElementById('offer-send'); const prev = btn.innerHTML;
+  btn.disabled = true; btn.textContent = 'Sending…';
+  st.style.color = 'var(--sub)'; st.textContent = 'Sending via Hire Right Agent…';
+  try {
+    const r = await fetch('/api/offer-letter/send', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to, subject, body })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Send failed');
+    if (d.ok) {
+      st.style.color = 'var(--green)'; st.textContent = `✓ Offer letter sent to ${to}`;
+      setTimeout(closeOffer, 1900);
+    } else {
+      st.style.color = 'var(--accent)'; st.textContent = (d.detail || 'Send failed').slice(0, 160);
+    }
+  } catch (e) {
+    st.style.color = 'var(--accent)'; st.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.innerHTML = prev;
+  }
+}
+
 // ── Main Tab Switching ────────────────────────────────────────
 function switchMainTab(tab) {
   const isCandidates = tab === 'candidates';
@@ -1586,15 +1801,32 @@ function closeJD() {
 function _jdEsc(e) { if (e.key === 'Escape') closeJD(); }
 
 // ── Architecture Modal ────────────────────────────────────────
+function scaleArchToFit() {
+  const body = document.querySelector('#arch-ov .arch-mb');
+  const dg = document.querySelector('#arch-ov .af-diagram');
+  if (!body || !dg) return;
+  dg.style.transform = 'none';
+  const availW = body.clientWidth - 24, availH = body.clientHeight - 24;
+  const w = dg.offsetWidth, h = dg.offsetHeight;
+  if (!w || !h) return;
+  const s = Math.min(availW / w, availH / h, 1);
+  dg.style.transform = 'scale(' + s + ')';
+}
 function openArch() {
   document.getElementById('arch-ov').classList.add('open');
   document.addEventListener('keydown', _archEsc);
+  requestAnimationFrame(scaleArchToFit);
+  setTimeout(scaleArchToFit, 80);   // re-fit after fonts/layout settle
 }
 function closeArch() {
   document.getElementById('arch-ov').classList.remove('open');
   document.removeEventListener('keydown', _archEsc);
 }
 function _archEsc(e) { if (e.key === 'Escape') closeArch(); }
+window.addEventListener('resize', function () {
+  const ov = document.getElementById('arch-ov');
+  if (ov && ov.classList.contains('open')) scaleArchToFit();
+});
 
 // ── Init ──────────────────────────────────────────────────────
 loadCandidates();

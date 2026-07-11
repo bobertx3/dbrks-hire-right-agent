@@ -240,36 +240,57 @@ class HireRightAgent(ResponsesAgent):
         return lc_messages
 
     def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
+        # Collect the streamed items into a single response (keeps one source of truth).
+        outputs = [
+            event.item
+            for event in self.predict_stream(request)
+            if event.type == "response.output_item.done"
+        ]
+        return ResponsesAgentResponse(output=outputs)
+
+    def predict_stream(
+        self, request: ResponsesAgentRequest
+    ) -> Generator[ResponsesAgentStreamEvent, None, None]:
+        """Incremental tool-calling loop.
+
+        Emits each function call as soon as the model requests it, then runs the
+        tool and emits its output — so a streaming client can render tool-call
+        cards progressively (not all at once at the end).
+        """
         llm            = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=2048)
         llm_with_tools = llm.bind_tools(TOOLS)
 
-        lc_messages  = self._build_lc_messages(request.input)
-        output_items = []
+        lc_messages = self._build_lc_messages(request.input)
 
         for _ in range(10):
             response = llm_with_tools.invoke(lc_messages)
             lc_messages.append(response)
 
-            if not response.tool_calls:
-                output_items.append(
-                    self.create_text_output_item(
-                        text=response.content or "",
-                        id=str(uuid.uuid4()),
-                    )
+            # Emit any assistant text produced this turn.
+            if response.content:
+                yield ResponsesAgentStreamEvent(
+                    type="response.output_item.done",
+                    item=self.create_text_output_item(
+                        text=response.content, id=str(uuid.uuid4())
+                    ),
                 )
-                return ResponsesAgentResponse(output=output_items)
+
+            if not response.tool_calls:
+                return
 
             for tc in response.tool_calls:
-                # Emit the function call so MLflow traces it as a span
-                output_items.append(
-                    self.create_function_call_item(
+                # 1) Emit the function call immediately (renders the tool card).
+                yield ResponsesAgentStreamEvent(
+                    type="response.output_item.done",
+                    item=self.create_function_call_item(
                         id=str(uuid.uuid4()),
                         call_id=tc["id"],
                         name=tc["name"],
                         arguments=json.dumps(tc["args"]),
-                    )
+                    ),
                 )
 
+                # 2) Run the tool.
                 result = f"Tool '{tc['name']}' not found."
                 for t in TOOLS:
                     if t.name == tc["name"]:
@@ -278,37 +299,24 @@ class HireRightAgent(ResponsesAgent):
                         except Exception as e:
                             result = f"Tool error ({tc['name']}): {str(e)}"
                         break
-
                 logger.debug("Tool %s → %s", tc["name"], str(result)[:100])
 
-                # Emit the tool result so MLflow traces it as a span
-                output_items.append(
-                    self.create_function_call_output_item(
-                        call_id=tc["id"],
-                        output=str(result),
-                    )
+                # 3) Emit the tool result (completes the card) and feed it back.
+                yield ResponsesAgentStreamEvent(
+                    type="response.output_item.done",
+                    item=self.create_function_call_output_item(
+                        call_id=tc["id"], output=str(result),
+                    ),
                 )
                 lc_messages.append(ToolMessage(content=str(result), tool_call_id=tc["id"]))
 
-        # Max iterations — get final answer without tools
+        # Max iterations reached — produce a final answer without tools.
         llm_plain = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=1024)
         final = llm_plain.invoke(lc_messages)
-        output_items.append(
-            self.create_text_output_item(
-                text=final.content or "",
-                id=str(uuid.uuid4()),
-            )
+        yield ResponsesAgentStreamEvent(
+            type="response.output_item.done",
+            item=self.create_text_output_item(text=final.content or "", id=str(uuid.uuid4())),
         )
-        return ResponsesAgentResponse(output=output_items)
-
-    def predict_stream(
-        self, request: ResponsesAgentRequest
-    ) -> Generator[ResponsesAgentStreamEvent, None, None]:
-        result = self.predict(request)
-        for item in result.output:
-            # MLflow serving calls .get() on item expecting a dict — convert from pydantic
-            item_dict = item.model_dump() if hasattr(item, "model_dump") else item
-            yield ResponsesAgentStreamEvent(type="response.output_item.done", item=item_dict)
 
 
 # ── Singleton instance ─────────────────────────────────────────────────────────
