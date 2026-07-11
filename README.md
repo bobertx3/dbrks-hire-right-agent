@@ -88,6 +88,7 @@ are gitignored, so everything you see below is the actual work.
 ├── dashboard/
 │   └── hiring_analytics.lvdash.json     # Lakeview AI/BI dashboard
 ├── scripts/
+│   ├── deploy.sh                        # One command: bundle deploy + run the workflow
 │   └── generate_resumes.py              # Synthetic resume generator
 ├── slides/                              # Decks (HTML + PDF)
 │   ├── hire-right-fe-bar.html / .pdf    # FE Bar value + architecture deck (submit this)
@@ -161,53 +162,49 @@ Everything is a **Declarative Automation Bundle** (DAB). Prereqs: Databricks CLI
 the workspace (`databricks auth login --profile DEFAULT --host <workspace>`), and a `.env`
 (copy `env.template`).
 
-### 1. Deploy the bundle
+### One command — deploy + wire everything
 ```bash
-databricks bundle deploy -t default --profile DEFAULT
+./scripts/deploy.sh              # target=default, profile=DEFAULT
+# ./scripts/deploy.sh prod MYPROFILE
 ```
-This provisions the pipeline Job, the dashboard, and the **Databricks App** — and attaches the
-app's service-principal **resource bindings** (agent endpoint, SQL warehouse, Genie space,
-Lakebase database) declaratively from `databricks.yml`, so the app can query the endpoint, run
-Genie, and connect to Lakebase with **no manual grants or PATCH**. Targets: `default`
-(fevm-bobertx3, the live demo — `default: true`) and `prod`.
-
-### 2. Start / deploy the app
-```bash
-databricks bundle run hire_right_app -t default --profile DEFAULT
-```
-Uploads the latest app source and starts it. (The pipeline Job's `deploy_app` task also deploys
-the app source as part of an end-to-end run.)
-
-### 3. Run the pipeline end-to-end
-```bash
-# Full run incl. ML retrain + agent redeploy + app deploy:
-databricks bundle run hrd_setup_job -t default --profile DEFAULT \
-  --params train_model=true,deploy_agent=true
-```
-Job parameters gate the expensive steps: `train_model` (retrain the ML model) and `deploy_agent`
-(re-log/eval/deploy the agent). Default both to `false` for a data-only refresh.
+Two phases:
+1. **`bundle deploy`** provisions the Job, dashboard, and the **Databricks App** — attaching the
+   app's service-principal **resource bindings** (agent endpoint, warehouse, Genie, Lakebase)
+   declaratively from `databricks.yml`.
+2. **`bundle run hrd_setup_job`** runs the end-to-end **workflow**, which does all the dynamic
+   wiring: Bronze→Gold, Lakebase setup, Genie space, ML train + serve, agent deploy, app-source
+   deploy, and — in `grant_app_permissions` (notebook 09) — **grants the current app SP** its UC
+   (`USE CATALOG`/`SCHEMA`, `SELECT`, `READ VOLUME`), **Genie `CAN_RUN`** (on the live space),
+   warehouse, and endpoint access. That's the piece that makes it turnkey: the workflow grants
+   whatever SP the app currently has.
 
 **Task DAG (high level):** `setup → load_bronze → (load_silver ∥ build_vector_index) →
 classify_and_quality → build_gold → setup_lakebase → {genie_space, create_uc_functions,
 apply_business_semantics} → [train]→ml_model → [agent]→agent → deploy_app → grant_app_permissions
 → drift_monitor / refresh_dashboard`.
 
-### 4. Or run notebooks individually
-Run in numeric order (`00a → 10`). Minimum path to a working app after data exists:
-`03_build_gold → 10_setup_lakebase`, then `databricks bundle run hire_right_app`.
+### Running the pieces individually
+```bash
+databricks bundle deploy -t default --profile DEFAULT          # provision
+databricks bundle run    hrd_setup_job -t default --profile DEFAULT \
+  --params train_model=false,deploy_agent=false                # data-only refresh (no ML/agent)
+databricks bundle run    hire_right_app -t default --profile DEFAULT   # (re)deploy app source only
+```
+`train_model` / `deploy_agent` gate the expensive ML-retrain and agent re-deploy/eval steps.
 
-### Deploy gotchas (learned the hard way)
+### Notes & gotchas
+- **App SP grants are automatic in the workflow.** A (re)created app gets a **new service
+  principal**; `grant_app_permissions` (notebook 09) grants whatever SP the app currently has
+  (UC + Genie + warehouse + endpoint), so as long as you deploy via `scripts/deploy.sh` (or run the
+  job after deploy) it's turnkey. If you only `bundle deploy` + `bundle run hire_right_app` (app,
+  no job), run notebook 09 once to grant the SP.
 - **First-time app adoption** — if an app with the same `name` already exists but wasn't created by
   this bundle, `bundle deploy` errors ("app already exists"). Delete it once
-  (`databricks apps delete <name>`) so the bundle can own it, then redeploy. Note this mints a
-  **new app service principal**.
-- **Grant the app SP Unity Catalog access.** The resource bindings cover the endpoint / warehouse /
-  Genie / Lakebase, but the SP still needs UC grants (`USE CATALOG`, `USE SCHEMA`, `SELECT`,
-  `READ VOLUME` on `raw_data`) to read the résumé volume and let Genie run SQL. Notebook `09`
-  (`grant_app_permissions`) grants these **dynamically for the current SP** — run it (or the job)
-  after the app is (re)created.
-- **Redeploying the agent endpoint out-of-band** can reset its ACL — re-run `bundle deploy` (or
-  notebook `09`) to reassert the app SP's `CAN_QUERY`.
+  (`databricks apps delete <name>`) so the bundle can own it, then redeploy.
+- **New environment** — `warehouse_id`, the target `workspace.host`, and (for a freshly-created
+  Genie space) `genie_space_id` are env-specific vars in `databricks.yml`; set them for a new
+  workspace. Notebook 04 creates the Genie space and the workflow grants the SP `CAN_RUN` on it
+  dynamically; set the `genie_space_id` var to the created id so the app queries the right space.
 - **Secret scanner** flags base64 image blobs and Postgres connection-string placeholders
   (`postgresql://<user>:<pass>@<host>`) as false positives — the deck references screenshots by
   relative path and docs use angle-bracket placeholders.
