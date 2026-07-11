@@ -65,7 +65,7 @@ are gitignored, so everything you see below is the actual work.
 │   ├── 05_train_ml_model.ipynb          # Train 3 sklearn models → MLflow → @champion → Serving
 │   ├── 05b_create_drift_monitor.ipynb   # Lakehouse Monitoring on the model
 │   ├── 06_evaluate_register_agent.ipynb # Log/eval (LLM judge) + register + deploy the agent
-│   ├── 07_deploy_app.ipynb              # Write app.yaml, deploy App, PATCH resource bindings
+│   ├── 07_deploy_app.ipynb              # Deploy the (bundle-managed) app's latest source
 │   ├── 08_refresh_dashboard.ipynb       # Refresh the Lakeview dashboard
 │   ├── 09_grant_app_permissions.ipynb   # Grant app SP: UC + endpoint + Genie access
 │   ├── 10_setup_lakebase.ipynb          # Create Lakebase, sync tables, candidate_annotations
@@ -84,8 +84,7 @@ are gitignored, so everything you see below is the actual work.
 │   │                                    #   Genie proxy, resume PDF, offer letter, notes CRUD
 │   ├── db.py                            # Lakebase (Postgres) via OAuth credential injection
 │   ├── index.html                       # Single-file UI: cockpit, tool cards, notes, composer
-│   ├── app.yaml                         # App config + resource bindings
-│   └── requirements.txt
+│   └── requirements.txt                 # (app config + resource bindings live in databricks.yml)
 ├── dashboard/
 │   └── hiring_analytics.lvdash.json     # Lakeview AI/BI dashboard
 ├── scripts/
@@ -166,9 +165,20 @@ the workspace (`databricks auth login --profile DEFAULT --host <workspace>`), an
 ```bash
 databricks bundle deploy -t default --profile DEFAULT
 ```
-Targets: `default` (fevm-bobertx3, the live demo — `default: true`) and `prod`.
+This provisions the pipeline Job, the dashboard, and the **Databricks App** — and attaches the
+app's service-principal **resource bindings** (agent endpoint, SQL warehouse, Genie space,
+Lakebase database) declaratively from `databricks.yml`, so the app can query the endpoint, run
+Genie, and connect to Lakebase with **no manual grants or PATCH**. Targets: `default`
+(fevm-bobertx3, the live demo — `default: true`) and `prod`.
 
-### 2. Run the pipeline end-to-end
+### 2. Start / deploy the app
+```bash
+databricks bundle run hire_right_app -t default --profile DEFAULT
+```
+Uploads the latest app source and starts it. (The pipeline Job's `deploy_app` task also deploys
+the app source as part of an end-to-end run.)
+
+### 3. Run the pipeline end-to-end
 ```bash
 # Full run incl. ML retrain + agent redeploy + app deploy:
 databricks bundle run hrd_setup_job -t default --profile DEFAULT \
@@ -182,16 +192,16 @@ classify_and_quality → build_gold → setup_lakebase → {genie_space, create_
 apply_business_semantics} → [train]→ml_model → [agent]→agent → deploy_app → grant_app_permissions
 → drift_monitor / refresh_dashboard`.
 
-### 3. Or run notebooks individually
+### 4. Or run notebooks individually
 Run in numeric order (`00a → 10`). Minimum path to a working app after data exists:
-`03_build_gold → 10_setup_lakebase → 07_deploy_app`.
+`03_build_gold → 10_setup_lakebase`, then `databricks bundle run hire_right_app`.
 
 ### Deploy gotchas (learned the hard way)
-- **App resource bindings** declared in `app.yaml` don't always attach on deploy (app shows
-  `resources: []`). Notebook `07` PATCHes `/api/2.0/apps/{name}` with the resource list after
-  deploy so the app SP actually gets its serving/warehouse/Genie/**Lakebase** grants.
-- **Redeploying the agent endpoint resets its ACLs** — re-grant the app SP `CAN_QUERY` (notebook
-  `09` does this in the full pipeline).
+- **First-time app adoption** — if an app with the same `name` already exists but wasn't created by
+  this bundle, `bundle deploy` errors ("app already exists"). Delete it once
+  (`databricks apps delete <name>`) so the bundle can own it, then redeploy.
+- **Redeploying the agent endpoint out-of-band** can reset its ACL — re-run `bundle deploy` (or
+  notebook `09`) to reassert the app SP's `CAN_QUERY`.
 - **Secret scanner** flags base64 image blobs and Postgres connection-string placeholders
   (`postgresql://<user>:<pass>@<host>`) as false positives — the deck references screenshots by
   relative path and docs use angle-bracket placeholders.
