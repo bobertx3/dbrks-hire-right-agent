@@ -63,9 +63,12 @@ calls** in the app, and inline **HR notes** (add/delete).
 - **Computed score vs. the model, on purpose.** The UI "Total Score" is a transparent average of
   the 8 category scores; the model returns the hire/no-hire decision. Keeping them separate makes
   the demo explainable (and honest about what the model does).
-- **App deployed the declarative way.** The Databricks App is a first-class DAB `apps` resource in
-  `databricks.yml` with its `resources:` block, so `bundle deploy` attaches the service-principal
-  bindings (serving endpoint, warehouse, Genie, Lakebase) automatically — no post-deploy PATCH.
+- **Deploy: bundle provisions, workflow wires.** `bundle deploy` provisions everything
+  declaratively — including the App as a first-class DAB `apps` resource whose `resources:` block
+  attaches the service-principal bindings (endpoint, warehouse, Genie, Lakebase) with no PATCH. The
+  pipeline **workflow** then does the dynamic wiring — notably `grant_app_permissions` (notebook 09)
+  grants whatever SP the app currently has its UC / Genie / warehouse / endpoint access. Both run
+  from one entry point, `scripts/deploy.sh`.
 
 ## Where AI made the biggest difference
 
