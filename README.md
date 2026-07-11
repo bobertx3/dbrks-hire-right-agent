@@ -45,6 +45,10 @@ binary hire / no-hire label. This is intentional for the demo narrative.
 
 ## Repository structure — what's where
 
+The repo is intentionally lean (~120 tracked files) — build/tooling artifacts
+(`node_modules/`, vendored `.agents/` skills, local `mlflow.db`/`mlruns/`, `.venv/`)
+are gitignored, so everything you see below is the actual work.
+
 ```
 databricks.yml                # DAB bundle: variables, the pipeline Job, dashboard, 2 targets
 notebooks/                    # The build pipeline (run in order; also the Job's tasks)

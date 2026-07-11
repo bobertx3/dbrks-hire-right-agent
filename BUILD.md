@@ -13,7 +13,11 @@ but as one connected journey from raw data to a decision an HR leader would actu
 It was later **extended for the FE Bar**, where the main addition was the **Lakebase** operational
 serving layer (so the app reads from a low-latency Postgres synced from the governed lakehouse, and
 persists HR notes transactionally), plus the AI-drafted **offer letter**, **live streaming tool
-calls** in the app, and inline **HR notes** (add/delete).
+calls** in the app, and inline **HR notes** (add/delete). The FE Bar prep also produced the
+**value + architecture deck** (`slides/hire-right-fe-bar.*`, generated from a Python builder using
+the `db-presentation` design system with real product screenshots), a candidate-page redesign
+(score ring, centered composer), and a final **repo cleanup** (removed ~5.7k build/tooling
+artifacts so the repo contains only the actual work).
 
 ## Workflow — how it was actually built
 
