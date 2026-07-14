@@ -159,6 +159,29 @@ ul.ticks li::before{content:'';position:absolute;left:0;top:9px;width:9px;height
 .shot-frame .hi{position:absolute;border:3px solid #FF5F46;border-radius:9px;box-shadow:0 0 0 3px rgba(255,95,70,.14);pointer-events:none;}
 .shot-frame .tag{position:absolute;transform:translateY(-100%);background:#FF5F46;color:#fff;font:600 11px/1.2 'DM Mono',monospace;padding:5px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,.22);}
 @media (max-width:900px){.slide--shot .shot-grid{grid-template-columns:1fr;gap:24px;}}
+
+/* ── Print / PDF export: one landscape page per slide, all content forced visible ── */
+@media print{
+  @page{size:1280px 720px;margin:0;}
+  html,body{overflow:visible !important;height:auto !important;background:#fff !important;}
+  .deck{display:block !important;height:auto !important;overflow:visible !important;scroll-snap-type:none !important;}
+  .progress-bar,.nav-dots,.slide-counter{display:none !important;}
+  .slide,.reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+  .slide{width:1280px !important;height:720px !important;min-height:0 !important;overflow:hidden !important;
+    page-break-after:always;break-after:page;page-break-inside:avoid;break-inside:avoid;scroll-snap-align:none !important;}
+  .slide:last-child{page-break-after:auto;break-after:auto;}
+  .af-flow::after,.af-vflow::after{animation:none !important;}
+  /* Architecture diagram: scale to fit the printed page width (no right-edge clip) */
+  .slide--arch{padding:36px 40px !important;}
+  .slide--arch .arch-canvas{overflow:visible !important;}
+  .slide--arch .af-diagram{zoom:0.72 !important;}
+  /* Screenshot slides: cap image in px (print resolves vh against the wrong
+     viewport, so 74vh balloons past the page and bleeds onto the next slide) */
+  .slide--shot{padding:38px 52px !important;}
+  .slide--shot .db-h1{margin-bottom:14px !important;}
+  .slide--shot .shot-frame img{max-height:470px !important;width:auto !important;}
+  .slide--shot .shot-grid{align-items:center !important;}
+}
 </style>
 </head>
 <body>
@@ -179,23 +202,24 @@ window.DB_IMAGES={logo:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwAAAAB5CA
   </div>
 <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide "><div class="slide__glow"></div>
   <span class="db-label eyebrow reveal">The problem</span>
-  <h2 class="db-h1 reveal">Hiring senior HR leaders is slow, subjective,<br>and expensive to get wrong.</h2>
-  <ul class="ticks reveal" style="max-width:900px;">
-    <li><strong>45+ days</strong> to fill a director-level role &mdash; top candidates are gone before the shortlist is set.</li>
+  <h2 class="db-h1 reveal">People are Jackson &amp; Jackson&rsquo;s most critical asset &mdash;<br>and hiring is slow, subjective, and costly to get wrong.</h2>
+  <ul class="ticks reveal" style="max-width:960px;">
+    <li>Nearly <strong>100,000 resumes a month &mdash; 1.2&ndash;2M a year</strong> &mdash; far more than any team can screen consistently by hand, so strong candidates are lost in the pile.</li>
+    <li><strong>Every hire matters, senior leaders most of all.</strong> A wrong hire is wasteful &mdash; it drains productivity, disrupts the team, and hits the bottom line.</li>
     <li>Decisions rest on <strong>gut feel and inconsistent scorecards</strong>, creating bias and compliance exposure in a regulated industry.</li>
-    <li>A single <strong>mis-hire at the leadership level costs 1.5&ndash;3&times; salary</strong> in severance, lost productivity, and re-recruiting.</li>
     <li>Applicant data, resumes, and analytics live in <strong>disconnected tools</strong> &mdash; no single, governed source of truth.</li>
   </ul>
+  <p class="db-body-t reveal mt-l" style="max-width:960px;color:var(--db-body-dim);">Jackson &amp; Jackson is modernizing HR on a single, governed Data &amp; AI platform &mdash; and chose Databricks. <strong style="color:var(--db-body);">Hire Right</strong> is the flagship use case: hire better, and at scale, with ML and AI.</p>
 <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide "><div class="slide__glow"></div>
   <span class="db-label eyebrow reveal">The outcome &mdash; lead with impact</span>
-  <h2 class="db-h1 reveal">Faster, fairer, defensible hiring decisions.</h2>
+  <h2 class="db-h1 reveal">Higher-quality hires, faster &mdash; fair and defensible.</h2>
   <div class="kpi-grid reveal">
+    <div class="kpi-card"><div class="num">~30%</div><div class="lab">Higher quality of hire</div><div class="sub">North-star KPI &mdash; fewer mis-hires, measured by first-year retention</div></div>
     <div class="kpi-card"><div class="num">60%</div><div class="lab">Faster time-to-fill</div><div class="sub">Ranked shortlists on day one, not week six</div></div>
-    <div class="kpi-card"><div class="num">~30%</div><div class="lab">Fewer mis-hires</div><div class="sub">8-factor ML scoring lifts quality of hire</div></div>
-    <div class="kpi-card"><div class="num">15&nbsp;hrs</div><div class="lab">Saved per requisition</div><div class="sub">Automated screening &amp; resume Q&amp;A</div></div>
+    <div class="kpi-card"><div class="num">1.2M+</div><div class="lab">Resumes triaged a year</div><div class="sub">Consistent screening at 100K+/month, ranked automatically</div></div>
     <div class="kpi-card"><div class="num">100%</div><div class="lab">Auditable &amp; consistent</div><div class="sub">Governed scoring, masked PII, tracked notes</div></div>
   </div>
-  <p class="db-body-t reveal mt-l" style="max-width:900px;color:var(--db-body-dim);">Projected impact for the J&amp;J HR Digital prototype, expressed in the KPIs the CHRO and TA leadership already report on.</p>
+  <p class="db-body-t reveal mt-l" style="max-width:960px;color:var(--db-body-dim);"><strong style="color:var(--db-body);">Quality of hire</strong> is the north-star metric; time-to-fill and screening throughput prove it operationally &mdash; all in KPIs TA and the CHRO already report on. Projected impact for the J&amp;J HR Digital prototype.</p>
 <footer class="db-footer"><span class="db-footer__copy">Jackson &amp; Jackson HR Digital &middot; Hire Right &middot; Built on Databricks</span><img data-db-img="icon" class="db-footer__icon" alt="" height="16"></footer></section><section class="slide "><div class="slide__glow"></div>
   <span class="db-label eyebrow reveal">What the HR team gets</span>
   <h2 class="db-h1 reveal">A decision cockpit for every requisition.</h2>
