@@ -64,11 +64,16 @@ are gitignored, so everything you see below is the actual work.
 │   ├── 04b_create_uc_functions.ipynb    # UC SQL functions (agent tools)
 │   ├── 05_train_ml_model.ipynb          # Train 3 sklearn models → MLflow → @champion → Serving
 │   ├── 05b_create_drift_monitor.ipynb   # Lakehouse Monitoring on the model
+│   ├── 06a_setup_uc_tracing.ipynb       # UC-linked MLflow experiment + OTel trace tables + migrate old traces
 │   ├── 06_evaluate_register_agent.ipynb # Log/eval (LLM judge) + register + deploy the agent
 │   ├── 07_deploy_app.ipynb              # Deploy the (bundle-managed) app's latest source
 │   ├── 08_refresh_dashboard.ipynb       # Refresh the Lakeview dashboard
 │   ├── 09_grant_app_permissions.ipynb   # Grant app SP: UC + endpoint + Genie access
 │   ├── 10_setup_lakebase.ipynb          # Create Lakebase, sync tables, candidate_annotations
+│   ├── 11_trace_analytics_views.ipynb   # Genie-ready views over the UC trace tables
+│   ├── 12_create_trace_genie_agent.ipynb # Trace Observability Genie Agent (+ 12_trace_genie_space.json)
+│   ├── 13_app_log_analytics_views.ipynb # Genie-ready views over the app's OTel logs (app telemetry)
+│   ├── 14_create_app_log_genie_agent.ipynb # App Log Observability Genie Agent (+ 14_app_log_genie_space.json)
 │   └── run_all.ipynb                    # Manual orchestrator (not the Job DAG)
 ├── agent_src/                           # MLflow 3.0 ResponsesAgent (deployed by notebook 06)
 │   ├── hire_right_agent.py              # ResponsesAgent: predict + streaming predict_stream
@@ -154,6 +159,60 @@ are gitignored, so everything you see below is the actual work.
 
 See the interactive **Data Flow** modal in the app, or the architecture slide in the FE Bar deck.
 
+## Agent observability — MLflow traces in Unity Catalog
+
+Every agent trace (notebook tests, LLM-judge evals, and live app traffic hitting the serving endpoint)
+is stored as **OpenTelemetry Delta tables in Unity Catalog** instead of MLflow experiment storage —
+no 100K-trace cap, UC permissions, and queryable with SQL, Genie, and dashboards.
+
+```
+ Hire Right agent (notebook 06 / serving endpoint)
+        │  MLflow 3.17 tracing → UC-linked experiment  /Users/<you>/hrd-agent-traces
+        ▼
+ bldemos.hrd_2030_agent_observability
+   hrd_agent_otel_spans · _annotations · _logs · _metrics      (raw OTel, written by MLflow)
+   hrd_agent_trace_unified · hrd_agent_trace_metadata         (views, created by MLflow)
+   v_agent_traces · v_agent_tool_calls · v_agent_llm_calls ·    (flat, commented views — notebook 11)
+   v_agent_assessments
+        │
+        ▼
+ Genie Agent "Hire Right Agent — Trace Observability Genie"      (notebook 12)
+```
+
+| Step | Notebook | What it does |
+|---|---|---|
+| 1 | `06a_setup_uc_tracing` | Creates the UC-linked experiment (`trace_location=UnityCatalog(...)`), grants `MODIFY`+`SELECT` on the trace tables, and copies all traces + judge scores from the legacy `agent-predictive-hiring-evals` experiment (left unchanged) |
+| 0 | `scripts/setup_agent_sp.sh` | One-time, idempotent: creates the `hire-right-agent-sp` service principal and stores its OAuth client ID/secret in the `hire-right-agent` secret scope (also run by `deploy.sh`) |
+| 2 | `06_evaluate_register_agent` | Sets the UC-linked experiment, logs/evals/deploys the agent with `mlflow==3.17.1`, grants `hire-right-agent-sp` exactly what the agent uses (re-applied every deploy), and runs the endpoint as that SP (`DATABRICKS_HOST` + `DATABRICKS_CLIENT_ID/SECRET` from the secret scope) so production traces land in UC |
+| 3 | `11_trace_analytics_views` | Publishes four flat views with UC comments on every column (Genie's semantic context) |
+| 4 | `12_create_trace_genie_agent` | Creates/updates the Genie Agent from `12_trace_genie_space.json` (instructions, synonyms, joins, example SQL, measures, benchmarks) |
+
+Try asking the Genie Agent: *"Which tool is the slowest on average?"*, *"How often did the agent have to ask
+for missing candidate scores?"*, *"What is the pass rate for each LLM judge?"*, *"Weekly requests and p95 latency"*.
+
+**Notes:** an experiment's UC trace location is permanent (it can't be re-bound). The endpoint must have
+`DATABRICKS_HOST` set — without it MLflow ignores the SP credentials and falls back to the endpoint's
+down-scoped model-serving credential, which can't write the trace tables. Rotate the SP secret with
+`./scripts/setup_agent_sp.sh DEFAULT --rotate`, then redeploy the agent.
+Tool functions are traced twice (`@mlflow.trace` + LangChain autolog), so the views count only the
+outermost TOOL span per call.
+
+
+### App log observability (Databricks Apps telemetry)
+
+The app exports its OpenTelemetry logs to `<catalog>.hrd_2030_app_observability.hrd_app_otel_logs`
+(`telemetry_export_destinations` on the app in `databricks.yml` — keep it there, or a bundle deploy clears it).
+The raw table is one row per log line; the meaning lives in `attributes:['app.log_source']` —
+`BUILD` (deploy process), `HTTP` (proxy access log, one line per user request), `APP` (the app's stdout) — and
+the free-text `body`. `otel_spans` / `otel_metrics` stay empty until the app is OpenTelemetry-instrumented.
+
+| Step | Notebook | What it does |
+|---|---|---|
+| 1 | `13_app_log_analytics_views` | Parses the log bodies into five commented views: `v_app_log_events`, `v_app_http_requests`, `v_app_outbound_calls`, `v_app_deployments`, `v_app_auth_events` |
+| 2 | `14_create_app_log_genie_agent` | Creates/updates the Genie Agent from `14_app_log_genie_space.json` — its instructions explain the raw `attributes` / `app.log_source` fields |
+
+Try asking: *"Did any app deployments fail, and why?"*, *"Can the app reach the agent endpoint?"*,
+*"Which features are used most?"*, *"What does the attributes column contain?"*
 ---
 
 ## How to run / deploy

@@ -1,0 +1,509 @@
+{
+  "title": "Hire Right Agent — Trace Observability Genie",
+  "description": "Ask questions about how the Hire Right HR agent behaves in production: request volume, latency, slowest tools, token usage, LLM-judge quality scores, and where the agent gets stuck. Powered by MLflow traces stored in Unity Catalog.",
+  "sample_questions": [
+    "Which tool is the slowest on average, and have any tools failed?",
+    "How many agent requests did we handle each week, and what was the p95 latency?",
+    "How often did the agent have to ask the user for missing candidate scores?",
+    "What is the pass rate for each LLM judge?",
+    "Which candidates were scored most often by the ML hiring model?",
+    "How many LLM tokens did the agent use per day?"
+  ],
+  "serialized_space": {
+    "version": 2,
+    "config": {
+      "sample_questions": [
+        {
+          "id": "a0000000000000000000000000000001",
+          "question": [
+            "Which tool is the slowest on average, and have any tools failed?"
+          ]
+        },
+        {
+          "id": "a0000000000000000000000000000002",
+          "question": [
+            "How many agent requests did we handle each week, and what was the p95 latency?"
+          ]
+        },
+        {
+          "id": "a0000000000000000000000000000003",
+          "question": [
+            "How often did the agent have to ask the user for missing candidate scores?"
+          ]
+        },
+        {
+          "id": "a0000000000000000000000000000004",
+          "question": [
+            "What is the pass rate for each LLM judge?"
+          ]
+        },
+        {
+          "id": "a0000000000000000000000000000005",
+          "question": [
+            "Which candidates were scored most often by the ML hiring model?"
+          ]
+        },
+        {
+          "id": "a0000000000000000000000000000006",
+          "question": [
+            "How many LLM tokens did the agent use per day?"
+          ]
+        }
+      ]
+    },
+    "data_sources": {
+      "tables": [
+        {
+          "identifier": "__CATALOG__.__SCHEMA__.v_agent_assessments",
+          "column_configs": [
+            {
+              "column_name": "judge_name",
+              "synonyms": [
+                "judge",
+                "scorer",
+                "evaluator",
+                "metric"
+              ],
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            },
+            {
+              "column_name": "passed",
+              "synonyms": [
+                "pass",
+                "success"
+              ]
+            },
+            {
+              "column_name": "source_type",
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            }
+          ]
+        },
+        {
+          "identifier": "__CATALOG__.__SCHEMA__.v_agent_llm_calls",
+          "column_configs": [
+            {
+              "column_name": "finish_reason",
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            },
+            {
+              "column_name": "model",
+              "synonyms": [
+                "LLM",
+                "foundation model"
+              ],
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            },
+            {
+              "column_name": "total_tokens",
+              "synonyms": [
+                "tokens",
+                "token usage"
+              ]
+            }
+          ]
+        },
+        {
+          "identifier": "__CATALOG__.__SCHEMA__.v_agent_tool_calls",
+          "column_configs": [
+            {
+              "column_name": "candidate_id",
+              "synonyms": [
+                "candidate"
+              ]
+            },
+            {
+              "column_name": "duration_seconds",
+              "synonyms": [
+                "tool latency",
+                "tool time",
+                "execution time"
+              ]
+            },
+            {
+              "column_name": "tool_category",
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            },
+            {
+              "column_name": "tool_name",
+              "synonyms": [
+                "tool",
+                "function"
+              ],
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            }
+          ]
+        },
+        {
+          "identifier": "__CATALOG__.__SCHEMA__.v_agent_traces",
+          "column_configs": [
+            {
+              "column_name": "interaction_type",
+              "synonyms": [
+                "request type",
+                "use case"
+              ],
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            },
+            {
+              "column_name": "latency_seconds",
+              "synonyms": [
+                "latency",
+                "response time",
+                "duration",
+                "execution time"
+              ]
+            },
+            {
+              "column_name": "requested_missing_scores",
+              "synonyms": [
+                "missing scores",
+                "asked for scores",
+                "incomplete scores"
+              ]
+            },
+            {
+              "column_name": "response_mode",
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            },
+            {
+              "column_name": "status",
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            },
+            {
+              "column_name": "total_tokens",
+              "synonyms": [
+                "tokens",
+                "token usage"
+              ]
+            },
+            {
+              "column_name": "trace_source",
+              "synonyms": [
+                "source"
+              ],
+              "enable_format_assistance": true,
+              "enable_entity_matching": true
+            }
+          ]
+        }
+      ]
+    },
+    "instructions": {
+      "text_instructions": [
+        {
+          "id": "c0000000000000000000000000000001",
+          "content": [
+            "## Hire Right Agent — Observability (MLflow traces in Unity Catalog)\n",
+            "These views describe how the Hire Right agent (Jackson and Jackson HR Digital) behaves in practice.\n",
+            "Each *trace* is one end-to-end agent request: the agent loops between an LLM (databricks-gpt-5-4) and tools\n",
+            "until it returns a final answer.\n",
+            "\n",
+            "## Views\n",
+            "- v_agent_traces — 1 row per trace. Volume, latency_seconds, tokens, interaction_type, response_mode, tools_used, requested_missing_scores.\n",
+            "- v_agent_tool_calls — 1 row per tool call. tool_name, tool_category, duration_seconds, status, candidate_id, email_recipient_domain.\n",
+            "- v_agent_llm_calls — 1 row per LLM call. tokens, duration_seconds, finish_reason, tool_calls_requested.\n",
+            "- v_agent_assessments — 1 row per LLM-judge verdict. judge_name, passed, rationale.\n",
+            "All views join on trace_id.\n",
+            "\n",
+            "## Tools (business meaning)\n",
+            "- predict_hiring_score — ML model endpoint that predicts hire / no-hire from 8 candidate scores.\n",
+            "- search_resumes — Vector Search over candidate resumes.\n",
+            "- get_candidate, get_top_candidates, get_candidates_by_job, get_pipeline_candidates, get_hire_analytics — UC SQL functions over HR tables.\n",
+            "- send_email — sends candidate offer emails via Mailgun.\n",
+            "\n",
+            "## Conventions\n",
+            "- Production / real usage = v_agent_traces.trace_source = 'Agent request'. ALWAYS apply this filter for volume, latency and token questions unless the user asks about evaluations.\n",
+            "- 'Evaluation' traces are offline LLM-judge records; they have no tokens or tools and ~0s latency.\n",
+            "- LLM judge questions (safety, relevance, tone, quality) use v_agent_assessments. 'JnJ Tone' = J&J HR communication standards.\n",
+            "- Latency and durations are in seconds. Timestamps are UTC.\n",
+            "- \"Missing scores\" = the agent could not run the ML prediction and asked the user for scores (requested_missing_scores = TRUE).\n",
+            "- \"Slowest\" = highest AVG(duration_seconds); also show p95 with PERCENTILE(..., 0.95) when useful.\n",
+            "- Round averages to 2 decimals. Order rankings descending."
+          ]
+        }
+      ],
+      "example_question_sqls": [
+        {
+          "id": "d0000000000000000000000000000001",
+          "question": [
+            "How many agent requests did we handle each week and what was the p95 latency?"
+          ],
+          "sql": [
+            "SELECT DATE_TRUNC('WEEK', v_agent_traces.request_time) AS week,\n",
+            "       COUNT(*) AS agent_requests,\n",
+            "       ROUND(AVG(v_agent_traces.latency_seconds), 2) AS avg_latency_seconds,\n",
+            "       ROUND(PERCENTILE(v_agent_traces.latency_seconds, 0.95), 2) AS p95_latency_seconds\n",
+            "FROM __CATALOG__.__SCHEMA__.v_agent_traces\n",
+            "WHERE v_agent_traces.trace_source = 'Agent request'\n",
+            "GROUP BY 1\n",
+            "ORDER BY 1"
+          ]
+        },
+        {
+          "id": "d0000000000000000000000000000002",
+          "question": [
+            "Which tools are the slowest and do any of them fail?"
+          ],
+          "sql": [
+            "SELECT v_agent_tool_calls.tool_name,\n",
+            "       v_agent_tool_calls.tool_category,\n",
+            "       COUNT(*) AS calls,\n",
+            "       ROUND(AVG(v_agent_tool_calls.duration_seconds), 2) AS avg_duration_seconds,\n",
+            "       ROUND(PERCENTILE(v_agent_tool_calls.duration_seconds, 0.95), 2) AS p95_duration_seconds,\n",
+            "       COUNT_IF(v_agent_tool_calls.status = 'ERROR') AS errors\n",
+            "FROM __CATALOG__.__SCHEMA__.v_agent_tool_calls\n",
+            "GROUP BY v_agent_tool_calls.tool_name, v_agent_tool_calls.tool_category\n",
+            "ORDER BY avg_duration_seconds DESC"
+          ]
+        },
+        {
+          "id": "d0000000000000000000000000000003",
+          "question": [
+            "What is the pass rate for each LLM judge?"
+          ],
+          "sql": [
+            "SELECT v_agent_assessments.judge_name,\n",
+            "       COUNT(*) AS assessments,\n",
+            "       ROUND(AVG(CASE WHEN v_agent_assessments.passed THEN 1.0 ELSE 0.0 END) * 100, 1) AS pass_rate_pct\n",
+            "FROM __CATALOG__.__SCHEMA__.v_agent_assessments\n",
+            "GROUP BY v_agent_assessments.judge_name\n",
+            "ORDER BY pass_rate_pct"
+          ]
+        },
+        {
+          "id": "d0000000000000000000000000000004",
+          "question": [
+            "How often does the agent ask for missing candidate scores, by response mode?"
+          ],
+          "sql": [
+            "SELECT v_agent_traces.response_mode,\n",
+            "       COUNT(*) AS agent_requests,\n",
+            "       COUNT_IF(v_agent_traces.requested_missing_scores) AS missing_score_requests,\n",
+            "       ROUND(COUNT_IF(v_agent_traces.requested_missing_scores) * 100.0 / COUNT(*), 1) AS missing_score_pct\n",
+            "FROM __CATALOG__.__SCHEMA__.v_agent_traces\n",
+            "WHERE v_agent_traces.trace_source = 'Agent request'\n",
+            "GROUP BY v_agent_traces.response_mode\n",
+            "ORDER BY missing_score_pct DESC"
+          ]
+        },
+        {
+          "id": "d0000000000000000000000000000005",
+          "question": [
+            "What share of end-to-end latency is spent in tools versus the LLM, by interaction type?"
+          ],
+          "sql": [
+            "WITH tool_time AS (\n",
+            "  SELECT v_agent_tool_calls.trace_id, SUM(v_agent_tool_calls.duration_seconds) AS tool_seconds\n",
+            "  FROM __CATALOG__.__SCHEMA__.v_agent_tool_calls\n",
+            "  GROUP BY v_agent_tool_calls.trace_id\n",
+            "),\n",
+            "llm_time AS (\n",
+            "  SELECT v_agent_llm_calls.trace_id, SUM(v_agent_llm_calls.duration_seconds) AS llm_seconds\n",
+            "  FROM __CATALOG__.__SCHEMA__.v_agent_llm_calls\n",
+            "  GROUP BY v_agent_llm_calls.trace_id\n",
+            ")\n",
+            "SELECT v_agent_traces.interaction_type,\n",
+            "       COUNT(*) AS agent_requests,\n",
+            "       ROUND(AVG(v_agent_traces.latency_seconds), 2) AS avg_latency_seconds,\n",
+            "       ROUND(AVG(COALESCE(tool_time.tool_seconds, 0)), 2) AS avg_tool_seconds,\n",
+            "       ROUND(AVG(COALESCE(llm_time.llm_seconds, 0)), 2) AS avg_llm_seconds\n",
+            "FROM __CATALOG__.__SCHEMA__.v_agent_traces\n",
+            "LEFT JOIN tool_time ON tool_time.trace_id = v_agent_traces.trace_id\n",
+            "LEFT JOIN llm_time  ON llm_time.trace_id  = v_agent_traces.trace_id\n",
+            "WHERE v_agent_traces.trace_source = 'Agent request'\n",
+            "GROUP BY v_agent_traces.interaction_type\n",
+            "ORDER BY agent_requests DESC"
+          ]
+        }
+      ],
+      "join_specs": [
+        {
+          "id": "e0000000000000000000000000000001",
+          "left": {
+            "identifier": "__CATALOG__.__SCHEMA__.v_agent_traces",
+            "alias": "v_agent_traces"
+          },
+          "right": {
+            "identifier": "__CATALOG__.__SCHEMA__.v_agent_tool_calls",
+            "alias": "v_agent_tool_calls"
+          },
+          "sql": [
+            "`v_agent_traces`.`trace_id` = `v_agent_tool_calls`.`trace_id`",
+            "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+          ]
+        },
+        {
+          "id": "e0000000000000000000000000000002",
+          "left": {
+            "identifier": "__CATALOG__.__SCHEMA__.v_agent_traces",
+            "alias": "v_agent_traces"
+          },
+          "right": {
+            "identifier": "__CATALOG__.__SCHEMA__.v_agent_llm_calls",
+            "alias": "v_agent_llm_calls"
+          },
+          "sql": [
+            "`v_agent_traces`.`trace_id` = `v_agent_llm_calls`.`trace_id`",
+            "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+          ]
+        },
+        {
+          "id": "e0000000000000000000000000000003",
+          "left": {
+            "identifier": "__CATALOG__.__SCHEMA__.v_agent_traces",
+            "alias": "v_agent_traces"
+          },
+          "right": {
+            "identifier": "__CATALOG__.__SCHEMA__.v_agent_assessments",
+            "alias": "v_agent_assessments"
+          },
+          "sql": [
+            "`v_agent_traces`.`trace_id` = `v_agent_assessments`.`trace_id`",
+            "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+          ]
+        }
+      ],
+      "sql_snippets": {
+        "filters": [
+          {
+            "id": "f0000000000000000000000000000001",
+            "display_name": "Production agent requests",
+            "sql": [
+              "v_agent_traces.trace_source = 'Agent request'"
+            ],
+            "synonyms": [
+              "real usage",
+              "production",
+              "exclude evaluations"
+            ]
+          }
+        ],
+        "measures": [
+          {
+            "id": "f0000000000000000000000000000002",
+            "alias": "p95_latency_seconds",
+            "display_name": "P95 latency (s)",
+            "sql": [
+              "PERCENTILE(v_agent_traces.latency_seconds, 0.95)"
+            ],
+            "synonyms": [
+              "p95",
+              "tail latency"
+            ]
+          },
+          {
+            "id": "f0000000000000000000000000000003",
+            "alias": "judge_pass_rate_pct",
+            "display_name": "Judge pass rate (%)",
+            "sql": [
+              "AVG(CASE WHEN v_agent_assessments.passed THEN 1.0 ELSE 0.0 END) * 100"
+            ],
+            "synonyms": [
+              "pass rate",
+              "quality score"
+            ]
+          }
+        ]
+      }
+    },
+    "benchmarks": {
+      "questions": [
+        {
+          "id": "b0000000000000000000000000000001",
+          "question": [
+            "Which tool has the highest average duration?"
+          ],
+          "answer": [
+            {
+              "format": "SQL",
+              "content": [
+                "SELECT v_agent_tool_calls.tool_name, ROUND(AVG(v_agent_tool_calls.duration_seconds), 2) AS avg_duration_seconds\n",
+                "FROM __CATALOG__.__SCHEMA__.v_agent_tool_calls\n",
+                "GROUP BY v_agent_tool_calls.tool_name\n",
+                "ORDER BY avg_duration_seconds DESC\n",
+                "LIMIT 1"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b0000000000000000000000000000002",
+          "question": [
+            "How many agent requests (excluding evaluations) are there in total?"
+          ],
+          "answer": [
+            {
+              "format": "SQL",
+              "content": [
+                "SELECT COUNT(*) AS agent_requests\n",
+                "FROM __CATALOG__.__SCHEMA__.v_agent_traces\n",
+                "WHERE v_agent_traces.trace_source = 'Agent request'"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b0000000000000000000000000000003",
+          "question": [
+            "How many total LLM tokens has the agent consumed?"
+          ],
+          "answer": [
+            {
+              "format": "SQL",
+              "content": [
+                "SELECT SUM(v_agent_llm_calls.total_tokens) AS total_tokens\n",
+                "FROM __CATALOG__.__SCHEMA__.v_agent_llm_calls"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b0000000000000000000000000000004",
+          "question": [
+            "Which candidates were scored most often by the ML hiring model?"
+          ],
+          "answer": [
+            {
+              "format": "SQL",
+              "content": [
+                "SELECT v_agent_tool_calls.candidate_id, COUNT(*) AS predictions\n",
+                "FROM __CATALOG__.__SCHEMA__.v_agent_tool_calls\n",
+                "WHERE v_agent_tool_calls.tool_name = 'predict_hiring_score'\n",
+                "GROUP BY v_agent_tool_calls.candidate_id\n",
+                "ORDER BY predictions DESC"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b0000000000000000000000000000005",
+          "question": [
+            "How many offer emails were sent, by recipient domain?"
+          ],
+          "answer": [
+            {
+              "format": "SQL",
+              "content": [
+                "SELECT v_agent_tool_calls.email_recipient_domain, COUNT(*) AS emails_sent\n",
+                "FROM __CATALOG__.__SCHEMA__.v_agent_tool_calls\n",
+                "WHERE v_agent_tool_calls.tool_name = 'send_email' AND v_agent_tool_calls.status = 'OK'\n",
+                "GROUP BY v_agent_tool_calls.email_recipient_domain\n",
+                "ORDER BY emails_sent DESC"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

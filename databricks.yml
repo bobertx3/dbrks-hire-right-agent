@@ -34,8 +34,32 @@ variables:
     description: MLflow experiment name for the ML model (notebook 05)
     default: ml-hr-predictive-hiring-evals
   agent_mlflow_experiment:
-    description: MLflow experiment name for the agent evaluations (notebook 06)
+    description: Legacy (experiment-storage) agent experiment — traces are migrated from here by notebook 06a
     default: agent-predictive-hiring-evals
+  agent_uc_experiment:
+    description: UC-linked MLflow experiment for agent traces (created by notebook 06a, used by notebook 06)
+    default: hrd-agent-traces
+  trace_catalog:
+    description: UC catalog holding the agent's OpenTelemetry trace tables
+    default: bldemos
+  trace_schema:
+    description: UC schema holding the agent's OpenTelemetry trace tables
+    default: hrd_2030_agent_observability
+  trace_table_prefix:
+    description: Prefix of the trace tables (<prefix>_otel_spans, _logs, _metrics, _annotations)
+    default: hrd_agent
+  app_log_schema:
+    description: UC schema the Databricks App exports its OpenTelemetry logs/metrics/spans to (app telemetry)
+    default: hrd_2030_app_observability
+  app_log_table_prefix:
+    description: Prefix of the app telemetry tables (<prefix>_otel_logs, _metrics, _spans)
+    default: hrd_app
+  agent_sp_name:
+    description: Service principal the agent endpoint runs as (created by scripts/setup_agent_sp.sh)
+    default: hire-right-agent-sp
+  agent_secret_scope:
+    description: Secret scope holding the agent SP's OAuth credentials (sp-client-id, sp-client-secret)
+    default: hire-right-agent
   agent_name:
     description: Registered model name for the agent
     default: agent-hire_right
@@ -121,9 +145,17 @@ resources:
             instance_name: ${var.lakebase_instance_name}
             database_name: ${var.lakebase_database}
             permission: CAN_CONNECT_AND_CREATE
+      # App telemetry (OTel logs/metrics/spans → UC). Keep in the bundle so deploys don't clear it.
+      telemetry_export_destinations:
+        - unity_catalog:
+            logs_table: ${var.catalog}.${var.app_log_schema}.${var.app_log_table_prefix}_otel_logs
+            metrics_table: ${var.catalog}.${var.app_log_schema}.${var.app_log_table_prefix}_otel_metrics
+            traces_table: ${var.catalog}.${var.app_log_schema}.${var.app_log_table_prefix}_otel_spans
       permissions:
         - level: CAN_USE
           group_name: users
+        - level: CAN_MANAGE
+          user_name: jeff.shmain@databricks.com
 
   jobs:
     hrd_setup_job:
@@ -289,6 +321,27 @@ resources:
               endpoint_name: ${var.model_endpoint_name}
               warehouse_id: ${var.warehouse_id}
 
+        - task_key: app_log_views
+          depends_on:
+            - task_key: deploy_app
+          notebook_task:
+            notebook_path: ./notebooks/13_app_log_analytics_views.ipynb
+            base_parameters:
+              app_log_catalog: ${var.catalog}
+              app_log_schema: ${var.app_log_schema}
+              app_log_table_prefix: ${var.app_log_table_prefix}
+
+        - task_key: app_log_genie_agent
+          depends_on:
+            - task_key: app_log_views
+          notebook_task:
+            notebook_path: ./notebooks/14_create_app_log_genie_agent.ipynb
+            base_parameters:
+              app_log_catalog: ${var.catalog}
+              app_log_schema: ${var.app_log_schema}
+              app_log_table_prefix: ${var.app_log_table_prefix}
+              warehouse_id: ${var.warehouse_id}
+
         - task_key: grant_app_permissions
           depends_on:
             - task_key: deploy_app
@@ -312,10 +365,43 @@ resources:
             left: "{{job.parameters.deploy_agent}}"
             right: "true"
 
-        - task_key: agent
+        - task_key: setup_uc_tracing
           depends_on:
             - task_key: agent_condition
               outcome: "true"
+          notebook_task:
+            notebook_path: ./notebooks/06a_setup_uc_tracing.ipynb
+            base_parameters:
+              trace_catalog: ${var.trace_catalog}
+              trace_schema: ${var.trace_schema}
+              trace_table_prefix: ${var.trace_table_prefix}
+              uc_experiment: ${var.agent_uc_experiment}
+              source_experiment: ${var.agent_mlflow_experiment}
+              warehouse_id: ${var.warehouse_id}
+
+        - task_key: trace_analytics_views
+          depends_on:
+            - task_key: setup_uc_tracing
+          notebook_task:
+            notebook_path: ./notebooks/11_trace_analytics_views.ipynb
+            base_parameters:
+              trace_catalog: ${var.trace_catalog}
+              trace_schema: ${var.trace_schema}
+              trace_table_prefix: ${var.trace_table_prefix}
+
+        - task_key: trace_genie_agent
+          depends_on:
+            - task_key: trace_analytics_views
+          notebook_task:
+            notebook_path: ./notebooks/12_create_trace_genie_agent.ipynb
+            base_parameters:
+              trace_catalog: ${var.trace_catalog}
+              trace_schema: ${var.trace_schema}
+              warehouse_id: ${var.warehouse_id}
+
+        - task_key: agent
+          depends_on:
+            - task_key: setup_uc_tracing
           notebook_task:
             notebook_path: ./notebooks/06_evaluate_register_agent.ipynb
             base_parameters:
@@ -328,7 +414,10 @@ resources:
               agent_name: ${var.agent_name}
               agent_endpoint_name: ${var.agent_endpoint_name}
               llm_endpoint: ${var.llm_endpoint_name}
-              mlflow_experiment: ${var.agent_mlflow_experiment}
+              mlflow_experiment: ${var.agent_uc_experiment}
+              warehouse_id: ${var.warehouse_id}
+              agent_sp_name: ${var.agent_sp_name}
+              secret_scope: ${var.agent_secret_scope}
 
         - task_key: refresh_dashboard
           depends_on:
