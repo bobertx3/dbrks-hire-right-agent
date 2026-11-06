@@ -1,0 +1,712 @@
+{
+ "title": "Hire Right App — Log Observability Genie",
+ "description": "Ask plain-English questions about the Hire Right Databricks App's runtime logs: did a deployment fail and why, which features people use, which requests errored or were slow, whether the app can reach the agent endpoint, and who signed in. Powered by Databricks Apps OpenTelemetry logs in Unity Catalog.",
+ "sample_questions": [
+  "Did any app deployments fail, and why?",
+  "Which app features are used the most, and are any returning errors?",
+  "Show me every warning and error since the last deployment.",
+  "Can the app reach the Hire Right agent endpoint, or are calls failing?",
+  "Who is using the app and when is it busiest?",
+  "Which candidates were viewed the most in the app?"
+ ],
+ "serialized_space": {
+  "version": 2,
+  "config": {
+   "sample_questions": [
+    {
+     "id": "a0000000000000000000000000000001",
+     "question": [
+      "Did any app deployments fail, and why?"
+     ]
+    },
+    {
+     "id": "a0000000000000000000000000000002",
+     "question": [
+      "Which app features are used the most, and are any returning errors?"
+     ]
+    },
+    {
+     "id": "a0000000000000000000000000000003",
+     "question": [
+      "Show me every warning and error since the last deployment."
+     ]
+    },
+    {
+     "id": "a0000000000000000000000000000004",
+     "question": [
+      "Can the app reach the Hire Right agent endpoint, or are calls failing?"
+     ]
+    },
+    {
+     "id": "a0000000000000000000000000000005",
+     "question": [
+      "Who is using the app and when is it busiest?"
+     ]
+    },
+    {
+     "id": "a0000000000000000000000000000006",
+     "question": [
+      "Which candidates were viewed the most in the app?"
+     ]
+    }
+   ]
+  },
+  "data_sources": {
+   "tables": [
+    {
+     "identifier": "__CATALOG__.__SCHEMA__.__PREFIX___otel_logs",
+     "column_configs": [
+      {
+       "column_name": "attributes",
+       "description": [
+        "VARIANT key/value map. Key app.log_source = BUILD (deploy process), HTTP (proxy access log), APP (app stdout). Key app.deployment_id = deployment. System events set event.name (e.g. app.auth) instead. Read with attributes:['key']::string."
+       ]
+      },
+      {
+       "column_name": "body",
+       "description": [
+        "VARIANT holding the raw log line text. Format depends on app.log_source. Read with body::string."
+       ],
+       "synonyms": [
+        "message",
+        "log text"
+       ]
+      },
+      {
+       "column_name": "dropped_attributes_count",
+       "exclude": true
+      },
+      {
+       "column_name": "event_name",
+       "exclude": true
+      },
+      {
+       "column_name": "flags",
+       "exclude": true
+      },
+      {
+       "column_name": "instrumentation_scope",
+       "exclude": true
+      },
+      {
+       "column_name": "log_schema_url",
+       "exclude": true
+      },
+      {
+       "column_name": "observed_time_unix_nano",
+       "exclude": true
+      },
+      {
+       "column_name": "resource_schema_url",
+       "exclude": true
+      },
+      {
+       "column_name": "severity_number",
+       "exclude": true
+      },
+      {
+       "column_name": "severity_text",
+       "synonyms": [
+        "level",
+        "log level"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "span_id",
+       "exclude": true
+      },
+      {
+       "column_name": "time_unix_nano",
+       "exclude": true
+      },
+      {
+       "column_name": "trace_id",
+       "exclude": true
+      }
+     ]
+    },
+    {
+     "identifier": "__CATALOG__.__SCHEMA__.v_app_auth_events",
+     "column_configs": [
+      {
+       "column_name": "outcome",
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "reason",
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "user_email",
+       "synonyms": [
+        "user",
+        "who",
+        "email"
+       ]
+      }
+     ]
+    },
+    {
+     "identifier": "__CATALOG__.__SCHEMA__.v_app_deployments",
+     "column_configs": [
+      {
+       "column_name": "deploy_seconds",
+       "synonyms": [
+        "deploy time",
+        "deployment duration"
+       ]
+      },
+      {
+       "column_name": "failure_reason",
+       "synonyms": [
+        "why it failed",
+        "error",
+        "deploy error"
+       ]
+      },
+      {
+       "column_name": "outcome",
+       "synonyms": [
+        "status",
+        "result",
+        "deploy status"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "start_command",
+       "synonyms": [
+        "command",
+        "entrypoint"
+       ]
+      }
+     ]
+    },
+    {
+     "identifier": "__CATALOG__.__SCHEMA__.v_app_http_requests",
+     "column_configs": [
+      {
+       "column_name": "app_feature",
+       "synonyms": [
+        "feature",
+        "page",
+        "screen",
+        "function"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "approx_duration_seconds",
+       "synonyms": [
+        "duration",
+        "latency",
+        "response time",
+        "how long"
+       ]
+      },
+      {
+       "column_name": "browser",
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "candidate_id",
+       "synonyms": [
+        "candidate"
+       ]
+      },
+      {
+       "column_name": "http_method",
+       "synonyms": [
+        "method",
+        "verb"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "route",
+       "synonyms": [
+        "endpoint",
+        "API",
+        "URL"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "status_class",
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "status_code",
+       "synonyms": [
+        "status",
+        "HTTP status",
+        "response code"
+       ]
+      },
+      {
+       "column_name": "user_agent",
+       "exclude": true
+      },
+      {
+       "column_name": "user_id",
+       "synonyms": [
+        "user",
+        "who"
+       ]
+      }
+     ]
+    },
+    {
+     "identifier": "__CATALOG__.__SCHEMA__.v_app_log_events",
+     "column_configs": [
+      {
+       "column_name": "log_source",
+       "synonyms": [
+        "source",
+        "log type"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "logger_name",
+       "synonyms": [
+        "logger",
+        "module"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "message",
+       "synonyms": [
+        "log message",
+        "log text",
+        "error message"
+       ]
+      },
+      {
+       "column_name": "message_category",
+       "synonyms": [
+        "category",
+        "event type",
+        "kind"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "message_full",
+       "exclude": true
+      },
+      {
+       "column_name": "severity",
+       "synonyms": [
+        "level",
+        "log level"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      }
+     ]
+    },
+    {
+     "identifier": "__CATALOG__.__SCHEMA__.v_app_outbound_calls",
+     "column_configs": [
+      {
+       "column_name": "status_code",
+       "synonyms": [
+        "status",
+        "HTTP status",
+        "response code"
+       ]
+      },
+      {
+       "column_name": "target_service",
+       "synonyms": [
+        "dependency",
+        "downstream",
+        "agent endpoint",
+        "service"
+       ],
+       "enable_format_assistance": true,
+       "enable_entity_matching": true
+      },
+      {
+       "column_name": "url",
+       "exclude": true
+      }
+     ]
+    }
+   ]
+  },
+  "instructions": {
+   "text_instructions": [
+    {
+     "id": "c0000000000000000000000000000001",
+     "content": [
+      "## PURPOSE\n",
+      "- Explain the Hire Right Databricks App's runtime logs to app owners: deploy health, errors, dependency failures, and usage — in plain English.\n",
+      "- Source: OpenTelemetry logs that Databricks Apps exports to __CATALOG__.__SCHEMA__.__PREFIX___otel_logs, flattened into the v_app_* views.\n",
+      "\n",
+      "## HOW THE RAW LOG TABLE WORKS\n",
+      "- __PREFIX___otel_logs has one row per log line. Most OTel columns (trace_id, span_id, event_name, severity_number, flags, schema URLs) are always empty. The meaning lives in time, attributes (a VARIANT key/value map) and body (the log text).\n",
+      "- The key field is attributes['app.log_source']. It says which process wrote the line:\n",
+      "- BUILD = the deployment/build process. Example body: \"Starting app with command: [python app.py]\", \"Deployment … ended in 2.53s\", \"[ERROR] app exited unexpectedly\". What we pull out: deployment ID, start command, deploy duration, success/failure, error message -> v_app_deployments.\n",
+      "- HTTP = the Databricks Apps proxy access log, one line per user request. Body format: client IP, user_id@workspace_id, [timestamp], \"METHOD path\", status, bytes, referer, user agent. What we pull out: endpoint, app feature, status, bytes, user, browser, approximate duration -> v_app_http_requests.\n",
+      "- APP = the app's own stdout/stderr (uvicorn + Python logging). Example body: \"POST /api/chat/stream 200 OK\", \"INFO:httpx:HTTP Request: POST …/serving-endpoints/hire-right-agent-endpoint/invocations 403 Forbidden\", \"WARNING:db:… permission denied\". What we pull out: warnings, errors, tracebacks, outbound calls to dependencies -> v_app_log_events, v_app_outbound_calls.\n",
+      "- attributes['app.deployment_id'] = the deployment that wrote the line (BUILD, APP, HTTP).\n",
+      "- Platform system events have no app.log_source; instead attributes['event.name'] is set (e.g. app.auth with app.auth.outcome, app.auth.reason, enduser.id) and service_name is NULL -> v_app_auth_events.\n",
+      "\n",
+      "## DISAMBIGUATION\n",
+      "- \"requests\", \"usage\", \"traffic\", \"features\" -> v_app_http_requests. In v_app_log_events never count message_category = 'Request echo' (uvicorn's duplicate of a proxy request line).\n",
+      "- \"errors\" with no qualifier -> severity ERROR/WARN in v_app_log_events plus is_error in v_app_outbound_calls and v_app_http_requests.\n",
+      "- \"why did the deploy fail\" / \"why is the app down\" -> v_app_deployments.failure_reason and start_command.\n",
+      "- \"slow\" / \"latency\" -> v_app_http_requests.approx_duration_seconds; precise latency is not in the logs.\n",
+      "\n",
+      "## DATA QUALITY NOTES\n",
+      "- /api/chat/stream can return 200 to the user even when the agent endpoint call failed (streaming starts first). Check v_app_outbound_calls for 403/5xx.\n",
+      "- Raw severity_text is UNKNOWN for HTTP lines; use the normalized severity column.\n",
+      "- user_id is a numeric Databricks user ID; emails appear only in v_app_auth_events.\n",
+      "- All times are UTC.\n",
+      "\n",
+      "## CONSTRAINTS\n",
+      "- Prefer the v_app_* views. Query __PREFIX___otel_logs directly only when no view covers the question.\n",
+      "\n",
+      "## Instructions you must follow when providing summaries\n",
+      "- State the time range and the number of log lines or requests behind the answer.\n",
+      "- When reporting an error, explain in one plain-English sentence what it means for the app."
+     ]
+    }
+   ],
+   "example_question_sqls": [
+    {
+     "id": "d0000000000000000000000000000001",
+     "question": [
+      "Did any deployments fail, and why?"
+     ],
+     "sql": [
+      "SELECT v_app_deployments.started_at,\n",
+      "       v_app_deployments.deployment_id,\n",
+      "       v_app_deployments.outcome,\n",
+      "       v_app_deployments.start_command,\n",
+      "       v_app_deployments.failure_reason,\n",
+      "       v_app_deployments.deploy_seconds\n",
+      "FROM __CATALOG__.__SCHEMA__.v_app_deployments\n",
+      "ORDER BY v_app_deployments.started_at DESC"
+     ]
+    },
+    {
+     "id": "d0000000000000000000000000000002",
+     "question": [
+      "Which app features are used most, and what is their error rate?"
+     ],
+     "sql": [
+      "SELECT v_app_http_requests.app_feature,\n",
+      "       COUNT(*) AS requests,\n",
+      "       COUNT(DISTINCT v_app_http_requests.user_id) AS users,\n",
+      "       COUNT_IF(v_app_http_requests.is_error) AS errors,\n",
+      "       ROUND(AVG(CASE WHEN v_app_http_requests.is_error THEN 1.0 ELSE 0.0 END) * 100, 1) AS error_rate_pct\n",
+      "FROM __CATALOG__.__SCHEMA__.v_app_http_requests\n",
+      "GROUP BY v_app_http_requests.app_feature\n",
+      "ORDER BY requests DESC"
+     ]
+    },
+    {
+     "id": "d0000000000000000000000000000003",
+     "question": [
+      "Show warnings and errors logged since the most recent deployment started."
+     ],
+     "sql": [
+      "SELECT v_app_log_events.event_time,\n",
+      "       v_app_log_events.log_source,\n",
+      "       v_app_log_events.severity,\n",
+      "       v_app_log_events.message_category,\n",
+      "       v_app_log_events.logger_name,\n",
+      "       v_app_log_events.message\n",
+      "FROM __CATALOG__.__SCHEMA__.v_app_log_events\n",
+      "WHERE v_app_log_events.severity IN ('ERROR', 'WARN')\n",
+      "  AND v_app_log_events.event_time >= (SELECT MAX(v_app_deployments.started_at) FROM __CATALOG__.__SCHEMA__.v_app_deployments)\n",
+      "ORDER BY v_app_log_events.event_time DESC"
+     ]
+    },
+    {
+     "id": "d0000000000000000000000000000004",
+     "question": [
+      "Are the app's calls to its dependencies succeeding?"
+     ],
+     "sql": [
+      "SELECT v_app_outbound_calls.target_service,\n",
+      "       v_app_outbound_calls.status_code,\n",
+      "       v_app_outbound_calls.status_reason,\n",
+      "       COUNT(*) AS calls,\n",
+      "       MIN(v_app_outbound_calls.call_time) AS first_seen,\n",
+      "       MAX(v_app_outbound_calls.call_time) AS last_seen\n",
+      "FROM __CATALOG__.__SCHEMA__.v_app_outbound_calls\n",
+      "GROUP BY v_app_outbound_calls.target_service, v_app_outbound_calls.status_code, v_app_outbound_calls.status_reason\n",
+      "ORDER BY calls DESC"
+     ]
+    },
+    {
+     "id": "d0000000000000000000000000000005",
+     "question": [
+      "When is the app busiest, by hour?"
+     ],
+     "sql": [
+      "SELECT v_app_http_requests.request_hour,\n",
+      "       COUNT(*) AS requests,\n",
+      "       COUNT(DISTINCT v_app_http_requests.user_id) AS users\n",
+      "FROM __CATALOG__.__SCHEMA__.v_app_http_requests\n",
+      "GROUP BY v_app_http_requests.request_hour\n",
+      "ORDER BY v_app_http_requests.request_hour"
+     ]
+    },
+    {
+     "id": "d0000000000000000000000000000006",
+     "question": [
+      "Which requests took the longest?"
+     ],
+     "sql": [
+      "SELECT v_app_http_requests.request_time,\n",
+      "       v_app_http_requests.app_feature,\n",
+      "       v_app_http_requests.http_method,\n",
+      "       v_app_http_requests.path,\n",
+      "       v_app_http_requests.status_code,\n",
+      "       v_app_http_requests.approx_duration_seconds\n",
+      "FROM __CATALOG__.__SCHEMA__.v_app_http_requests\n",
+      "ORDER BY v_app_http_requests.approx_duration_seconds DESC\n",
+      "LIMIT 10"
+     ]
+    },
+    {
+     "id": "d0000000000000000000000000000007",
+     "question": [
+      "Which log sources and attribute keys appear in the raw log table?"
+     ],
+     "sql": [
+      "SELECT COALESCE(__PREFIX___otel_logs.attributes:['app.log_source']::string, 'SYSTEM: ' || __PREFIX___otel_logs.attributes:['event.name']::string) AS log_source,\n",
+      "       attr_key,\n",
+      "       COUNT(*) AS log_lines\n",
+      "FROM __CATALOG__.__SCHEMA__.__PREFIX___otel_logs\n",
+      "LATERAL VIEW explode(map_keys(from_json(__PREFIX___otel_logs.attributes::string, 'map<string,string>'))) k AS attr_key\n",
+      "GROUP BY ALL\n",
+      "ORDER BY log_source, log_lines DESC"
+     ]
+    }
+   ],
+   "join_specs": [
+    {
+     "id": "e0000000000000000000000000000001",
+     "left": {
+      "identifier": "__CATALOG__.__SCHEMA__.v_app_deployments",
+      "alias": "v_app_deployments"
+     },
+     "right": {
+      "identifier": "__CATALOG__.__SCHEMA__.v_app_http_requests",
+      "alias": "v_app_http_requests"
+     },
+     "sql": [
+      "`v_app_deployments`.`deployment_id` = `v_app_http_requests`.`deployment_id`",
+      "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+     ]
+    },
+    {
+     "id": "e0000000000000000000000000000002",
+     "left": {
+      "identifier": "__CATALOG__.__SCHEMA__.v_app_deployments",
+      "alias": "v_app_deployments"
+     },
+     "right": {
+      "identifier": "__CATALOG__.__SCHEMA__.v_app_log_events",
+      "alias": "v_app_log_events"
+     },
+     "sql": [
+      "`v_app_deployments`.`deployment_id` = `v_app_log_events`.`deployment_id`",
+      "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+     ]
+    },
+    {
+     "id": "e0000000000000000000000000000003",
+     "left": {
+      "identifier": "__CATALOG__.__SCHEMA__.v_app_deployments",
+      "alias": "v_app_deployments"
+     },
+     "right": {
+      "identifier": "__CATALOG__.__SCHEMA__.v_app_outbound_calls",
+      "alias": "v_app_outbound_calls"
+     },
+     "sql": [
+      "`v_app_deployments`.`deployment_id` = `v_app_outbound_calls`.`deployment_id`",
+      "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+     ]
+    }
+   ],
+   "sql_snippets": {
+    "filters": [
+     {
+      "id": "f0000000000000000000000000000001",
+      "display_name": "Errors and warnings",
+      "sql": [
+       "v_app_log_events.severity IN ('ERROR', 'WARN')"
+      ],
+      "synonyms": [
+       "problems",
+       "issues",
+       "errors"
+      ]
+     },
+     {
+      "id": "f0000000000000000000000000000002",
+      "display_name": "Failed requests",
+      "sql": [
+       "v_app_http_requests.is_error"
+      ],
+      "synonyms": [
+       "failed requests",
+       "4xx",
+       "5xx"
+      ]
+     }
+    ],
+    "measures": [
+     {
+      "id": "f0000000000000000000000000000003",
+      "alias": "request_error_rate_pct",
+      "display_name": "Request error rate (%)",
+      "sql": [
+       "AVG(CASE WHEN v_app_http_requests.is_error THEN 1.0 ELSE 0.0 END) * 100"
+      ],
+      "synonyms": [
+       "error rate",
+       "failure rate"
+      ]
+     },
+     {
+      "id": "f0000000000000000000000000000004",
+      "alias": "active_users",
+      "display_name": "Active users",
+      "sql": [
+       "COUNT(DISTINCT v_app_http_requests.user_id)"
+      ],
+      "synonyms": [
+       "users",
+       "unique users",
+       "distinct users"
+      ]
+     }
+    ]
+   }
+  },
+  "benchmarks": {
+   "questions": [
+    {
+     "id": "b0000000000000000000000000000001",
+     "question": [
+      "How many app deployments have failed?"
+     ],
+     "answer": [
+      {
+       "format": "SQL",
+       "content": [
+        "SELECT COUNT(*) AS failed_deployments\n",
+        "FROM __CATALOG__.__SCHEMA__.v_app_deployments\n",
+        "WHERE v_app_deployments.outcome = 'Failed'"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b0000000000000000000000000000002",
+     "question": [
+      "Which start command did the most recent failed deployment use?"
+     ],
+     "answer": [
+      {
+       "format": "SQL",
+       "content": [
+        "SELECT v_app_deployments.start_command\n",
+        "FROM __CATALOG__.__SCHEMA__.v_app_deployments\n",
+        "WHERE v_app_deployments.outcome = 'Failed'\n",
+        "ORDER BY v_app_deployments.started_at DESC\n",
+        "LIMIT 1"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b0000000000000000000000000000003",
+     "question": [
+      "How many user HTTP requests has the app served in total?"
+     ],
+     "answer": [
+      {
+       "format": "SQL",
+       "content": [
+        "SELECT COUNT(*) AS requests\n",
+        "FROM __CATALOG__.__SCHEMA__.v_app_http_requests"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b0000000000000000000000000000004",
+     "question": [
+      "How many outbound calls to the agent serving endpoint returned 403?"
+     ],
+     "answer": [
+      {
+       "format": "SQL",
+       "content": [
+        "SELECT COUNT(*) AS forbidden_calls\n",
+        "FROM __CATALOG__.__SCHEMA__.v_app_outbound_calls\n",
+        "WHERE v_app_outbound_calls.target_service = 'Serving endpoint: hire-right-agent-endpoint'\n",
+        "  AND v_app_outbound_calls.status_code = 403"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b0000000000000000000000000000005",
+     "question": [
+      "How many distinct users have made requests to the app?"
+     ],
+     "answer": [
+      {
+       "format": "SQL",
+       "content": [
+        "SELECT COUNT(DISTINCT v_app_http_requests.user_id) AS users\n",
+        "FROM __CATALOG__.__SCHEMA__.v_app_http_requests"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b0000000000000000000000000000006",
+     "question": [
+      "How many warning-level log lines has the app written?"
+     ],
+     "answer": [
+      {
+       "format": "SQL",
+       "content": [
+        "SELECT COUNT(*) AS warnings\n",
+        "FROM __CATALOG__.__SCHEMA__.v_app_log_events\n",
+        "WHERE v_app_log_events.severity = 'WARN'"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

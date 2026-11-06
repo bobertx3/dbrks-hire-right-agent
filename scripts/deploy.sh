@@ -7,6 +7,8 @@
 #
 # Defaults: TARGET=default, PROFILE=DEFAULT
 #
+# Step 0  `setup_agent_sp.sh` ensures the agent's runtime service principal and
+#         its OAuth credentials (secret scope) exist — idempotent.
 # Step 1  `bundle deploy` provisions the Job, the dashboard, and the Databricks
 #         App — including the app's service-principal resource bindings (agent
 #         endpoint, warehouse, Genie, Lakebase), declaratively.
@@ -20,6 +22,9 @@ set -euo pipefail
 
 TARGET="${1:-default}"
 PROFILE="${2:-DEFAULT}"
+
+"$(dirname "$0")/setup_agent_sp.sh" "$PROFILE"
+echo
 
 echo "▶ bundle deploy  (target=$TARGET, profile=$PROFILE)"
 databricks bundle deploy -t "$TARGET" --profile "$PROFILE"

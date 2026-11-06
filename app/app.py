@@ -32,7 +32,24 @@ GENIE_SPACE_ID = os.getenv("GENIE_SPACE_ID", "01f170b7d5dc143995f2df49ee1fbc22")
 TARGET_CATALOG = os.getenv("TARGET_CATALOG", "bx4")
 TARGET_SCHEMA  = os.getenv("TARGET_SCHEMA", "hrd_2030")
 WAREHOUSE_ID   = os.getenv("DATABRICKS_WAREHOUSE_ID", "")
-LLM_ENDPOINT   = os.getenv("LLM_ENDPOINT", "databricks-gpt-5-4")
+LLM_ENDPOINT   = os.getenv("LLM_ENDPOINT", "bldemos.hrd_digital.hire_right_llm")
+
+
+def _llm_chat(w: WorkspaceClient, body: dict) -> dict:
+    """OpenAI-style chat completion against the configured LLM.
+
+    A three-part UC name (catalog.schema.service) is a Unity AI Gateway model
+    service — call /ai-gateway/mlflow/v1 so the request lands in its inference
+    table. A bare name (e.g. databricks-gpt-5-4) uses the legacy serving path.
+    """
+    if LLM_ENDPOINT.count(".") == 2:
+        return w.api_client.do(
+            "POST", "/ai-gateway/mlflow/v1/chat/completions",
+            body={"model": LLM_ENDPOINT, **body},
+        )
+    return w.api_client.do(
+        "POST", f"/serving-endpoints/{LLM_ENDPOINT}/invocations", body=body,
+    )
 
 
 def get_client() -> WorkspaceClient:
@@ -133,10 +150,9 @@ def _extract_agent_reply(pred) -> str:
 def _reformat_as_markdown(w: WorkspaceClient, text: str) -> str:
     """Reformat a Genie prose answer into clean, scannable markdown."""
     try:
-        result = w.api_client.do(
-            "POST",
-            f"/serving-endpoints/{LLM_ENDPOINT}/invocations",
-            body={
+        result = _llm_chat(
+            w,
+            {
                 "messages": [
                     {
                         "role": "system",
@@ -300,10 +316,9 @@ async def delete_annotation(candidate_id: str, note_id: int):
 # ── AI-Powered Offer Letter ─────────────────────────────────────────────────────
 def _llm_complete(w: WorkspaceClient, system: str, user: str, max_tokens: int = 900) -> str:
     """Single-shot completion against the LLM serving endpoint."""
-    result = w.api_client.do(
-        "POST",
-        f"/serving-endpoints/{LLM_ENDPOINT}/invocations",
-        body={
+    result = _llm_chat(
+        w,
+        {
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
