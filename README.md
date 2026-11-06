@@ -39,7 +39,7 @@ binary hire / no-hire label. This is intentional for the demo narrative.
 - **App:** `https://hire-right-agent-app-7474645374628060.aws.databricksapps.com`
 - **Catalog / schema:** `bldemos.hrd_2030`
 - **Lakebase:** instance `hire-right-lb`, database `databricks_postgres`, UC catalog `hrd_2030_lakebase`
-- **LLM:** `databricks-gpt-5-4` (via AI Gateway)
+- **LLM:** Unity AI Gateway model service `bldemos.hrd_digital.hire_right_llm` → `system.ai.databricks-gpt-5-4` (inference table `bldemos.hrd_digital.hire_right_llm_payload`, usage in `system.ai_gateway.usage`)
 
 ---
 

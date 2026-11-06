@@ -4,14 +4,16 @@
   "table_identifiers": [
     "__CATALOG__.__SCHEMA__.candidate_scoring_summary",
     "__CATALOG__.__SCHEMA__.candidates",
-    "__CATALOG__.__SCHEMA__.job_requirements"
+    "__CATALOG__.__SCHEMA__.job_requirements",
+    "__CATALOG__.__SCHEMA__.hiring_analytics"
   ],
   "sample_questions": [
     "Who are the top 5 candidates by total score?",
     "What is the average total score by job role?",
     "Which certifications are most common among hired candidates?",
     "How many candidates have an MBA and over 10 years of HR experience?",
-    "What is the hire rate by education level?"
+    "What is the hire rate by education level?",
+    "How many candidates are in the active pipeline for each role, and what is their average score?"
   ],
   "serialized_space": {
     "version": 2,
@@ -21,7 +23,8 @@
         {"id": "00000000000000000000000000000002", "question": ["What is the average total score by job role?"]},
         {"id": "00000000000000000000000000000003", "question": ["Which certifications are most common among hired candidates?"]},
         {"id": "00000000000000000000000000000004", "question": ["How many candidates have an MBA and over 10 years of HR experience?"]},
-        {"id": "00000000000000000000000000000005", "question": ["What is the hire rate by education level?"]}
+        {"id": "00000000000000000000000000000005", "question": ["What is the hire rate by education level?"]},
+        {"id": "00000000000000000000000000000006", "question": ["How many candidates are in the active pipeline for each role, and what is their average score?"]}
       ]
     },
     "data_sources": {
@@ -29,6 +32,9 @@
         {"identifier": "__CATALOG__.__SCHEMA__.candidate_scoring_summary"},
         {"identifier": "__CATALOG__.__SCHEMA__.candidates"},
         {"identifier": "__CATALOG__.__SCHEMA__.job_requirements"}
+      ],
+      "metric_views": [
+        {"identifier": "__CATALOG__.__SCHEMA__.hiring_analytics"}
       ]
     },
     "instructions": {
@@ -46,6 +52,10 @@
             "C001–C010 are training candidates (complete scores + hired label). ",
             "C011–C020 are new candidates (interview_score, skills_match_score, culture_fit, hired are NULL).\n",
             "- **__CATALOG__.__SCHEMA__.job_requirements**: 4 open HR roles with salary ranges and requirements.\n",
+            "- **__CATALOG__.__SCHEMA__.hiring_analytics** (governed METRIC VIEW — use for KPIs): measures TotalCandidates, HiredCount, PipelineCandidates, ",
+            "HireRate, AvgTotalScore, per-category score averages, AvgYearsHrExperience; dimensions JobId, JobTitle, Department, ",
+            "CandidateSegment ('Historical' | 'Active Pipeline'), Stage, HireDecision ('Hired' | 'Not Hired' | 'In Pipeline'), ",
+            "EducationLevel, Certifications, Location, CurrentCompany.\n",
             "\n",
             "## Open Positions\n",
             "- JR001 = Director of Human Resources ($175K–$225K)\n",
@@ -64,7 +74,10 @@
             "C008 James Wilson (64.5), C009 Maria Gonzalez (56.7), C010 Thomas Brown (66.5).\n",
             "\n",
             "## Query Conventions\n",
-            "- Use candidate_scoring_summary for most questions (it has everything).\n",
+            "- Aggregate KPIs (counts, hire rate, average scores by role / segment / stage / education / etc.): query the ",
+            "hiring_analytics metric view and wrap every measure in MEASURE(), e.g. MEASURE(HireRate). Never SELECT * from it ",
+            "and never put MEASURE() in WHERE or GROUP BY — filter and group on dimensions only.\n",
+            "- Individual candidates, rankings, and row-level detail: use candidate_scoring_summary.\n",
             "- Filter to scored candidates: WHERE total_score IS NOT NULL\n",
             "- Filter to training set only: WHERE hired IS NOT NULL\n",
             "- Rank candidates: ORDER BY total_score DESC NULLS LAST\n",
@@ -88,14 +101,27 @@
           "id": "00000000000000000000000000000065",
           "question": ["What is the hire rate by education level?"],
           "sql": [
-            "SELECT education_level,\n",
-            "       COUNT(*) AS total_candidates,\n",
-            "       SUM(hired) AS hired_count,\n",
-            "       ROUND(AVG(hired) * 100, 1) AS hire_rate_pct\n",
-            "FROM __CATALOG__.__SCHEMA__.candidate_scoring_summary\n",
-            "WHERE hired IS NOT NULL\n",
-            "GROUP BY education_level\n",
+            "SELECT EducationLevel,\n",
+            "       MEASURE(TotalCandidates) AS total_candidates,\n",
+            "       MEASURE(HiredCount)      AS hired_count,\n",
+            "       MEASURE(HireRate)        AS hire_rate_pct\n",
+            "FROM __CATALOG__.__SCHEMA__.hiring_analytics\n",
+            "WHERE CandidateSegment = 'Historical'\n",
+            "GROUP BY EducationLevel\n",
             "ORDER BY hire_rate_pct DESC"
+          ]
+        },
+        {
+          "id": "00000000000000000000000000000066",
+          "question": ["How many candidates are in the active pipeline for each role, and what is their average score?"],
+          "sql": [
+            "SELECT JobId, JobTitle,\n",
+            "       MEASURE(PipelineCandidates) AS pipeline_candidates,\n",
+            "       MEASURE(AvgTotalScore)      AS avg_total_score\n",
+            "FROM __CATALOG__.__SCHEMA__.hiring_analytics\n",
+            "WHERE CandidateSegment = 'Active Pipeline'\n",
+            "GROUP BY JobId, JobTitle\n",
+            "ORDER BY JobId"
           ]
         }
       ]
@@ -156,6 +182,19 @@
             "WHERE hired IS NOT NULL\n",
             "GROUP BY education_level\n",
             "ORDER BY hire_rate_pct DESC"
+          ]}]
+        },
+        {
+          "id": "00000000000000000000000000000131",
+          "question": ["How many candidates are in the active pipeline for each role, and what is their average score?"],
+          "answer": [{"format": "SQL", "content": [
+            "SELECT JobId, JobTitle,\n",
+            "       MEASURE(PipelineCandidates) AS pipeline_candidates,\n",
+            "       MEASURE(AvgTotalScore)      AS avg_total_score\n",
+            "FROM __CATALOG__.__SCHEMA__.hiring_analytics\n",
+            "WHERE CandidateSegment = 'Active Pipeline'\n",
+            "GROUP BY JobId, JobTitle\n",
+            "ORDER BY JobId"
           ]}]
         }
       ]

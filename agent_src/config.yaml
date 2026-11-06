@@ -3,7 +3,7 @@
 # In development (notebook), ModelConfig reads from this file.
 # Sensitive values (Mailgun) are NOT here — they come from environment variables.
 
-llm_endpoint: "databricks-gpt-5-4"
+llm_endpoint: "bldemos.hrd_digital.hire_right_llm"   # Unity AI Gateway model service → system.ai.databricks-gpt-5-4
 genie_space_id: ""
 vs_endpoint_name: "bx4_hrd_vs_endpoint"
 vs_index: "hr_resumes_vs_index"

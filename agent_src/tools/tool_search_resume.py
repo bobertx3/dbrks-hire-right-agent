@@ -25,33 +25,32 @@ def search_resumes(query: str) -> str:
     specific qualifications, experience, or skills. Use this to look up a specific candidate's
     background, summarize their resume, or find candidates with particular expertise.
     Examples: 'Sarah Chen background', 'SPHR certified pharma HR director', 'MBA leadership experience'."""
-    vs_endpoint, catalog, schema, vs_index = _get_vs_config()
+    _vs_endpoint, catalog, schema, vs_index = _get_vs_config()
 
     try:
-        from databricks.vector_search.client import VectorSearchClient
+        # Query through the Databricks SDK so auth follows the same chain as the other
+        # tools: on the endpoint that is hire-right-agent-sp via DATABRICKS_HOST +
+        # DATABRICKS_CLIENT_ID/SECRET (OAuth M2M). The no-arg VectorSearchClient()
+        # instead asks MLflow for a static token, which is None under OAuth M2M →
+        # "Please specify either personal access token or service principal ...".
+        from databricks.sdk import WorkspaceClient
 
-        vsc = VectorSearchClient(disable_notice=True)
-        index = vsc.get_index(
-            endpoint_name=vs_endpoint,
+        cols = ["candidate_id", "first_name", "last_name", "current_title", "resume_text"]
+        resp = WorkspaceClient().vector_search_indexes.query_index(
             index_name=f"{catalog}.{schema}.{vs_index}",
-        )
-        results = index.similarity_search(
+            columns=cols,
             query_text=query,
-            columns=["candidate_id", "first_name", "last_name", "current_title", "resume_text"],
             num_results=3,
         )
 
-        if not results or not results.get("result", {}).get("data_array"):
+        rows = (resp.result.data_array if resp.result else None) or []
+        if not rows:
             return "No matching resumes found for that query."
-
-        # manifest is at the top level of the response, not inside result
-        manifest = results.get("manifest") or results.get("result", {}).get("manifest", {})
-        cols = [c["name"] for c in manifest.get("columns", [])]
-        if not cols:
-            cols = ["candidate_id", "first_name", "last_name", "current_title", "resume_text"]
+        if resp.manifest and resp.manifest.columns:
+            cols = [c.name for c in resp.manifest.columns]
 
         output_parts = []
-        for row in results["result"]["data_array"]:
+        for row in rows:
             rec = dict(zip(cols, row))
             name = f"{rec.get('first_name', '')} {rec.get('last_name', '')}".strip()
             cid = rec.get("candidate_id", "")

@@ -42,7 +42,21 @@ from config_helper import cfg_get
 logger = logging.getLogger(__name__)
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-LLM_ENDPOINT = cfg_get("llm_endpoint", "LLM_ENDPOINT_NAME", "databricks-gpt-5-4")
+LLM_ENDPOINT = cfg_get("llm_endpoint", "LLM_ENDPOINT_NAME", "bldemos.hrd_digital.hire_right_llm")
+# A three-part UC name (catalog.schema.service) is a Unity AI Gateway model service:
+# route through /ai-gateway/mlflow/v1 so calls land in the service's inference table
+# and system.ai_gateway.usage. A bare name (e.g. "databricks-gpt-5-4") keeps the legacy
+# /serving-endpoints path.
+LLM_USE_AI_GATEWAY = LLM_ENDPOINT.count(".") == 2
+
+
+def _make_llm(max_tokens: int) -> ChatDatabricks:
+    return ChatDatabricks(
+        endpoint=LLM_ENDPOINT,
+        use_ai_gateway=LLM_USE_AI_GATEWAY,
+        temperature=0.1,
+        max_tokens=max_tokens,
+    )
 
 SYSTEM_PROMPT = """You are the **Hire Right Agent** for Jackson and Jackson HR Digital — an AI-powered hiring assistant
 that helps HR leaders and hiring managers evaluate candidates across four open HR roles at Johnson & Johnson.
@@ -257,7 +271,7 @@ class HireRightAgent(ResponsesAgent):
         tool and emits its output — so a streaming client can render tool-call
         cards progressively (not all at once at the end).
         """
-        llm            = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=2048)
+        llm            = _make_llm(max_tokens=2048)
         llm_with_tools = llm.bind_tools(TOOLS)
 
         lc_messages = self._build_lc_messages(request.input)
@@ -311,7 +325,7 @@ class HireRightAgent(ResponsesAgent):
                 lc_messages.append(ToolMessage(content=str(result), tool_call_id=tc["id"]))
 
         # Max iterations reached — produce a final answer without tools.
-        llm_plain = ChatDatabricks(endpoint=LLM_ENDPOINT, temperature=0.1, max_tokens=1024)
+        llm_plain = _make_llm(max_tokens=1024)
         final = llm_plain.invoke(lc_messages)
         yield ResponsesAgentStreamEvent(
             type="response.output_item.done",

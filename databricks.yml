@@ -27,9 +27,20 @@ variables:
   agent_endpoint_name:
     description: Agent serving endpoint name
     default: hire-right-agent-endpoint
+  ai_gateway_schema:
+    description: UC schema holding the Unity AI Gateway model service and its inference table
+    default: hrd_digital
+  llm_model_service:
+    description: Unity AI Gateway model service name (created by notebook 05c)
+    default: hire_right_llm
+  llm_destination_model:
+    description: Foundation model the model service routes to (UC model under system.ai)
+    default: system.ai.databricks-gpt-5-4
   llm_endpoint_name:
-    description: LLM serving endpoint (via AI Gateway)
-    default: databricks-gpt-5-4
+    description: >-
+      LLM the agent + app call. A catalog.schema.service name routes through Unity AI Gateway
+      (/ai-gateway/mlflow/v1); a bare endpoint name (e.g. databricks-gpt-5-4) uses legacy serving.
+    default: ${var.catalog}.${var.ai_gateway_schema}.${var.llm_model_service}
   mlflow_experiment:
     description: MLflow experiment name for the ML model (notebook 05)
     default: ml-hr-predictive-hiring-evals
@@ -183,6 +194,19 @@ resources:
               schema: ${var.schema}
               volume_name: raw_data
 
+        - task_key: setup_ai_gateway
+          depends_on:
+            - task_key: setup
+          notebook_task:
+            notebook_path: ./notebooks/05c_setup_ai_gateway.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              ai_gateway_schema: ${var.ai_gateway_schema}
+              model_service: ${var.llm_model_service}
+              destination_model: ${var.llm_destination_model}
+              agent_sp_name: ${var.agent_sp_name}
+              app_name: ${var.app_name}
+
         - task_key: load_bronze
           depends_on:
             - task_key: setup
@@ -297,6 +321,7 @@ resources:
           depends_on:
             - task_key: agent
             - task_key: setup_lakebase
+            - task_key: setup_ai_gateway
           notebook_task:
             notebook_path: ./notebooks/07_deploy_app.ipynb
             base_parameters:
@@ -308,6 +333,7 @@ resources:
               genie_space_id: "{{tasks.genie_space.values.genie_space_id}}"
               lakebase_instance_name: ${var.lakebase_instance_name}
               lakebase_database: ${var.lakebase_database}
+              llm_endpoint: ${var.llm_endpoint_name}
 
         - task_key: drift_monitor
           depends_on:
@@ -354,12 +380,14 @@ resources:
               genie_space_id: "{{tasks.genie_space.values.genie_space_id}}"
               warehouse_id: ${var.warehouse_id}
               agent_endpoint_name: ${var.agent_endpoint_name}
+              llm_endpoint: ${var.llm_endpoint_name}
 
         - task_key: agent_condition
           depends_on:
             - task_key: genie_space
             - task_key: build_vector_index_rag
             - task_key: create_uc_functions
+            - task_key: setup_ai_gateway
           condition_task:
             op: EQUAL_TO
             left: "{{job.parameters.deploy_agent}}"
@@ -418,6 +446,7 @@ resources:
               warehouse_id: ${var.warehouse_id}
               agent_sp_name: ${var.agent_sp_name}
               secret_scope: ${var.agent_secret_scope}
+              app_name: ${var.app_name}
 
         - task_key: refresh_dashboard
           depends_on:
